@@ -6,7 +6,7 @@ build-job:
     - make all
   artifacts:
     paths:
-      build/
+      - build/
 
 test-job1:
   stage: test
