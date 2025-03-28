@@ -1,4 +1,4 @@
-.PHONY all test clean
+.PHONY: all test clean
 
 all:
 	echo "Build run"
