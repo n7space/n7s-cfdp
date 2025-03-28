@@ -4,6 +4,9 @@ build-job:
   stage: build
   script:
     - make all
+  artifacts:
+    paths:
+      build/
 
 test-job1:
   stage: test
