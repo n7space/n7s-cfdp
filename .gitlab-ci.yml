@@ -1,0 +1,9 @@
+build-job:
+  stage: build
+  script:
+    - make all
+
+test-job1:
+  stage: test
+  script:
+    - make test
