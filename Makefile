@@ -1,13 +1,15 @@
 .PHONY: all test clean
 
+SOURCES := $(wildcard src/*.c)
+
 all:
 	echo "Build run"
 	mkdir -p build
-	gcc -o build/dummy src/dummy.c
+	gcc -o build/main $(SOURCES)
 
 test: 
 	echo "Tests run"
-	build/dummy
+	build/main
 
 clean:
 	rm -rf build/*
