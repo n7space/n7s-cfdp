@@ -1,0 +1,16 @@
+CFDP-PROTOCOL DEFINITIONS ::=
+BEGIN
+
+MyInt ::= INTEGER (-100 .. 100)
+
+MyInt2 ::= INTEGER (0 .. 1000)
+
+MySeq ::= SEQUENCE {
+   a1 INTEGER (1 .. 20),
+   a2 INTEGER (-10 .. 20),
+   a3 MyInt,
+   a4 MyInt2
+}
+
+END
+

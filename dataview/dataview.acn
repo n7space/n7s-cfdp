@@ -1,0 +1,35 @@
+CFDP-PROTOCOL DEFINITIONS ::= 
+BEGIN
+    
+--  ACN allows constant definitions
+    
+CONSTANT WORDSIZE ::= 32
+   
+--  We can make basic math with ACN constants
+   
+CONSTANT LARGEST-INT ::= 2^^(WORDSIZE - 1) - 1
+   
+--  MyInt will be encoded as twos complement integer.
+--  Size will be 1 byte
+   
+MyInt [size 8, encoding twos-complement]
+   
+-- If no encoding properties are present, then
+-- encoding properties will be automatically populated
+-- so that the behavior matches the one of uPER i.e.
+-- size 10, encoding pos-int
+   
+MyInt2 []
+   
+-- encoding properties for types defined
+-- within constructed types (i.e. fields)
+   
+MySeq [] {
+   a1 [],
+   a2 [size 32, encoding twos-complement, endianness little],
+   a3 [],
+   a4 []
+}
+
+END
+
