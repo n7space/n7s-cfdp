@@ -95,19 +95,7 @@ or  00010000
     xxx1????
 */
 
-void BitStream_AppendBitOne(BitStream* pBitStrm)
-{
-	pBitStrm->buf[pBitStrm->currentByte] |= masks[pBitStrm->currentBit];
 
-	if (pBitStrm->currentBit<7)
-		pBitStrm->currentBit++;
-	else {
-		pBitStrm->currentBit = 0;
-		pBitStrm->currentByte++;
-		bitstream_push_data_if_required(pBitStrm);
-	}
-	assert(pBitStrm->currentByte * 8 + pBitStrm->currentBit <= pBitStrm->count * 8);
-}
 
 /*
 	Append bit zero.
@@ -143,20 +131,22 @@ void BitStream_AppendNBitZero(BitStream* pBitStrm, int nbits)
 	}
 }
 
-void BitStream_AppendNBitOne(BitStream* pBitStrm, int nbits)
+
+
+void BitStream_AppendBits(BitStream* pBitStrm, const byte* srcBuffer, int nbits)
 {
-	int i;
+	byte lastByte = 0;
 
-	while (nbits >= 8) {
-		BitStream_AppendByte(pBitStrm, 0xFF, FALSE);
-		nbits -= 8;
+    int bytesToEncode = nbits / 8;
+    int remainingBits = nbits % 8;
+    
+    BitStream_EncodeOctetString_no_length(pBitStrm, srcBuffer, bytesToEncode);
+
+    if (remainingBits > 0) {
+		lastByte = (byte)(srcBuffer[bytesToEncode] >> (8 - remainingBits));
+		BitStream_AppendPartialByte(pBitStrm, lastByte, (byte)remainingBits, FALSE);
 	}
-	for (i = 0; i<nbits; i++)
-		BitStream_AppendBitOne(pBitStrm);
-
 }
-
-
 
 void BitStream_AppendBit(BitStream* pBitStrm, flag v)
 {
@@ -179,11 +169,21 @@ void BitStream_AppendBit(BitStream* pBitStrm, flag v)
 }
 
 
+flag BitStream_ReadBit(BitStream* pBitStrm, flag* v)
+{
+	*v = pBitStrm->buf[pBitStrm->currentByte] & masks[pBitStrm->currentBit];
 
-
-flag BitStream_PeekBit(BitStream* pBitStrm) {
-	return pBitStrm->buf[pBitStrm->currentByte] & masks[pBitStrm->currentBit];
+	if (pBitStrm->currentBit<7)
+		pBitStrm->currentBit++;
+	else {
+		pBitStrm->currentBit = 0;
+		pBitStrm->currentByte++;
+		bitstream_fetch_data_if_required(pBitStrm);
+	}
+	return pBitStrm->currentByte * 8 + pBitStrm->currentBit <= pBitStrm->count * 8;
 }
+
+
 
 
 /*
@@ -251,7 +251,51 @@ flag BitStream_AppendByte0(BitStream* pBitStrm, byte v)
 	return TRUE;
 }
 
+flag BitStream_AppendByteArray(BitStream* pBitStrm, const byte arr[], const int arr_len)
+{
+    //static byte  masks[] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+    //static byte masksb[] = { 0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF };
 
+    int cb = pBitStrm->currentBit;
+    int ncb = 8 - cb;
+
+    byte mask = (byte)~masksb[ncb];
+    byte nmask = (byte)~mask;
+    //if (pBitStrm->currentByte + (int)arr_len + (cb > 0 ? 1 : 0) >= pBitStrm->count)
+    if ( (pBitStrm->currentByte + arr_len)*8 + cb > pBitStrm->count*8)
+        return FALSE;
+
+    if (arr_len> 0) {
+        byte v = arr[0];
+        pBitStrm->buf[pBitStrm->currentByte] &= mask;       //make zero right bits (i.e. the ones that will get the new value)
+        pBitStrm->buf[pBitStrm->currentByte++] |= (byte)(v >> cb);  //shift right and then populate current byte
+        bitstream_push_data_if_required(pBitStrm);
+
+        pBitStrm->buf[pBitStrm->currentByte] &= nmask;
+        pBitStrm->buf[pBitStrm->currentByte] |= (byte)(v << ncb);
+    }
+
+    for (int i = 1; i < arr_len - 1; i++) {
+        byte v = arr[i];
+        byte v1 = (byte)(v >> cb);
+        byte v2 = (byte)(v << ncb);
+        pBitStrm->buf[pBitStrm->currentByte++] |= v1;  //shift right and then populate current byte
+        bitstream_push_data_if_required(pBitStrm);
+        pBitStrm->buf[pBitStrm->currentByte] |= v2;
+    }
+    if (arr_len - 1 > 0) {
+        byte v = arr[arr_len - 1];
+        pBitStrm->buf[pBitStrm->currentByte] &= mask;       //make zero right bits (i.e. the ones that will get the new value)
+        pBitStrm->buf[pBitStrm->currentByte++] |= (byte)(v >> cb);  //shift right and then populate current byte
+        bitstream_push_data_if_required(pBitStrm);
+
+        if (cb) {
+            pBitStrm->buf[pBitStrm->currentByte] &= nmask;
+            pBitStrm->buf[pBitStrm->currentByte] |= (byte)(v << ncb);
+        }
+    }
+    return TRUE;
+}
 
 
 flag BitStream_ReadByte(BitStream* pBitStrm, byte* v)
@@ -269,7 +313,27 @@ flag BitStream_ReadByte(BitStream* pBitStrm, byte* v)
 }
 
 
+flag BitStream_ReadByteArray(BitStream* pBitStrm, byte* arr, int arr_len) {
+    int cb = pBitStrm->currentBit;
+    int ncb = 8 - cb;
+	byte* rb = &pBitStrm->buf[pBitStrm->currentByte];
+	byte* wb = arr;
 
+#ifndef ASN1SCC_STREAMING
+    if ( (pBitStrm->currentByte + arr_len)*8 + cb > pBitStrm->count*8)
+        return FALSE;
+#endif
+
+    for (int i = 0; i < arr_len; i++) {
+		*wb = (byte)((*rb) << cb);
+		rb++;
+		bitstream_fetch_data_if_required(pBitStrm);
+		*wb |= (byte)((*rb) >> ncb);
+		wb++;
+    }
+	pBitStrm->currentByte += arr_len;
+    return TRUE;
+}
 
 
 /*
@@ -501,28 +565,7 @@ flag BitStream_DecodeNonNegativeInteger(BitStream* pBitStrm, asn1SccUint* v, int
 }
 
 
-void BitStream_EncodeNonNegativeIntegerNeg(BitStream* pBitStrm, asn1SccUint v, flag negate)
-{
-#if WORD_SIZE==8
-	if (v<0x100000000LL)
-		BitStream_EncodeNonNegativeInteger32Neg(pBitStrm, (asn1SccUint32)v, negate);
-	else {
-		int nBits;
-		asn1SccUint32 hi = (asn1SccUint32)(v >> 32);
-		asn1SccUint32 lo = (asn1SccUint32)v;
-		BitStream_EncodeNonNegativeInteger32Neg(pBitStrm, hi, negate);
 
-		/*bug !!!!*/
-		if (negate)
-			lo = ~lo;
-		nBits = GetNumberOfBitsForNonNegativeInteger(lo);
-		BitStream_AppendNBitZero(pBitStrm, 32 - nBits);
-		BitStream_EncodeNonNegativeInteger32Neg(pBitStrm, lo, 0);
-	}
-#else
-	BitStream_EncodeNonNegativeInteger32Neg(pBitStrm, v, negate);
-#endif
-}
 
 int GetNumberOfBitsForNonNegativeInteger32(asn1SccUint32 v)
 {
@@ -759,21 +802,259 @@ flag DecodeRealAsBinaryEncoding(BitStream* pBitStrm, int length, byte header, as
 
 
 
+flag BitStream_EncodeOctetString_no_length (BitStream* pBitStrm, const byte* arr, int nCount) {
+	int cb = pBitStrm->currentBit;
+	//int i1;
+	flag ret = TRUE;
+
+	if (cb == 0) {
+#ifdef ASN1SCC_STREAMING
+		int remainingBytesToSend = nCount;
+		while (remainingBytesToSend > 0) {
+			int currentBatch =
+				pBitStrm->currentByte + remainingBytesToSend <= pBitStrm->count ?
+				remainingBytesToSend :
+				pBitStrm->count - pBitStrm->currentByte;
+
+			memcpy(&pBitStrm->buf[pBitStrm->currentByte], arr, currentBatch);
+			pBitStrm->currentByte += currentBatch;
+			bitstream_push_data_if_required(pBitStrm);
+			remainingBytesToSend -= currentBatch;
+		}
+#else
+		ret = pBitStrm->currentByte + nCount <= pBitStrm->count;
+		if (ret) {
+			memcpy(&pBitStrm->buf[pBitStrm->currentByte], arr, nCount);
+			pBitStrm->currentByte += nCount;
+		}
+#endif
+
+	}
+	else {
+		ret = BitStream_AppendByteArray(pBitStrm, arr, (size_t) nCount);
+/*
+		for (i1 = 0; (i1 < (int)nCount) && ret; i1++)
+		{
+			ret = BitStream_AppendByte0(pBitStrm, arr[i1]);
+		}
+*/		
+	}
+
+	return ret;
+}
+
+flag BitStream_DecodeOctetString_no_length(BitStream* pBitStrm, byte* arr, int nCount) {
+    int cb = pBitStrm->currentBit;
+    //int i1;
+	flag ret=TRUE;
+
+    if (cb == 0) {
+#ifdef ASN1SCC_STREAMING
+        int remainingBytesToRead = nCount;
+        while (remainingBytesToRead > 0) {
+            int currentBatch =
+                pBitStrm->currentByte + remainingBytesToRead <= pBitStrm->count ?
+                remainingBytesToRead :
+                pBitStrm->count - pBitStrm->currentByte;
+
+            memcpy(arr, &pBitStrm->buf[pBitStrm->currentByte], currentBatch);
+            pBitStrm->currentByte += currentBatch;
+            bitstream_fetch_data_if_required(pBitStrm);
+            remainingBytesToRead -= currentBatch;
+        }
+#else
+        ret = pBitStrm->currentByte + nCount <= pBitStrm->count;
+        if (ret) {
+            memcpy(arr, &pBitStrm->buf[pBitStrm->currentByte], nCount);
+            pBitStrm->currentByte += nCount;
+        }
+#endif
+
+    }
+    else {
+		ret = BitStream_ReadByteArray(pBitStrm, arr, nCount);
+        //for (i1 = 0; (i1 < nCount) && ret; i1++)
+        //{
+        //    ret = BitStream_ReadByte(pBitStrm, &arr[i1]);
+        //}
+    }
+
+	return ret;
+}
 
 
 
+flag BitStream_EncodeOctetString_fragmentation(BitStream* pBitStrm, const byte* arr, int nCount) {
+	int i1;
+	int nRemainingItemsVar1 = nCount;
+	int nCurBlockSize1 = 0;
+	int nCurOffset1 = 0;
+	flag ret = nCount >= 0;
+
+	while (nRemainingItemsVar1 >= 0x4000 && ret)
+	{
+		if (nRemainingItemsVar1 >= 0x10000)
+		{
+			nCurBlockSize1 = 0x10000;
+			BitStream_EncodeConstraintWholeNumber(pBitStrm, 0xC4, 0, 0xFF);
+		}
+		else if (nRemainingItemsVar1 >= 0xC000)
+		{
+			nCurBlockSize1 = 0xC000;
+			BitStream_EncodeConstraintWholeNumber(pBitStrm, 0xC3, 0, 0xFF);
+		}
+		else if (nRemainingItemsVar1 >= 0x8000)
+		{
+			nCurBlockSize1 = 0x8000;
+			BitStream_EncodeConstraintWholeNumber(pBitStrm, 0xC2, 0, 0xFF);
+		}
+		else
+		{
+			nCurBlockSize1 = 0x4000;
+			BitStream_EncodeConstraintWholeNumber(pBitStrm, 0xC1, 0, 0xFF);
+		}
+
+		for (i1 = nCurOffset1; (i1 < nCurBlockSize1 + nCurOffset1) && ret; i1++)
+		{
+			ret = BitStream_AppendByte0(pBitStrm, arr[i1]);
+		}
+		nCurOffset1 += nCurBlockSize1;
+		nRemainingItemsVar1 -= nCurBlockSize1;
+	}
+	if (ret) {
+		if (nRemainingItemsVar1 <= 0x7F)
+			BitStream_EncodeConstraintWholeNumber(pBitStrm, nRemainingItemsVar1, 0, 0xFF);
+		else
+		{
+			BitStream_AppendBit(pBitStrm, 1);
+			BitStream_EncodeConstraintWholeNumber(pBitStrm, nRemainingItemsVar1, 0, 0x7FFF);
+		}
+
+		for (i1 = nCurOffset1; i1 < (nCurOffset1 + nRemainingItemsVar1) && ret; i1++)
+		{
+			ret = BitStream_AppendByte0(pBitStrm, arr[i1]);
+		}
+	}
+	return ret;
+}
+
+flag BitStream_DecodeOctetString_fragmentation(BitStream* pBitStrm, byte* arr, int* nCount, asn1SccSint asn1SizeMax) {
+	flag ret = TRUE;
+
+	int i1;
+	asn1SccSint nLengthTmp1 = 0;
+	asn1SccSint nRemainingItemsVar1 = 0;
+	asn1SccSint nCurBlockSize1 = 0;
+	asn1SccSint nCurOffset1 = 0;
+
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nRemainingItemsVar1, 0, 0xFF);
+	if (ret) {
+		while (ret && (nRemainingItemsVar1 & 0xC0) == 0xC0)
+		{
+			if (nRemainingItemsVar1 == 0xC4)
+				nCurBlockSize1 = 0x10000;
+			else if (nRemainingItemsVar1 == 0xC3)
+				nCurBlockSize1 = 0xC000;
+			else if (nRemainingItemsVar1 == 0xC2)
+				nCurBlockSize1 = 0x8000;
+			else if (nRemainingItemsVar1 == 0xC1)
+				nCurBlockSize1 = 0x4000;
+			else {
+				ret =  FALSE;
+			}
+			if (ret) {
+				ret = nCurOffset1 + nCurBlockSize1 <= asn1SizeMax;
+				for (i1 = (int)nCurOffset1; ret && (i1 < (int)(nCurOffset1 + nCurBlockSize1)); i1++)
+				{
+					ret = BitStream_ReadByte(pBitStrm, &(arr[i1]));
+				}
+
+				if (ret) {
+					nLengthTmp1 += (long)nCurBlockSize1;
+					nCurOffset1 += nCurBlockSize1;
+					ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nRemainingItemsVar1, 0, 0xFF);
+				}
+			}
+		}
+		if (ret) {
+			if ((nRemainingItemsVar1 & 0x80)>0)
+			{
+				asn1SccSint len2;
+				nRemainingItemsVar1 <<= 8;
+				ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &len2, 0, 0xFF);
+				if (ret) {
+					nRemainingItemsVar1 |= len2;
+					nRemainingItemsVar1 &= 0x7FFF;
+				}
+			}
+			ret = ret && (nCurOffset1 + nRemainingItemsVar1 <= asn1SizeMax);
+			if (ret) {
+				for (i1 = (int)nCurOffset1; ret && (i1 < (int)(nCurOffset1 + nRemainingItemsVar1)); i1++)
+				{
+					ret = BitStream_ReadByte(pBitStrm, &(arr[i1]));
+				}
+				if (ret) {
+					nLengthTmp1 += (long)nRemainingItemsVar1;
+
+					if ((nLengthTmp1 >= 1) && (nLengthTmp1 <= asn1SizeMax)) {
+						*nCount = (int)nLengthTmp1;
+
+					}
+					else {
+						ret = FALSE;  /*COVERAGE_IGNORE*/
+					}
+
+				}
+			}
+		}
+	}
+
+	return ret;
+}
 
 
 
+flag BitStream_EncodeOctetString(BitStream* pBitStrm, const byte* arr, int nCount, asn1SccSint asn1SizeMin, asn1SccSint asn1SizeMax) {
+	flag ret= (nCount >= asn1SizeMin && nCount <= asn1SizeMax);
+
+	if (ret) {
+		if (asn1SizeMax < 65536) {
+			if (asn1SizeMin != asn1SizeMax) {
+				BitStream_EncodeConstraintWholeNumber(pBitStrm, nCount, asn1SizeMin, asn1SizeMax);
+			}
+			ret = BitStream_EncodeOctetString_no_length(pBitStrm, arr, nCount);
+		}
+		else {
+			ret = BitStream_EncodeOctetString_fragmentation(pBitStrm, arr, nCount);
+		}
+	}
 
 
+	return ret;
+}
 
-
-
-
-
-
-
+flag BitStream_DecodeOctetString(BitStream* pBitStrm, byte* arr, int* nCount, asn1SccSint asn1SizeMin, asn1SccSint asn1SizeMax) {
+	flag ret = TRUE;
+	if (asn1SizeMax < 65536) {
+		asn1SccSint nCountL;
+		if (asn1SizeMin < asn1SizeMax) {
+			ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCountL, asn1SizeMin, asn1SizeMax);
+		}
+		else {
+			ret = TRUE;
+			nCountL = asn1SizeMin;
+		}
+		*nCount = (int)nCountL;
+		ret = ret && (nCountL >= asn1SizeMin && nCountL <= asn1SizeMax);
+		if (ret) {
+			BitStream_DecodeOctetString_no_length(pBitStrm, arr, *nCount);
+		}
+	}
+	else {
+		ret = BitStream_DecodeOctetString_fragmentation(pBitStrm, arr, nCount, asn1SizeMax);
+	}
+	return ret;
+}
 
 
 

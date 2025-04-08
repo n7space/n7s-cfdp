@@ -1,34 +1,41 @@
 CFDP-PROTOCOL DEFINITIONS ::= 
 BEGIN
+
+DirectiveCode                                [encoding pos-int, size 8]
+DirectiveSubtypeCode                         [encoding pos-int, size 1]
+ConditionCode                                [encoding pos-int, size 4]
+DeliveryCode                                 [encoding pos-int, size 1]
+FileStatus                                   [encoding pos-int, size 2]
+TransactionStatus                            [encoding pos-int, size 2]
+TypeFieldCode                                [encoding pos-int, size 8]
+MessageType                                  [encoding pos-int, size 8]
     
---  ACN allows constant definitions
-    
-CONSTANT WORDSIZE ::= 32
+ProtocolVersion                              [encoding pos-int, size 3]
+PDUType                                      [encoding pos-int, size 1]
+Direction                                    [encoding pos-int, size 1]
+TransmissionMode                             [encoding pos-int, size 1]
+CRCFlag                                      [encoding pos-int, size 1]
+PDUDataFieldLength                           [encoding pos-int, size 16]
+LengthOfEntityIds                            [encoding pos-int, size 3]
+LengthOfTransactionSequenceNumber            [encoding pos-int, size 3]
+EntityId                                     []
+TransactionSequenceNumber                    []
    
---  We can make basic math with ACN constants
-   
-CONSTANT LARGEST-INT ::= 2^^(WORDSIZE - 1) - 1
-   
---  MyInt will be encoded as twos complement integer.
---  Size will be 1 byte
-   
-MyInt [size 8, encoding twos-complement]
-   
--- If no encoding properties are present, then
--- encoding properties will be automatically populated
--- so that the behavior matches the one of uPER i.e.
--- size 10, encoding pos-int
-   
-MyInt2 []
-   
--- encoding properties for types defined
--- within constructed types (i.e. fields)
-   
-MySeq [] {
-   a1 [],
-   a2 [size 32, encoding twos-complement, endianness little],
-   a3 [],
-   a4 []
+PDUHeader [] {
+   version                                   [],
+   pdu-type                                  [],
+   direction                                 [],
+   transmission-mode                         [],
+   crc-flag                                  [],
+   reserved-1                                NULL [pattern '1'B],
+   pdu-data-field-length                     [],
+   reserved-2                                NULL [pattern '1'B],
+   length-of-entity-ids                      LengthOfEntityIds [], -- TODO add proper mapping function, 0 means 1 octet string
+   reserved-3                                NULL [pattern '1'B],
+   length-of-transaction-sequence-number     LengthOfTransactionSequenceNumber [], -- TODO add proper mapping function, 0 means 1 octet string
+   source-entity-id                          [size length-of-entity-ids],
+   transaction-sequence-number               [size length-of-transaction-sequence-number],
+   destination-entity-id                     [size length-of-entity-ids]
 }
 
 END

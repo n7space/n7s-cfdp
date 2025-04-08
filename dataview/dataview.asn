@@ -1,15 +1,112 @@
 CFDP-PROTOCOL DEFINITIONS ::=
 BEGIN
 
-MyInt ::= INTEGER (-100 .. 100)
+DirectiveCode ::= ENUMERATED {
+   eof-pdu (4),
+   finished-pdu (5),
+   ack-pdu (6),
+   metadata-pdu (7),
+   nak-pdu (8),
+   prompt-pdu (9),
+   keep-alive-pdu (12)
+}
 
-MyInt2 ::= INTEGER (0 .. 1000)
+DirectiveSubtypeCode ::= ENUMERATED {
+   ack-others (0),
+   ack-finished (1)
+}
 
-MySeq ::= SEQUENCE {
-   a1 INTEGER (1 .. 20),
-   a2 INTEGER (-10 .. 20),
-   a3 MyInt,
-   a4 MyInt2
+ConditionCode ::= ENUMERATED {
+   no-error (0),
+   positive-ack-limit-reached (1),
+   keep-alive-limit-reached (2),
+   invalid-transmission-mode (3),
+   filestore-rejection (4),
+   file-checksum-failure (5),
+   file-size-error (6),
+   nak-limit-reached (7),
+   inactivity-detected (8),
+   invalid-file-structure (9),
+   suspend-request-received (14),
+   cancel-request-received (15)
+}
+
+DeliveryCode ::= ENUMERATED {data-complete (0), data-incomplete (1)}
+
+FileStatus ::= ENUMERATED {
+   discarted-deliberately (0),
+   discarted-file-rejection (1),
+   retained-successfully (2),
+   unreported (3)
+}
+
+TransactionStatus ::= ENUMERATED {
+   discarted-deliberately (0),
+   discarted-file-rejection (1),
+   retained-successfully (2),
+   unreported (3)
+}
+
+TypeFieldCode ::= ENUMERATED {
+   filestore-request (0),
+   filestore-response (1),
+   message-to-user (2),
+   fault-handler-overrides (4),
+   flow-label (5),
+   entity-id (6)
+}
+
+MessageType ::= ENUMERATED {
+   proxy-put-request (0),
+   proxy-message-to-user (1),
+   proxy-filestore-request (2),
+   proxy-fault-handler-override (3),
+   proxy-transmission-mode (4),
+   proxy-flow-label (5),
+   proxy-segmentation-control (6),
+   proxy-put-response (7),
+   proxy-filestore-response (8),
+   proxy-put-cancel (9),
+   directory-listing-request (16),
+   directory-listing-response (17),
+   remote-status-report-request (32),
+   remote-status-report-response (33),
+   remote-suspend-request (48),
+   remote-suspend-response(49),
+   remote-resume-request (56),
+   remote-resume-response (57)
+}
+
+ProtocolVersion ::= INTEGER (0 .. 7)
+
+PDUType ::= ENUMERATED {file-directive (0), file-data (1)}
+
+Direction ::= ENUMERATED {toward-receiver (0), toward-sender (1)}
+
+TransmissionMode ::= ENUMERATED {acknowledged (0), unacknowledged (1)}
+
+CRCFlag ::= ENUMERATED {crc-not-present (0), crc-present (1)}
+
+PDUDataFieldLength ::= INTEGER (0 .. 65535)
+
+LengthOfEntityIds ::= INTEGER (0 .. 7)
+
+LengthOfTransactionSequenceNumber ::= INTEGER (0 .. 7)
+
+EntityId ::= OCTET STRING (SIZE(1..7))
+
+TransactionSequenceNumber ::= OCTET STRING (SIZE(1..7))
+
+PDUHeader ::= SEQUENCE {
+   version ProtocolVersion,
+   pdu-type PDUType,
+   direction Direction,
+   transmission-mode TransmissionMode,
+   crc-flag CRCFlag,
+   pdu-data-field-length PDUDataFieldLength,
+   source-entity-id EntityId,
+   transaction-sequence-number TransactionSequenceNumber,
+   destination-entity-id EntityId
 }
 
 END

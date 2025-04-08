@@ -33,8 +33,6 @@ void bitstream_push_data_if_required(BitStream* pStrm);
 
 void BitStream_AppendNBitZero(BitStream* pBitStrm, int nbits);
 void BitStream_EncodeNonNegativeInteger(BitStream* pBitStrm, asn1SccUint v);
-void BitStream_AppendNBitOne(BitStream* pBitStrm, int nbits);
-void BitStream_EncodeNonNegativeIntegerNeg(BitStream* pBitStrm, asn1SccUint v, flag negate);
 flag BitStream_DecodeNonNegativeInteger(BitStream* pBitStrm, asn1SccUint* v, int nBits);
 flag BitStream_ReadPartialByte(BitStream* pBitStrm, byte *v, byte nbits);
 void BitStream_AppendPartialByte(BitStream* pBitStrm, byte v, byte nbits, flag negate);
@@ -42,12 +40,12 @@ void BitStream_AppendPartialByte(BitStream* pBitStrm, byte v, byte nbits, flag n
 void BitStream_Init(BitStream* pBitStrm, unsigned char* buf, long count);
 void BitStream_AttachBuffer(BitStream* pBitStrm, unsigned char* buf, long count);
 void BitStream_AppendBit(BitStream* pBitStrm, flag v);
+void BitStream_AppendBits(BitStream* pBitStrm, const byte* srcBuffer, int nBitsToWrite);
 void BitStream_AppendByte(BitStream* pBitStrm, byte v, flag negate);
 flag BitStream_AppendByte0(BitStream* pBitStrm, byte v);
 
 asn1SccSint BitStream_GetLength(BitStream* pBitStrm);
-void BitStream_AppendBitOne(BitStream* pBitStrm);
-flag BitStream_PeekBit(BitStream* pBitStrm);
+flag BitStream_ReadBit(BitStream* pBitStrm, flag* v);
 flag BitStream_ReadByte(BitStream* pBitStrm, byte* v);
 
 /* Integer functions */
@@ -68,7 +66,15 @@ int GetNumberOfBitsForNonNegativeInteger(asn1SccUint v);
 
 
 
+flag BitStream_AppendByteArray(BitStream* pBitStrm, const byte arr[], const int arr_len);
+flag BitStream_EncodeOctetString_no_length(BitStream* pBitStrm, const byte* arr, int nCount);
+flag BitStream_DecodeOctetString_no_length(BitStream* pBitStrm, byte* arr, int nCount);
+flag BitStream_EncodeOctetString_fragmentation(BitStream* pBitStrm, const byte* arr, int nCount);
+flag BitStream_DecodeOctetString_fragmentation(BitStream* pBitStrm, byte* arr, int* nCount, asn1SccSint asn1SizeMax);
+flag BitStream_EncodeOctetString(BitStream* pBitStrm, const byte* arr, int nCount, asn1SccSint min, asn1SccSint max);
+flag BitStream_DecodeOctetString(BitStream* pBitStrm, byte* arr, int* nCount, asn1SccSint min, asn1SccSint max);
 
+flag BitStream_ReadByteArray(BitStream* pBitStrm, byte* arr, int arr_len);
 
 /*
 Checks if the bit pattern is (immediatelly) present in the bit stream.

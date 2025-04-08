@@ -2,7 +2,7 @@
 
 ASN_FILES := $(wildcard dataview/*.asn)
 ACN_FILES := $(wildcard dataview/*.acn)
-ASN1_POLICY_FLAGS ?= -typePrefix asn1Scc -renamePolicy 3 -equal -fp AUTO -c -ig -uPER -ACN
+ASN1_POLICY_FLAGS ?= -typePrefix cfdp -renamePolicy 3 -equal -fp AUTO -c -ig -uPER -ACN
 
 SOURCES := $(wildcard src/*.c)
 DATAVIEW_SOURCES := $(wildcard dataview/*.c)
