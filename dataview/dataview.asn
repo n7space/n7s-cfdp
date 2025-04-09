@@ -31,7 +31,26 @@ ConditionCode ::= ENUMERATED {
    cancel-request-received (15)
 }
 
+FileChecksum ::= OCTET STRING (SIZE(4))
+
+FileSize ::= INTEGER (0..4294967295)
+
+AckTransactionStatus ::= ENUMERATED {
+   undefined (0),
+   active (1),
+   terminated (2),
+   unrecognized (3)
+}
+
 DeliveryCode ::= ENUMERATED {data-complete (0), data-incomplete (1)}
+
+ClosureRequested ::= ENUMERATED {requested (0), not-requested (1)}
+
+ChecksumType ::= INTEGER (0..15)
+
+FileNameSize ::= INTEGER (0..254)
+
+FileName ::= OCTET STRING (SIZE(0..254))
 
 FileStatus ::= ENUMERATED {
    discarted-deliberately (0),
@@ -87,9 +106,15 @@ TransmissionMode ::= ENUMERATED {acknowledged (0), unacknowledged (1)}
 
 CRCFlag ::= ENUMERATED {crc-not-present (0), crc-present (1)}
 
+LargeFileFlag ::= INTEGER (0..1)
+
 PDUDataFieldLength ::= INTEGER (0 .. 65535)
 
+SegmentationControl ::= ENUMERATED {record-boundries-not-preserved (0), record-boundries-preserved (1)}
+
 LengthOfEntityIds ::= INTEGER (0 .. 7)
+
+SegmentMetadataFlag ::= ENUMERATED {flag-present (0), flag-not-present (1)}
 
 LengthOfTransactionSequenceNumber ::= INTEGER (0 .. 7)
 
@@ -103,10 +128,42 @@ PDUHeader ::= SEQUENCE {
    direction Direction,
    transmission-mode TransmissionMode,
    crc-flag CRCFlag,
+   large-file-flag LargeFileFlag,
    pdu-data-field-length PDUDataFieldLength,
+   segmentation-control SegmentationControl,
+   segment-metadata-flag SegmentMetadataFlag,
    source-entity-id EntityId,
    transaction-sequence-number TransactionSequenceNumber,
    destination-entity-id EntityId
+}
+
+EofPDU ::= SEQUENCE {
+   condition-code ConditionCode,
+   file-checksum FileChecksum,
+   file-size FileSize
+}
+
+FinishedPDU ::= SEQUENCE {
+   condition-code ConditionCode,
+   delivery-code DeliveryCode,
+   file-status FileStatus
+   -- file store responses not implemented
+}
+
+AckPDU ::= SEQUENCE {
+   directive-code-of-ack-pdu DirectiveCode,
+   directive-subtype-code DirectiveSubtypeCode,
+   condition-code ConditionCode,
+   transaction-status AckTransactionStatus
+}
+
+MetadataPDU ::= SEQUENCE {
+   closure-requested ClosureRequested,
+   checksum-type ChecksumType,
+   file-size FileSize,
+   source-file-name FileName,
+   destination-file-name FileName
+   -- TODO options
 }
 
 END
