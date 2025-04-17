@@ -59,6 +59,14 @@ FileStatus ::= ENUMERATED {
    unreported (3)
 }
 
+SegmentOffset ::= INTEGER (0..4294967295)
+
+FileData ::= OCTET STRING (SIZE(0..254))
+
+ResponseRequired ::= ENUMERATED {nak (0), keep-alive (1)}
+
+Progress ::= INTEGER (0..4294967295)
+
 TransactionStatus ::= ENUMERATED {
    discarted-deliberately (0),
    discarted-file-rejection (1),
@@ -138,12 +146,14 @@ PDUHeader ::= SEQUENCE {
 }
 
 EofPDU ::= SEQUENCE {
+   pdu-header PDUHeader,
    condition-code ConditionCode,
    file-checksum FileChecksum,
    file-size FileSize
 }
 
 FinishedPDU ::= SEQUENCE {
+   pdu-header PDUHeader,
    condition-code ConditionCode,
    delivery-code DeliveryCode,
    file-status FileStatus
@@ -151,6 +161,7 @@ FinishedPDU ::= SEQUENCE {
 }
 
 AckPDU ::= SEQUENCE {
+   pdu-header PDUHeader,
    directive-code-of-ack-pdu DirectiveCode,
    directive-subtype-code DirectiveSubtypeCode,
    condition-code ConditionCode,
@@ -158,12 +169,30 @@ AckPDU ::= SEQUENCE {
 }
 
 MetadataPDU ::= SEQUENCE {
+   pdu-header PDUHeader,
    closure-requested ClosureRequested,
    checksum-type ChecksumType,
    file-size FileSize,
    source-file-name FileName,
    destination-file-name FileName
    -- TODO options
+}
+
+FileDataPDU ::= SEQUENCE {
+   pdu-header PDUHeader,
+   -- segment metada flags
+   segment-offset SegmentOffset,
+   file-data FileData
+}
+
+PromptPDU ::= SEQUENCE {
+   pdu-header PDUHeader,
+   response-required ResponseRequired
+}
+
+KeepAlivePDU ::= SEQUENCE {
+   pdu-header PDUHeader,
+   progress Progress
 }
 
 END

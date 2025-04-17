@@ -771,158 +771,6 @@ flag cfdpFileSize_ACN_Decode(cfdpFileSize* pVal, BitStream* pBitStrm, int* pErrC
 }
 
 
-flag cfdpEofPDU_Equal(const cfdpEofPDU* pVal1, const cfdpEofPDU* pVal2)
-{
-	flag ret=TRUE;
-
-    ret = (pVal1->condition_code == pVal2->condition_code);
-
-    if (ret) {
-        ret = cfdpFileChecksum_Equal((&(pVal1->file_checksum)), (&(pVal2->file_checksum)));
-
-        if (ret) {
-            ret = (pVal1->file_size == pVal2->file_size);
-
-        }
-
-    }
-
-	return ret;
-
-}
-
-flag cfdpEofPDU_IsConstraintValid(const cfdpEofPDU* pVal, int* pErrCode)
-{
-    flag ret = TRUE;
-    ret = cfdpConditionCode_IsConstraintValid((&(pVal->condition_code)), pErrCode);
-    if (ret) {
-        ret = cfdpFileChecksum_IsConstraintValid((&(pVal->file_checksum)), pErrCode);
-        if (ret) {
-            ret = cfdpFileSize_IsConstraintValid((&(pVal->file_size)), pErrCode);
-        }   /*COVERAGE_IGNORE*/
-    }   /*COVERAGE_IGNORE*/
-
-	return ret;
-}
-
-#ifdef __cplusplus
-const cfdpEofPDU cfdpEofPDU_constant = {.condition_code = ConditionCode_no_error, .file_checksum = {.arr  = {[0 ... 4-1] = 0 }}, .file_size = 0UL};
-#endif
-
-void cfdpEofPDU_Initialize(cfdpEofPDU* pVal)
-{
-	(void)pVal;
-
-
-	(*(pVal)) = (cfdpEofPDU)cfdpEofPDU_constant;
-}
-
-flag cfdpEofPDU_Encode(const cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
-{
-    flag ret = TRUE;
-
-
-	*pErrCode = 0;
-	ret = bCheckConstraints ? cfdpEofPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
-	if (ret && *pErrCode == 0) {
-	    /*Encode condition_code */
-	    ret = cfdpConditionCode_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
-	    if (ret) {
-	        /*Encode file_checksum */
-	        ret = cfdpFileChecksum_Encode((&(pVal->file_checksum)), pBitStrm, pErrCode, FALSE);
-	        if (ret) {
-	            /*Encode file_size */
-	            ret = cfdpFileSize_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-    } /*COVERAGE_IGNORE*/
-
-
-    return ret;
-}
-
-flag cfdpEofPDU_Decode(cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode)
-{
-    flag ret = TRUE;
-	*pErrCode = 0;
-
-
-	/*Decode condition_code */
-	ret = cfdpConditionCode_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
-	if (ret) {
-	    /*Decode file_checksum */
-	    ret = cfdpFileChecksum_Decode((&(pVal->file_checksum)), pBitStrm, pErrCode);
-	    if (ret) {
-	        /*Decode file_size */
-	        ret = cfdpFileSize_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
-	    }   /*COVERAGE_IGNORE*/
-	}   /*COVERAGE_IGNORE*/
-
-	return ret  && cfdpEofPDU_IsConstraintValid(pVal, pErrCode);
-}
-
-flag cfdpEofPDU_ACN_Encode(const cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
-{
-    flag ret = TRUE;
-
-    *pErrCode = 0;
-	ret = bCheckConstraints ? cfdpEofPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
-	if (ret && *pErrCode == 0) {
-	    /*Encode condition_code */
-	    ret = cfdpConditionCode_ACN_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
-	    if (ret) {
-	        /*Encode EofPDU_spare */
-	        {
-	        	static byte tmp[] = {0x00};
-	        	BitStream_AppendBits(pBitStrm, tmp, 4);
-	        }
-	        if (ret) {
-	            /*Encode file_checksum */
-	            ret = cfdpFileChecksum_ACN_Encode((&(pVal->file_checksum)), pBitStrm, pErrCode, FALSE);
-	            if (ret) {
-	                /*Encode file_size */
-	                ret = cfdpFileSize_ACN_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
-	            }   /*COVERAGE_IGNORE*/
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-    } /*COVERAGE_IGNORE*/
-
-
-    return ret;
-}
-
-flag cfdpEofPDU_ACN_Decode(cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode)
-{
-    flag ret = TRUE;
-	*pErrCode = 0;
-
-
-	/*Decode condition_code */
-	ret = cfdpConditionCode_ACN_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
-	if (ret) {
-	    /*Decode EofPDU_spare */
-	    {
-	    	static byte tmp[] = {0x00};
-	        flag bDecodingPatternMatches;
-	    	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 4, &bDecodingPatternMatches);
-	        ret = ret && bDecodingPatternMatches;
-	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_EOFPDU_SPARE;
-	    }
-
-	    if (ret) {
-	        /*Decode file_checksum */
-	        ret = cfdpFileChecksum_ACN_Decode((&(pVal->file_checksum)), pBitStrm, pErrCode);
-	        if (ret) {
-	            /*Decode file_size */
-	            ret = cfdpFileSize_ACN_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-	}   /*COVERAGE_IGNORE*/
-
-    return ret && cfdpEofPDU_IsConstraintValid(pVal, pErrCode);
-}
-
-
 flag cfdpAckTransactionStatus_Equal(const cfdpAckTransactionStatus* pVal1, const cfdpAckTransactionStatus* pVal2)
 {
 	return (*(pVal1)) == (*(pVal2));
@@ -1083,182 +931,6 @@ flag cfdpAckTransactionStatus_ACN_Decode(cfdpAckTransactionStatus* pVal, BitStre
 	} /*COVERAGE_IGNORE*/
 
     return ret && cfdpAckTransactionStatus_IsConstraintValid(pVal, pErrCode);
-}
-
-
-flag cfdpAckPDU_Equal(const cfdpAckPDU* pVal1, const cfdpAckPDU* pVal2)
-{
-	flag ret=TRUE;
-
-    ret = (pVal1->directive_code_of_ack_pdu == pVal2->directive_code_of_ack_pdu);
-
-    if (ret) {
-        ret = (pVal1->directive_subtype_code == pVal2->directive_subtype_code);
-
-        if (ret) {
-            ret = (pVal1->condition_code == pVal2->condition_code);
-
-            if (ret) {
-                ret = (pVal1->transaction_status == pVal2->transaction_status);
-
-            }
-
-        }
-
-    }
-
-	return ret;
-
-}
-
-flag cfdpAckPDU_IsConstraintValid(const cfdpAckPDU* pVal, int* pErrCode)
-{
-    flag ret = TRUE;
-    ret = cfdpDirectiveCode_IsConstraintValid((&(pVal->directive_code_of_ack_pdu)), pErrCode);
-    if (ret) {
-        ret = cfdpDirectiveSubtypeCode_IsConstraintValid((&(pVal->directive_subtype_code)), pErrCode);
-        if (ret) {
-            ret = cfdpConditionCode_IsConstraintValid((&(pVal->condition_code)), pErrCode);
-            if (ret) {
-                ret = cfdpAckTransactionStatus_IsConstraintValid((&(pVal->transaction_status)), pErrCode);
-            }   /*COVERAGE_IGNORE*/
-        }   /*COVERAGE_IGNORE*/
-    }   /*COVERAGE_IGNORE*/
-
-	return ret;
-}
-
-#ifdef __cplusplus
-const cfdpAckPDU cfdpAckPDU_constant = {.directive_code_of_ack_pdu = DirectiveCode_eof_pdu, .directive_subtype_code = DirectiveSubtypeCode_ack_others, .condition_code = ConditionCode_no_error, .transaction_status = AckTransactionStatus_undefined};
-#endif
-
-void cfdpAckPDU_Initialize(cfdpAckPDU* pVal)
-{
-	(void)pVal;
-
-
-	(*(pVal)) = (cfdpAckPDU)cfdpAckPDU_constant;
-}
-
-flag cfdpAckPDU_Encode(const cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
-{
-    flag ret = TRUE;
-
-
-	*pErrCode = 0;
-	ret = bCheckConstraints ? cfdpAckPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
-	if (ret && *pErrCode == 0) {
-	    /*Encode directive_code_of_ack_pdu */
-	    ret = cfdpDirectiveCode_Encode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode, FALSE);
-	    if (ret) {
-	        /*Encode directive_subtype_code */
-	        ret = cfdpDirectiveSubtypeCode_Encode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode, FALSE);
-	        if (ret) {
-	            /*Encode condition_code */
-	            ret = cfdpConditionCode_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
-	            if (ret) {
-	                /*Encode transaction_status */
-	                ret = cfdpAckTransactionStatus_Encode((&(pVal->transaction_status)), pBitStrm, pErrCode, FALSE);
-	            }   /*COVERAGE_IGNORE*/
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-    } /*COVERAGE_IGNORE*/
-
-
-    return ret;
-}
-
-flag cfdpAckPDU_Decode(cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode)
-{
-    flag ret = TRUE;
-	*pErrCode = 0;
-
-
-	/*Decode directive_code_of_ack_pdu */
-	ret = cfdpDirectiveCode_Decode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode);
-	if (ret) {
-	    /*Decode directive_subtype_code */
-	    ret = cfdpDirectiveSubtypeCode_Decode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode);
-	    if (ret) {
-	        /*Decode condition_code */
-	        ret = cfdpConditionCode_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
-	        if (ret) {
-	            /*Decode transaction_status */
-	            ret = cfdpAckTransactionStatus_Decode((&(pVal->transaction_status)), pBitStrm, pErrCode);
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-	}   /*COVERAGE_IGNORE*/
-
-	return ret  && cfdpAckPDU_IsConstraintValid(pVal, pErrCode);
-}
-
-flag cfdpAckPDU_ACN_Encode(const cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
-{
-    flag ret = TRUE;
-
-    *pErrCode = 0;
-	ret = bCheckConstraints ? cfdpAckPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
-	if (ret && *pErrCode == 0) {
-	    /*Encode directive_code_of_ack_pdu */
-	    ret = cfdpDirectiveCode_ACN_Encode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode, FALSE);
-	    if (ret) {
-	        /*Encode directive_subtype_code */
-	        ret = cfdpDirectiveSubtypeCode_ACN_Encode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode, FALSE);
-	        if (ret) {
-	            /*Encode condition_code */
-	            ret = cfdpConditionCode_ACN_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
-	            if (ret) {
-	                /*Encode AckPDU_spare */
-	                {
-	                	static byte tmp[] = {0x00};
-	                	BitStream_AppendBits(pBitStrm, tmp, 2);
-	                }
-	                if (ret) {
-	                    /*Encode transaction_status */
-	                    ret = cfdpAckTransactionStatus_ACN_Encode((&(pVal->transaction_status)), pBitStrm, pErrCode, FALSE);
-	                }   /*COVERAGE_IGNORE*/
-	            }   /*COVERAGE_IGNORE*/
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-    } /*COVERAGE_IGNORE*/
-
-
-    return ret;
-}
-
-flag cfdpAckPDU_ACN_Decode(cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode)
-{
-    flag ret = TRUE;
-	*pErrCode = 0;
-
-
-	/*Decode directive_code_of_ack_pdu */
-	ret = cfdpDirectiveCode_ACN_Decode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode);
-	if (ret) {
-	    /*Decode directive_subtype_code */
-	    ret = cfdpDirectiveSubtypeCode_ACN_Decode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode);
-	    if (ret) {
-	        /*Decode condition_code */
-	        ret = cfdpConditionCode_ACN_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
-	        if (ret) {
-	            /*Decode AckPDU_spare */
-	            {
-	            	static byte tmp[] = {0x00};
-	                flag bDecodingPatternMatches;
-	            	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 2, &bDecodingPatternMatches);
-	                ret = ret && bDecodingPatternMatches;
-	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_ACKPDU_SPARE;
-	            }
-
-	            if (ret) {
-	                /*Decode transaction_status */
-	                ret = cfdpAckTransactionStatus_ACN_Decode((&(pVal->transaction_status)), pBitStrm, pErrCode);
-	            }   /*COVERAGE_IGNORE*/
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-	}   /*COVERAGE_IGNORE*/
-
-    return ret && cfdpAckPDU_IsConstraintValid(pVal, pErrCode);
 }
 
 
@@ -1791,278 +1463,6 @@ flag cfdpFileName_ACN_Decode(cfdpFileName* pVal, BitStream* pBitStrm, int* pErrC
 }
 
 
-flag cfdpMetadataPDU_Equal(const cfdpMetadataPDU* pVal1, const cfdpMetadataPDU* pVal2)
-{
-	flag ret=TRUE;
-
-    ret = (pVal1->closure_requested == pVal2->closure_requested);
-
-    if (ret) {
-        ret = (pVal1->checksum_type == pVal2->checksum_type);
-
-        if (ret) {
-            ret = (pVal1->file_size == pVal2->file_size);
-
-            if (ret) {
-                ret = cfdpFileName_Equal((&(pVal1->source_file_name)), (&(pVal2->source_file_name)));
-
-                if (ret) {
-                    ret = cfdpFileName_Equal((&(pVal1->destination_file_name)), (&(pVal2->destination_file_name)));
-
-                }
-
-            }
-
-        }
-
-    }
-
-	return ret;
-
-}
-
-flag cfdpMetadataPDU_IsConstraintValid(const cfdpMetadataPDU* pVal, int* pErrCode)
-{
-    flag ret = TRUE;
-    ret = cfdpClosureRequested_IsConstraintValid((&(pVal->closure_requested)), pErrCode);
-    if (ret) {
-        ret = cfdpChecksumType_IsConstraintValid((&(pVal->checksum_type)), pErrCode);
-        if (ret) {
-            ret = cfdpFileSize_IsConstraintValid((&(pVal->file_size)), pErrCode);
-            if (ret) {
-                ret = cfdpFileName_IsConstraintValid((&(pVal->source_file_name)), pErrCode);
-                if (ret) {
-                    ret = cfdpFileName_IsConstraintValid((&(pVal->destination_file_name)), pErrCode);
-                }   /*COVERAGE_IGNORE*/
-            }   /*COVERAGE_IGNORE*/
-        }   /*COVERAGE_IGNORE*/
-    }   /*COVERAGE_IGNORE*/
-
-	return ret;
-}
-
-#ifdef __cplusplus
-const cfdpMetadataPDU cfdpMetadataPDU_constant = {.closure_requested = ClosureRequested_requested, .checksum_type = 0UL, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}};
-#endif
-
-void cfdpMetadataPDU_Initialize(cfdpMetadataPDU* pVal)
-{
-	(void)pVal;
-
-
-	(*(pVal)) = (cfdpMetadataPDU)cfdpMetadataPDU_constant;
-}
-
-flag cfdpMetadataPDU_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
-{
-    flag ret = TRUE;
-
-
-	*pErrCode = 0;
-	ret = bCheckConstraints ? cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
-	if (ret && *pErrCode == 0) {
-	    /*Encode closure_requested */
-	    ret = cfdpClosureRequested_Encode((&(pVal->closure_requested)), pBitStrm, pErrCode, FALSE);
-	    if (ret) {
-	        /*Encode checksum_type */
-	        ret = cfdpChecksumType_Encode((&(pVal->checksum_type)), pBitStrm, pErrCode, FALSE);
-	        if (ret) {
-	            /*Encode file_size */
-	            ret = cfdpFileSize_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
-	            if (ret) {
-	                /*Encode source_file_name */
-	                ret = cfdpFileName_Encode((&(pVal->source_file_name)), pBitStrm, pErrCode, FALSE);
-	                if (ret) {
-	                    /*Encode destination_file_name */
-	                    ret = cfdpFileName_Encode((&(pVal->destination_file_name)), pBitStrm, pErrCode, FALSE);
-	                }   /*COVERAGE_IGNORE*/
-	            }   /*COVERAGE_IGNORE*/
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-    } /*COVERAGE_IGNORE*/
-
-
-    return ret;
-}
-
-flag cfdpMetadataPDU_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode)
-{
-    flag ret = TRUE;
-	*pErrCode = 0;
-
-
-	/*Decode closure_requested */
-	ret = cfdpClosureRequested_Decode((&(pVal->closure_requested)), pBitStrm, pErrCode);
-	if (ret) {
-	    /*Decode checksum_type */
-	    ret = cfdpChecksumType_Decode((&(pVal->checksum_type)), pBitStrm, pErrCode);
-	    if (ret) {
-	        /*Decode file_size */
-	        ret = cfdpFileSize_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
-	        if (ret) {
-	            /*Decode source_file_name */
-	            ret = cfdpFileName_Decode((&(pVal->source_file_name)), pBitStrm, pErrCode);
-	            if (ret) {
-	                /*Decode destination_file_name */
-	                ret = cfdpFileName_Decode((&(pVal->destination_file_name)), pBitStrm, pErrCode);
-	            }   /*COVERAGE_IGNORE*/
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-	}   /*COVERAGE_IGNORE*/
-
-	return ret  && cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode);
-}
-
-flag cfdpMetadataPDU_ACN_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
-{
-    flag ret = TRUE;
-
-	asn1SccUint MetadataPDU_source_file_name_size;
-	flag MetadataPDU_source_file_name_size_is_initialized=FALSE;
-	asn1SccUint MetadataPDU_destination_file_name_size;
-	flag MetadataPDU_destination_file_name_size_is_initialized=FALSE;
-    *pErrCode = 0;
-	ret = bCheckConstraints ? cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
-	if (ret && *pErrCode == 0) {
-	    /*Encode MetadataPDU_reserved1 */
-	    {
-	    	static byte tmp[] = {0x00};
-	    	BitStream_AppendBits(pBitStrm, tmp, 1);
-	    }
-	    if (ret) {
-	        /*Encode closure_requested */
-	        ret = cfdpClosureRequested_ACN_Encode((&(pVal->closure_requested)), pBitStrm, pErrCode, FALSE);
-	        if (ret) {
-	            /*Encode MetadataPDU_reserved2 */
-	            {
-	            	static byte tmp[] = {0x00};
-	            	BitStream_AppendBits(pBitStrm, tmp, 2);
-	            }
-	            if (ret) {
-	                /*Encode checksum_type */
-	                ret = cfdpChecksumType_ACN_Encode((&(pVal->checksum_type)), pBitStrm, pErrCode, FALSE);
-	                if (ret) {
-	                    /*Encode file_size */
-	                    ret = cfdpFileSize_ACN_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
-	                    if (ret) {
-	                        MetadataPDU_source_file_name_size_is_initialized = TRUE;
-	                        MetadataPDU_source_file_name_size = pVal->source_file_name.nCount;
-	                        if (ret) {
-	                            /*Encode MetadataPDU_source_file_name_size */
-	                            if (MetadataPDU_source_file_name_size_is_initialized) {
-	                                ret = TRUE;
-	                                Acn_Enc_Int_PositiveInteger_ConstSize_8(pBitStrm, MetadataPDU_source_file_name_size);
-	                            } else {
-	                                *pErrCode = ERR_ACN_ENCODE_METADATAPDU_SOURCE_FILE_NAME_SIZE_UNINITIALIZED;         /*COVERAGE_IGNORE*/
-	                                ret = FALSE;                    /*COVERAGE_IGNORE*/
-	                            }
-	                        }   /*COVERAGE_IGNORE*/
-	                        if (ret) {
-	                            /*Encode source_file_name */
-	                            ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->source_file_name.arr, pVal->source_file_name.nCount);
-	                            if (ret) {
-	                                MetadataPDU_destination_file_name_size_is_initialized = TRUE;
-	                                MetadataPDU_destination_file_name_size = pVal->destination_file_name.nCount;
-	                                if (ret) {
-	                                    /*Encode MetadataPDU_destination_file_name_size */
-	                                    if (MetadataPDU_destination_file_name_size_is_initialized) {
-	                                        ret = TRUE;
-	                                        Acn_Enc_Int_PositiveInteger_ConstSize_8(pBitStrm, MetadataPDU_destination_file_name_size);
-	                                    } else {
-	                                        *pErrCode = ERR_ACN_ENCODE_METADATAPDU_DESTINATION_FILE_NAME_SIZE_UNINITIALIZED;         /*COVERAGE_IGNORE*/
-	                                        ret = FALSE;                    /*COVERAGE_IGNORE*/
-	                                    }
-	                                }   /*COVERAGE_IGNORE*/
-	                                if (ret) {
-	                                    /*Encode destination_file_name */
-	                                    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->destination_file_name.arr, pVal->destination_file_name.nCount);
-	                                }   /*COVERAGE_IGNORE*/
-	                            }   /*COVERAGE_IGNORE*/
-	                        }   /*COVERAGE_IGNORE*/
-	                    }   /*COVERAGE_IGNORE*/
-	                }   /*COVERAGE_IGNORE*/
-	            }   /*COVERAGE_IGNORE*/
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-    } /*COVERAGE_IGNORE*/
-
-
-    return ret;
-}
-
-flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode)
-{
-    flag ret = TRUE;
-	*pErrCode = 0;
-
-	asn1SccUint MetadataPDU_source_file_name_size;
-	asn1SccUint MetadataPDU_destination_file_name_size;
-
-	/*Decode MetadataPDU_reserved1 */
-	{
-		static byte tmp[] = {0x00};
-	    flag bDecodingPatternMatches;
-		ret = BitStream_ReadBitPattern(pBitStrm, tmp, 1, &bDecodingPatternMatches);
-	    ret = ret && bDecodingPatternMatches;
-	    *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_RESERVED1;
-	}
-
-	if (ret) {
-	    /*Decode closure_requested */
-	    ret = cfdpClosureRequested_ACN_Decode((&(pVal->closure_requested)), pBitStrm, pErrCode);
-	    if (ret) {
-	        /*Decode MetadataPDU_reserved2 */
-	        {
-	        	static byte tmp[] = {0x00};
-	            flag bDecodingPatternMatches;
-	        	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 2, &bDecodingPatternMatches);
-	            ret = ret && bDecodingPatternMatches;
-	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_RESERVED2;
-	        }
-
-	        if (ret) {
-	            /*Decode checksum_type */
-	            ret = cfdpChecksumType_ACN_Decode((&(pVal->checksum_type)), pBitStrm, pErrCode);
-	            if (ret) {
-	                /*Decode file_size */
-	                ret = cfdpFileSize_ACN_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
-	                if (ret) {
-	                    /*Decode MetadataPDU_source_file_name_size */
-	                    ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(MetadataPDU_source_file_name_size)));
-	                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_SOURCE_FILE_NAME_SIZE;
-	                    if (ret) {
-	                        /*Decode source_file_name */
-	                        ret = ((MetadataPDU_source_file_name_size<=254));
-	                        if (ret) {
-	                            pVal->source_file_name.nCount = (int)MetadataPDU_source_file_name_size;
-	                            ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->source_file_name.arr, pVal->source_file_name.nCount);
-	                        	*pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_SOURCE_FILE_NAME;
-	                        }
-	                        if (ret) {
-	                            /*Decode MetadataPDU_destination_file_name_size */
-	                            ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(MetadataPDU_destination_file_name_size)));
-	                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_DESTINATION_FILE_NAME_SIZE;
-	                            if (ret) {
-	                                /*Decode destination_file_name */
-	                                ret = ((MetadataPDU_destination_file_name_size<=254));
-	                                if (ret) {
-	                                    pVal->destination_file_name.nCount = (int)MetadataPDU_destination_file_name_size;
-	                                    ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->destination_file_name.arr, pVal->destination_file_name.nCount);
-	                                	*pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_DESTINATION_FILE_NAME;
-	                                }
-	                            }   /*COVERAGE_IGNORE*/
-	                        }   /*COVERAGE_IGNORE*/
-	                    }   /*COVERAGE_IGNORE*/
-	                }   /*COVERAGE_IGNORE*/
-	            }   /*COVERAGE_IGNORE*/
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-	}   /*COVERAGE_IGNORE*/
-
-    return ret && cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode);
-}
-
-
 flag cfdpFileStatus_Equal(const cfdpFileStatus* pVal1, const cfdpFileStatus* pVal2)
 {
 	return (*(pVal1)) == (*(pVal2));
@@ -2226,155 +1626,393 @@ flag cfdpFileStatus_ACN_Decode(cfdpFileStatus* pVal, BitStream* pBitStrm, int* p
 }
 
 
-flag cfdpFinishedPDU_Equal(const cfdpFinishedPDU* pVal1, const cfdpFinishedPDU* pVal2)
+flag cfdpSegmentOffset_Equal(const cfdpSegmentOffset* pVal1, const cfdpSegmentOffset* pVal2)
 {
-	flag ret=TRUE;
-
-    ret = (pVal1->condition_code == pVal2->condition_code);
-
-    if (ret) {
-        ret = (pVal1->delivery_code == pVal2->delivery_code);
-
-        if (ret) {
-            ret = (pVal1->file_status == pVal2->file_status);
-
-        }
-
-    }
-
-	return ret;
+	return (*(pVal1)) == (*(pVal2));
 
 }
 
-flag cfdpFinishedPDU_IsConstraintValid(const cfdpFinishedPDU* pVal, int* pErrCode)
+flag cfdpSegmentOffset_IsConstraintValid(const cfdpSegmentOffset* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-    ret = cfdpConditionCode_IsConstraintValid((&(pVal->condition_code)), pErrCode);
-    if (ret) {
-        ret = cfdpDeliveryCode_IsConstraintValid((&(pVal->delivery_code)), pErrCode);
-        if (ret) {
-            ret = cfdpFileStatus_IsConstraintValid((&(pVal->file_status)), pErrCode);
-        }   /*COVERAGE_IGNORE*/
-    }   /*COVERAGE_IGNORE*/
+    ret = ((*(pVal)) <= 4294967295UL);
+    *pErrCode = ret ? 0 :  ERR_SEGMENTOFFSET;
 
 	return ret;
 }
 
 #ifdef __cplusplus
-const cfdpFinishedPDU cfdpFinishedPDU_constant = {.condition_code = ConditionCode_no_error, .delivery_code = DeliveryCode_data_complete, .file_status = FileStatus_discarted_deliberately};
+const cfdpSegmentOffset cfdpSegmentOffset_constant = 0UL;
 #endif
 
-void cfdpFinishedPDU_Initialize(cfdpFinishedPDU* pVal)
+void cfdpSegmentOffset_Initialize(cfdpSegmentOffset* pVal)
 {
 	(void)pVal;
 
 
-	(*(pVal)) = (cfdpFinishedPDU)cfdpFinishedPDU_constant;
+	(*(pVal)) = (cfdpSegmentOffset)cfdpSegmentOffset_constant;
 }
 
-flag cfdpFinishedPDU_Encode(const cfdpFinishedPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+flag cfdpSegmentOffset_Encode(const cfdpSegmentOffset* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
 {
     flag ret = TRUE;
 
 
 	*pErrCode = 0;
-	ret = bCheckConstraints ? cfdpFinishedPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	ret = bCheckConstraints ? cfdpSegmentOffset_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    /*Encode condition_code */
-	    ret = cfdpConditionCode_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
-	    if (ret) {
-	        /*Encode delivery_code */
-	        ret = cfdpDeliveryCode_Encode((&(pVal->delivery_code)), pBitStrm, pErrCode, FALSE);
-	        if (ret) {
-	            /*Encode file_status */
-	            ret = cfdpFileStatus_Encode((&(pVal->file_status)), pBitStrm, pErrCode, FALSE);
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
+	    BitStream_EncodeConstraintPosWholeNumber(pBitStrm, (*(pVal)), 0, 4294967295LL);
     } /*COVERAGE_IGNORE*/
 
 
     return ret;
 }
 
-flag cfdpFinishedPDU_Decode(cfdpFinishedPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+flag cfdpSegmentOffset_Decode(cfdpSegmentOffset* pVal, BitStream* pBitStrm, int* pErrCode)
 {
     flag ret = TRUE;
 	*pErrCode = 0;
 
 
-	/*Decode condition_code */
-	ret = cfdpConditionCode_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
-	if (ret) {
-	    /*Decode delivery_code */
-	    ret = cfdpDeliveryCode_Decode((&(pVal->delivery_code)), pBitStrm, pErrCode);
-	    if (ret) {
-	        /*Decode file_status */
-	        ret = cfdpFileStatus_Decode((&(pVal->file_status)), pBitStrm, pErrCode);
-	    }   /*COVERAGE_IGNORE*/
-	}   /*COVERAGE_IGNORE*/
+	ret = BitStream_DecodeConstraintPosWholeNumber(pBitStrm, pVal, 0, 4294967295LL);
+	*pErrCode = ret ? 0 : ERR_UPER_DECODE_SEGMENTOFFSET;
 
-	return ret  && cfdpFinishedPDU_IsConstraintValid(pVal, pErrCode);
+	return ret  && cfdpSegmentOffset_IsConstraintValid(pVal, pErrCode);
 }
 
-flag cfdpFinishedPDU_ACN_Encode(const cfdpFinishedPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+flag cfdpSegmentOffset_ACN_Encode(const cfdpSegmentOffset* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
 {
     flag ret = TRUE;
 
     *pErrCode = 0;
-	ret = bCheckConstraints ? cfdpFinishedPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	ret = bCheckConstraints ? cfdpSegmentOffset_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    /*Encode condition_code */
-	    ret = cfdpConditionCode_ACN_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
-	    if (ret) {
-	        /*Encode FinishedPDU_end_system_status */
-	        {
-	        	static byte tmp[] = {0x80};
-	        	BitStream_AppendBits(pBitStrm, tmp, 1);
-	        }
-	        if (ret) {
-	            /*Encode delivery_code */
-	            ret = cfdpDeliveryCode_ACN_Encode((&(pVal->delivery_code)), pBitStrm, pErrCode, FALSE);
-	            if (ret) {
-	                /*Encode file_status */
-	                ret = cfdpFileStatus_ACN_Encode((&(pVal->file_status)), pBitStrm, pErrCode, FALSE);
-	            }   /*COVERAGE_IGNORE*/
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
+	    Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (*(pVal)));
     } /*COVERAGE_IGNORE*/
 
 
     return ret;
 }
 
-flag cfdpFinishedPDU_ACN_Decode(cfdpFinishedPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+flag cfdpSegmentOffset_ACN_Decode(cfdpSegmentOffset* pVal, BitStream* pBitStrm, int* pErrCode)
 {
     flag ret = TRUE;
 	*pErrCode = 0;
 
 
-	/*Decode condition_code */
-	ret = cfdpConditionCode_ACN_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
-	if (ret) {
-	    /*Decode FinishedPDU_end_system_status */
+	ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal);
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_SEGMENTOFFSET;
+
+    return ret && cfdpSegmentOffset_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpFileData_Equal(const cfdpFileData* pVal1, const cfdpFileData* pVal2)
+{
+	return (pVal1->nCount == pVal2->nCount) && (memcmp(pVal1->arr, pVal2->arr, pVal1->nCount) ==0);
+
+}
+
+flag cfdpFileData_IsConstraintValid(const cfdpFileData* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = (pVal->nCount <= 254);
+    *pErrCode = ret ? 0 :  ERR_FILEDATA;
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpFileData cfdpFileData_constant = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }};
+#endif
+
+void cfdpFileData_Initialize(cfdpFileData* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpFileData)cfdpFileData_constant;
+}
+
+flag cfdpFileData_Encode(const cfdpFileData* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpFileData_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 254);
+	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpFileData_Decode(cfdpFileData* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+	asn1SccSint nCount;
+
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 254);
+	*pErrCode = ret ? 0 : ERR_UPER_DECODE_FILEDATA;
+	pVal->nCount = (long)nCount;
+	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
+
+	return ret  && cfdpFileData_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpFileData_ACN_Encode(const cfdpFileData* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpFileData_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 254);
+	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpFileData_ACN_Decode(cfdpFileData* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+	asn1SccSint nCount;
+
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 254);
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDATA;
+	pVal->nCount = (long)nCount;
+	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
+
+    return ret && cfdpFileData_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpResponseRequired_Equal(const cfdpResponseRequired* pVal1, const cfdpResponseRequired* pVal2)
+{
+	return (*(pVal1)) == (*(pVal2));
+
+}
+
+flag cfdpResponseRequired_IsConstraintValid(const cfdpResponseRequired* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = ((((*(pVal)) == ResponseRequired_nak)) || (((*(pVal)) == ResponseRequired_keep_alive)));
+    *pErrCode = ret ? 0 :  ERR_RESPONSEREQUIRED;
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpResponseRequired cfdpResponseRequired_constant = ResponseRequired_nak;
+#endif
+
+void cfdpResponseRequired_Initialize(cfdpResponseRequired* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpResponseRequired)cfdpResponseRequired_constant;
+}
+
+flag cfdpResponseRequired_Encode(const cfdpResponseRequired* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpResponseRequired_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    switch((*(pVal)))
 	    {
-	    	static byte tmp[] = {0x80};
-	        flag bDecodingPatternMatches;
-	    	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 1, &bDecodingPatternMatches);
-	        ret = ret && bDecodingPatternMatches;
-	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_FINISHEDPDU_END_SYSTEM_STATUS;
+	        case ResponseRequired_nak:
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 1);
+	        	break;
+	        case ResponseRequired_keep_alive:
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 1);
+	        	break;
+	        default:                    /*COVERAGE_IGNORE*/
+	    	    *pErrCode = ERR_UPER_ENCODE_RESPONSEREQUIRED; /*COVERAGE_IGNORE*/
+	    	    ret = FALSE;            /*COVERAGE_IGNORE*/
 	    }
+    } /*COVERAGE_IGNORE*/
 
+
+    return ret;
+}
+
+flag cfdpResponseRequired_Decode(cfdpResponseRequired* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	{
+	    asn1SccSint enumIndex;
+	    ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &enumIndex, 0, 1);
+	    *pErrCode = ret ? 0 : ERR_UPER_DECODE_RESPONSEREQUIRED;
 	    if (ret) {
-	        /*Decode delivery_code */
-	        ret = cfdpDeliveryCode_ACN_Decode((&(pVal->delivery_code)), pBitStrm, pErrCode);
-	        if (ret) {
-	            /*Decode file_status */
-	            ret = cfdpFileStatus_ACN_Decode((&(pVal->file_status)), pBitStrm, pErrCode);
-	        }   /*COVERAGE_IGNORE*/
-	    }   /*COVERAGE_IGNORE*/
-	}   /*COVERAGE_IGNORE*/
+	        switch(enumIndex)
+	        {
+	            case 0:
+	                (*(pVal)) = ResponseRequired_nak;
+	                break;
+	            case 1:
+	                (*(pVal)) = ResponseRequired_keep_alive;
+	                break;
+	            default:                        /*COVERAGE_IGNORE*/
+		            *pErrCode = ERR_UPER_DECODE_RESPONSEREQUIRED;     /*COVERAGE_IGNORE*/
+		            ret = FALSE;                /*COVERAGE_IGNORE*/
+	        }
+	    } else {
+	        (*(pVal)) = ResponseRequired_nak;             /*COVERAGE_IGNORE*/
+	    }
+	}
 
-    return ret && cfdpFinishedPDU_IsConstraintValid(pVal, pErrCode);
+	return ret  && cfdpResponseRequired_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpResponseRequired_ACN_Encode(const cfdpResponseRequired* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+	asn1SccUint intVal_pVal;
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpResponseRequired_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    switch((*(pVal))) {
+	        case ResponseRequired_nak:
+	            intVal_pVal = 0UL;
+	            break;
+	        case ResponseRequired_keep_alive:
+	            intVal_pVal = 1UL;
+	            break;
+	        default:                                    /*COVERAGE_IGNORE*/
+	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	            *pErrCode = ERR_ACN_ENCODE_RESPONSEREQUIRED;                 /*COVERAGE_IGNORE*/
+	    }
+	    if (ret) {
+	    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal, 1);
+	    }
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpResponseRequired_ACN_Decode(cfdpResponseRequired* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+	asn1SccUint intVal_pVal;
+
+	ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal)), 1);
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_RESPONSEREQUIRED;
+	if (ret) {
+	    switch (intVal_pVal) {
+	        case 0:
+	            (*(pVal)) = ResponseRequired_nak;
+	            break;
+	        case 1:
+	            (*(pVal)) = ResponseRequired_keep_alive;
+	            break;
+	    default:                                    /*COVERAGE_IGNORE*/
+	        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        *pErrCode = ERR_ACN_DECODE_RESPONSEREQUIRED;                 /*COVERAGE_IGNORE*/
+	    }
+	} /*COVERAGE_IGNORE*/
+
+    return ret && cfdpResponseRequired_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpProgress_Equal(const cfdpProgress* pVal1, const cfdpProgress* pVal2)
+{
+	return (*(pVal1)) == (*(pVal2));
+
+}
+
+flag cfdpProgress_IsConstraintValid(const cfdpProgress* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = ((*(pVal)) <= 4294967295UL);
+    *pErrCode = ret ? 0 :  ERR_PROGRESS;
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpProgress cfdpProgress_constant = 0UL;
+#endif
+
+void cfdpProgress_Initialize(cfdpProgress* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpProgress)cfdpProgress_constant;
+}
+
+flag cfdpProgress_Encode(const cfdpProgress* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpProgress_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    BitStream_EncodeConstraintPosWholeNumber(pBitStrm, (*(pVal)), 0, 4294967295LL);
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpProgress_Decode(cfdpProgress* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	ret = BitStream_DecodeConstraintPosWholeNumber(pBitStrm, pVal, 0, 4294967295LL);
+	*pErrCode = ret ? 0 : ERR_UPER_DECODE_PROGRESS;
+
+	return ret  && cfdpProgress_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpProgress_ACN_Encode(const cfdpProgress* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpProgress_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (*(pVal)));
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpProgress_ACN_Decode(cfdpProgress* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal);
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_PROGRESS;
+
+    return ret && cfdpProgress_IsConstraintValid(pVal, pErrCode);
 }
 
 
@@ -4907,6 +4545,1291 @@ flag cfdpPDUHeader_ACN_Decode(cfdpPDUHeader* pVal, BitStream* pBitStrm, int* pEr
 	}   /*COVERAGE_IGNORE*/
 
     return ret && cfdpPDUHeader_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpEofPDU_Equal(const cfdpEofPDU* pVal1, const cfdpEofPDU* pVal2)
+{
+	flag ret=TRUE;
+
+    ret = cfdpPDUHeader_Equal((&(pVal1->pdu_header)), (&(pVal2->pdu_header)));
+
+    if (ret) {
+        ret = (pVal1->condition_code == pVal2->condition_code);
+
+        if (ret) {
+            ret = cfdpFileChecksum_Equal((&(pVal1->file_checksum)), (&(pVal2->file_checksum)));
+
+            if (ret) {
+                ret = (pVal1->file_size == pVal2->file_size);
+
+            }
+
+        }
+
+    }
+
+	return ret;
+
+}
+
+flag cfdpEofPDU_IsConstraintValid(const cfdpEofPDU* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = cfdpPDUHeader_IsConstraintValid((&(pVal->pdu_header)), pErrCode);
+    if (ret) {
+        ret = cfdpConditionCode_IsConstraintValid((&(pVal->condition_code)), pErrCode);
+        if (ret) {
+            ret = cfdpFileChecksum_IsConstraintValid((&(pVal->file_checksum)), pErrCode);
+            if (ret) {
+                ret = cfdpFileSize_IsConstraintValid((&(pVal->file_size)), pErrCode);
+            }   /*COVERAGE_IGNORE*/
+        }   /*COVERAGE_IGNORE*/
+    }   /*COVERAGE_IGNORE*/
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpEofPDU cfdpEofPDU_constant = {.pdu_header = cfdpPDUHeader_constant, .condition_code = ConditionCode_no_error, .file_checksum = {.arr  = {[0 ... 4-1] = 0 }}, .file_size = 0UL};
+#endif
+
+void cfdpEofPDU_Initialize(cfdpEofPDU* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpEofPDU)cfdpEofPDU_constant;
+}
+
+flag cfdpEofPDU_Encode(const cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpEofPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode condition_code */
+	        ret = cfdpConditionCode_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
+	        if (ret) {
+	            /*Encode file_checksum */
+	            ret = cfdpFileChecksum_Encode((&(pVal->file_checksum)), pBitStrm, pErrCode, FALSE);
+	            if (ret) {
+	                /*Encode file_size */
+	                ret = cfdpFileSize_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpEofPDU_Decode(cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode condition_code */
+	    ret = cfdpConditionCode_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
+	    if (ret) {
+	        /*Decode file_checksum */
+	        ret = cfdpFileChecksum_Decode((&(pVal->file_checksum)), pBitStrm, pErrCode);
+	        if (ret) {
+	            /*Decode file_size */
+	            ret = cfdpFileSize_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+	return ret  && cfdpEofPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpEofPDU_ACN_Encode(const cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpEofPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_ACN_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode EofPDU_directive_code */
+	        {
+	        	static byte tmp[] = {0x04};
+	        	BitStream_AppendBits(pBitStrm, tmp, 8);
+	        }
+	        if (ret) {
+	            /*Encode condition_code */
+	            ret = cfdpConditionCode_ACN_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
+	            if (ret) {
+	                /*Encode EofPDU_spare */
+	                {
+	                	static byte tmp[] = {0x00};
+	                	BitStream_AppendBits(pBitStrm, tmp, 4);
+	                }
+	                if (ret) {
+	                    /*Encode file_checksum */
+	                    ret = cfdpFileChecksum_ACN_Encode((&(pVal->file_checksum)), pBitStrm, pErrCode, FALSE);
+	                    if (ret) {
+	                        /*Encode file_size */
+	                        ret = cfdpFileSize_ACN_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
+	                    }   /*COVERAGE_IGNORE*/
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpEofPDU_ACN_Decode(cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_ACN_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode EofPDU_directive_code */
+	    {
+	    	static byte tmp[] = {0x04};
+	        flag bDecodingPatternMatches;
+	    	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 8, &bDecodingPatternMatches);
+	        ret = ret && bDecodingPatternMatches;
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_EOFPDU_DIRECTIVE_CODE;
+	    }
+
+	    if (ret) {
+	        /*Decode condition_code */
+	        ret = cfdpConditionCode_ACN_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
+	        if (ret) {
+	            /*Decode EofPDU_spare */
+	            {
+	            	static byte tmp[] = {0x00};
+	                flag bDecodingPatternMatches;
+	            	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 4, &bDecodingPatternMatches);
+	                ret = ret && bDecodingPatternMatches;
+	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_EOFPDU_SPARE;
+	            }
+
+	            if (ret) {
+	                /*Decode file_checksum */
+	                ret = cfdpFileChecksum_ACN_Decode((&(pVal->file_checksum)), pBitStrm, pErrCode);
+	                if (ret) {
+	                    /*Decode file_size */
+	                    ret = cfdpFileSize_ACN_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+    return ret && cfdpEofPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpFinishedPDU_Equal(const cfdpFinishedPDU* pVal1, const cfdpFinishedPDU* pVal2)
+{
+	flag ret=TRUE;
+
+    ret = cfdpPDUHeader_Equal((&(pVal1->pdu_header)), (&(pVal2->pdu_header)));
+
+    if (ret) {
+        ret = (pVal1->condition_code == pVal2->condition_code);
+
+        if (ret) {
+            ret = (pVal1->delivery_code == pVal2->delivery_code);
+
+            if (ret) {
+                ret = (pVal1->file_status == pVal2->file_status);
+
+            }
+
+        }
+
+    }
+
+	return ret;
+
+}
+
+flag cfdpFinishedPDU_IsConstraintValid(const cfdpFinishedPDU* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = cfdpPDUHeader_IsConstraintValid((&(pVal->pdu_header)), pErrCode);
+    if (ret) {
+        ret = cfdpConditionCode_IsConstraintValid((&(pVal->condition_code)), pErrCode);
+        if (ret) {
+            ret = cfdpDeliveryCode_IsConstraintValid((&(pVal->delivery_code)), pErrCode);
+            if (ret) {
+                ret = cfdpFileStatus_IsConstraintValid((&(pVal->file_status)), pErrCode);
+            }   /*COVERAGE_IGNORE*/
+        }   /*COVERAGE_IGNORE*/
+    }   /*COVERAGE_IGNORE*/
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpFinishedPDU cfdpFinishedPDU_constant = {.pdu_header = cfdpPDUHeader_constant, .condition_code = ConditionCode_no_error, .delivery_code = DeliveryCode_data_complete, .file_status = FileStatus_discarted_deliberately};
+#endif
+
+void cfdpFinishedPDU_Initialize(cfdpFinishedPDU* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpFinishedPDU)cfdpFinishedPDU_constant;
+}
+
+flag cfdpFinishedPDU_Encode(const cfdpFinishedPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpFinishedPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode condition_code */
+	        ret = cfdpConditionCode_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
+	        if (ret) {
+	            /*Encode delivery_code */
+	            ret = cfdpDeliveryCode_Encode((&(pVal->delivery_code)), pBitStrm, pErrCode, FALSE);
+	            if (ret) {
+	                /*Encode file_status */
+	                ret = cfdpFileStatus_Encode((&(pVal->file_status)), pBitStrm, pErrCode, FALSE);
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpFinishedPDU_Decode(cfdpFinishedPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode condition_code */
+	    ret = cfdpConditionCode_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
+	    if (ret) {
+	        /*Decode delivery_code */
+	        ret = cfdpDeliveryCode_Decode((&(pVal->delivery_code)), pBitStrm, pErrCode);
+	        if (ret) {
+	            /*Decode file_status */
+	            ret = cfdpFileStatus_Decode((&(pVal->file_status)), pBitStrm, pErrCode);
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+	return ret  && cfdpFinishedPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpFinishedPDU_ACN_Encode(const cfdpFinishedPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpFinishedPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_ACN_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode FinishedPDU_directive_code */
+	        {
+	        	static byte tmp[] = {0x05};
+	        	BitStream_AppendBits(pBitStrm, tmp, 8);
+	        }
+	        if (ret) {
+	            /*Encode condition_code */
+	            ret = cfdpConditionCode_ACN_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
+	            if (ret) {
+	                /*Encode FinishedPDU_end_system_status */
+	                {
+	                	static byte tmp[] = {0x80};
+	                	BitStream_AppendBits(pBitStrm, tmp, 1);
+	                }
+	                if (ret) {
+	                    /*Encode delivery_code */
+	                    ret = cfdpDeliveryCode_ACN_Encode((&(pVal->delivery_code)), pBitStrm, pErrCode, FALSE);
+	                    if (ret) {
+	                        /*Encode file_status */
+	                        ret = cfdpFileStatus_ACN_Encode((&(pVal->file_status)), pBitStrm, pErrCode, FALSE);
+	                    }   /*COVERAGE_IGNORE*/
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpFinishedPDU_ACN_Decode(cfdpFinishedPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_ACN_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode FinishedPDU_directive_code */
+	    {
+	    	static byte tmp[] = {0x05};
+	        flag bDecodingPatternMatches;
+	    	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 8, &bDecodingPatternMatches);
+	        ret = ret && bDecodingPatternMatches;
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_FINISHEDPDU_DIRECTIVE_CODE;
+	    }
+
+	    if (ret) {
+	        /*Decode condition_code */
+	        ret = cfdpConditionCode_ACN_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
+	        if (ret) {
+	            /*Decode FinishedPDU_end_system_status */
+	            {
+	            	static byte tmp[] = {0x80};
+	                flag bDecodingPatternMatches;
+	            	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 1, &bDecodingPatternMatches);
+	                ret = ret && bDecodingPatternMatches;
+	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_FINISHEDPDU_END_SYSTEM_STATUS;
+	            }
+
+	            if (ret) {
+	                /*Decode delivery_code */
+	                ret = cfdpDeliveryCode_ACN_Decode((&(pVal->delivery_code)), pBitStrm, pErrCode);
+	                if (ret) {
+	                    /*Decode file_status */
+	                    ret = cfdpFileStatus_ACN_Decode((&(pVal->file_status)), pBitStrm, pErrCode);
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+    return ret && cfdpFinishedPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpAckPDU_Equal(const cfdpAckPDU* pVal1, const cfdpAckPDU* pVal2)
+{
+	flag ret=TRUE;
+
+    ret = cfdpPDUHeader_Equal((&(pVal1->pdu_header)), (&(pVal2->pdu_header)));
+
+    if (ret) {
+        ret = (pVal1->directive_code_of_ack_pdu == pVal2->directive_code_of_ack_pdu);
+
+        if (ret) {
+            ret = (pVal1->directive_subtype_code == pVal2->directive_subtype_code);
+
+            if (ret) {
+                ret = (pVal1->condition_code == pVal2->condition_code);
+
+                if (ret) {
+                    ret = (pVal1->transaction_status == pVal2->transaction_status);
+
+                }
+
+            }
+
+        }
+
+    }
+
+	return ret;
+
+}
+
+flag cfdpAckPDU_IsConstraintValid(const cfdpAckPDU* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = cfdpPDUHeader_IsConstraintValid((&(pVal->pdu_header)), pErrCode);
+    if (ret) {
+        ret = cfdpDirectiveCode_IsConstraintValid((&(pVal->directive_code_of_ack_pdu)), pErrCode);
+        if (ret) {
+            ret = cfdpDirectiveSubtypeCode_IsConstraintValid((&(pVal->directive_subtype_code)), pErrCode);
+            if (ret) {
+                ret = cfdpConditionCode_IsConstraintValid((&(pVal->condition_code)), pErrCode);
+                if (ret) {
+                    ret = cfdpAckTransactionStatus_IsConstraintValid((&(pVal->transaction_status)), pErrCode);
+                }   /*COVERAGE_IGNORE*/
+            }   /*COVERAGE_IGNORE*/
+        }   /*COVERAGE_IGNORE*/
+    }   /*COVERAGE_IGNORE*/
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpAckPDU cfdpAckPDU_constant = {.pdu_header = cfdpPDUHeader_constant, .directive_code_of_ack_pdu = DirectiveCode_eof_pdu, .directive_subtype_code = DirectiveSubtypeCode_ack_others, .condition_code = ConditionCode_no_error, .transaction_status = AckTransactionStatus_undefined};
+#endif
+
+void cfdpAckPDU_Initialize(cfdpAckPDU* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpAckPDU)cfdpAckPDU_constant;
+}
+
+flag cfdpAckPDU_Encode(const cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpAckPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode directive_code_of_ack_pdu */
+	        ret = cfdpDirectiveCode_Encode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode, FALSE);
+	        if (ret) {
+	            /*Encode directive_subtype_code */
+	            ret = cfdpDirectiveSubtypeCode_Encode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode, FALSE);
+	            if (ret) {
+	                /*Encode condition_code */
+	                ret = cfdpConditionCode_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
+	                if (ret) {
+	                    /*Encode transaction_status */
+	                    ret = cfdpAckTransactionStatus_Encode((&(pVal->transaction_status)), pBitStrm, pErrCode, FALSE);
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpAckPDU_Decode(cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode directive_code_of_ack_pdu */
+	    ret = cfdpDirectiveCode_Decode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode);
+	    if (ret) {
+	        /*Decode directive_subtype_code */
+	        ret = cfdpDirectiveSubtypeCode_Decode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode);
+	        if (ret) {
+	            /*Decode condition_code */
+	            ret = cfdpConditionCode_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
+	            if (ret) {
+	                /*Decode transaction_status */
+	                ret = cfdpAckTransactionStatus_Decode((&(pVal->transaction_status)), pBitStrm, pErrCode);
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+	return ret  && cfdpAckPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpAckPDU_ACN_Encode(const cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpAckPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_ACN_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode AckPDU_directive_code */
+	        {
+	        	static byte tmp[] = {0x06};
+	        	BitStream_AppendBits(pBitStrm, tmp, 8);
+	        }
+	        if (ret) {
+	            /*Encode directive_code_of_ack_pdu */
+	            ret = cfdpDirectiveCode_ACN_Encode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode, FALSE);
+	            if (ret) {
+	                /*Encode directive_subtype_code */
+	                ret = cfdpDirectiveSubtypeCode_ACN_Encode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode, FALSE);
+	                if (ret) {
+	                    /*Encode condition_code */
+	                    ret = cfdpConditionCode_ACN_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
+	                    if (ret) {
+	                        /*Encode AckPDU_spare */
+	                        {
+	                        	static byte tmp[] = {0x00};
+	                        	BitStream_AppendBits(pBitStrm, tmp, 2);
+	                        }
+	                        if (ret) {
+	                            /*Encode transaction_status */
+	                            ret = cfdpAckTransactionStatus_ACN_Encode((&(pVal->transaction_status)), pBitStrm, pErrCode, FALSE);
+	                        }   /*COVERAGE_IGNORE*/
+	                    }   /*COVERAGE_IGNORE*/
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpAckPDU_ACN_Decode(cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_ACN_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode AckPDU_directive_code */
+	    {
+	    	static byte tmp[] = {0x06};
+	        flag bDecodingPatternMatches;
+	    	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 8, &bDecodingPatternMatches);
+	        ret = ret && bDecodingPatternMatches;
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_ACKPDU_DIRECTIVE_CODE;
+	    }
+
+	    if (ret) {
+	        /*Decode directive_code_of_ack_pdu */
+	        ret = cfdpDirectiveCode_ACN_Decode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode);
+	        if (ret) {
+	            /*Decode directive_subtype_code */
+	            ret = cfdpDirectiveSubtypeCode_ACN_Decode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode);
+	            if (ret) {
+	                /*Decode condition_code */
+	                ret = cfdpConditionCode_ACN_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
+	                if (ret) {
+	                    /*Decode AckPDU_spare */
+	                    {
+	                    	static byte tmp[] = {0x00};
+	                        flag bDecodingPatternMatches;
+	                    	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 2, &bDecodingPatternMatches);
+	                        ret = ret && bDecodingPatternMatches;
+	                        *pErrCode = ret ? 0 : ERR_ACN_DECODE_ACKPDU_SPARE;
+	                    }
+
+	                    if (ret) {
+	                        /*Decode transaction_status */
+	                        ret = cfdpAckTransactionStatus_ACN_Decode((&(pVal->transaction_status)), pBitStrm, pErrCode);
+	                    }   /*COVERAGE_IGNORE*/
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+    return ret && cfdpAckPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpMetadataPDU_Equal(const cfdpMetadataPDU* pVal1, const cfdpMetadataPDU* pVal2)
+{
+	flag ret=TRUE;
+
+    ret = cfdpPDUHeader_Equal((&(pVal1->pdu_header)), (&(pVal2->pdu_header)));
+
+    if (ret) {
+        ret = (pVal1->closure_requested == pVal2->closure_requested);
+
+        if (ret) {
+            ret = (pVal1->checksum_type == pVal2->checksum_type);
+
+            if (ret) {
+                ret = (pVal1->file_size == pVal2->file_size);
+
+                if (ret) {
+                    ret = cfdpFileName_Equal((&(pVal1->source_file_name)), (&(pVal2->source_file_name)));
+
+                    if (ret) {
+                        ret = cfdpFileName_Equal((&(pVal1->destination_file_name)), (&(pVal2->destination_file_name)));
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+	return ret;
+
+}
+
+flag cfdpMetadataPDU_IsConstraintValid(const cfdpMetadataPDU* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = cfdpPDUHeader_IsConstraintValid((&(pVal->pdu_header)), pErrCode);
+    if (ret) {
+        ret = cfdpClosureRequested_IsConstraintValid((&(pVal->closure_requested)), pErrCode);
+        if (ret) {
+            ret = cfdpChecksumType_IsConstraintValid((&(pVal->checksum_type)), pErrCode);
+            if (ret) {
+                ret = cfdpFileSize_IsConstraintValid((&(pVal->file_size)), pErrCode);
+                if (ret) {
+                    ret = cfdpFileName_IsConstraintValid((&(pVal->source_file_name)), pErrCode);
+                    if (ret) {
+                        ret = cfdpFileName_IsConstraintValid((&(pVal->destination_file_name)), pErrCode);
+                    }   /*COVERAGE_IGNORE*/
+                }   /*COVERAGE_IGNORE*/
+            }   /*COVERAGE_IGNORE*/
+        }   /*COVERAGE_IGNORE*/
+    }   /*COVERAGE_IGNORE*/
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpMetadataPDU cfdpMetadataPDU_constant = {.pdu_header = cfdpPDUHeader_constant, .closure_requested = ClosureRequested_requested, .checksum_type = 0UL, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}};
+#endif
+
+void cfdpMetadataPDU_Initialize(cfdpMetadataPDU* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpMetadataPDU)cfdpMetadataPDU_constant;
+}
+
+flag cfdpMetadataPDU_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode closure_requested */
+	        ret = cfdpClosureRequested_Encode((&(pVal->closure_requested)), pBitStrm, pErrCode, FALSE);
+	        if (ret) {
+	            /*Encode checksum_type */
+	            ret = cfdpChecksumType_Encode((&(pVal->checksum_type)), pBitStrm, pErrCode, FALSE);
+	            if (ret) {
+	                /*Encode file_size */
+	                ret = cfdpFileSize_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
+	                if (ret) {
+	                    /*Encode source_file_name */
+	                    ret = cfdpFileName_Encode((&(pVal->source_file_name)), pBitStrm, pErrCode, FALSE);
+	                    if (ret) {
+	                        /*Encode destination_file_name */
+	                        ret = cfdpFileName_Encode((&(pVal->destination_file_name)), pBitStrm, pErrCode, FALSE);
+	                    }   /*COVERAGE_IGNORE*/
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpMetadataPDU_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode closure_requested */
+	    ret = cfdpClosureRequested_Decode((&(pVal->closure_requested)), pBitStrm, pErrCode);
+	    if (ret) {
+	        /*Decode checksum_type */
+	        ret = cfdpChecksumType_Decode((&(pVal->checksum_type)), pBitStrm, pErrCode);
+	        if (ret) {
+	            /*Decode file_size */
+	            ret = cfdpFileSize_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
+	            if (ret) {
+	                /*Decode source_file_name */
+	                ret = cfdpFileName_Decode((&(pVal->source_file_name)), pBitStrm, pErrCode);
+	                if (ret) {
+	                    /*Decode destination_file_name */
+	                    ret = cfdpFileName_Decode((&(pVal->destination_file_name)), pBitStrm, pErrCode);
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+	return ret  && cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpMetadataPDU_ACN_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+	asn1SccUint MetadataPDU_source_file_name_size;
+	flag MetadataPDU_source_file_name_size_is_initialized=FALSE;
+	asn1SccUint MetadataPDU_destination_file_name_size;
+	flag MetadataPDU_destination_file_name_size_is_initialized=FALSE;
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_ACN_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode MetadataPDU_directive_code */
+	        {
+	        	static byte tmp[] = {0x07};
+	        	BitStream_AppendBits(pBitStrm, tmp, 8);
+	        }
+	        if (ret) {
+	            /*Encode MetadataPDU_reserved1 */
+	            {
+	            	static byte tmp[] = {0x00};
+	            	BitStream_AppendBits(pBitStrm, tmp, 1);
+	            }
+	            if (ret) {
+	                /*Encode closure_requested */
+	                ret = cfdpClosureRequested_ACN_Encode((&(pVal->closure_requested)), pBitStrm, pErrCode, FALSE);
+	                if (ret) {
+	                    /*Encode MetadataPDU_reserved2 */
+	                    {
+	                    	static byte tmp[] = {0x00};
+	                    	BitStream_AppendBits(pBitStrm, tmp, 2);
+	                    }
+	                    if (ret) {
+	                        /*Encode checksum_type */
+	                        ret = cfdpChecksumType_ACN_Encode((&(pVal->checksum_type)), pBitStrm, pErrCode, FALSE);
+	                        if (ret) {
+	                            /*Encode file_size */
+	                            ret = cfdpFileSize_ACN_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
+	                            if (ret) {
+	                                MetadataPDU_source_file_name_size_is_initialized = TRUE;
+	                                MetadataPDU_source_file_name_size = pVal->source_file_name.nCount;
+	                                if (ret) {
+	                                    /*Encode MetadataPDU_source_file_name_size */
+	                                    if (MetadataPDU_source_file_name_size_is_initialized) {
+	                                        ret = TRUE;
+	                                        Acn_Enc_Int_PositiveInteger_ConstSize_8(pBitStrm, MetadataPDU_source_file_name_size);
+	                                    } else {
+	                                        *pErrCode = ERR_ACN_ENCODE_METADATAPDU_SOURCE_FILE_NAME_SIZE_UNINITIALIZED;         /*COVERAGE_IGNORE*/
+	                                        ret = FALSE;                    /*COVERAGE_IGNORE*/
+	                                    }
+	                                }   /*COVERAGE_IGNORE*/
+	                                if (ret) {
+	                                    /*Encode source_file_name */
+	                                    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->source_file_name.arr, pVal->source_file_name.nCount);
+	                                    if (ret) {
+	                                        MetadataPDU_destination_file_name_size_is_initialized = TRUE;
+	                                        MetadataPDU_destination_file_name_size = pVal->destination_file_name.nCount;
+	                                        if (ret) {
+	                                            /*Encode MetadataPDU_destination_file_name_size */
+	                                            if (MetadataPDU_destination_file_name_size_is_initialized) {
+	                                                ret = TRUE;
+	                                                Acn_Enc_Int_PositiveInteger_ConstSize_8(pBitStrm, MetadataPDU_destination_file_name_size);
+	                                            } else {
+	                                                *pErrCode = ERR_ACN_ENCODE_METADATAPDU_DESTINATION_FILE_NAME_SIZE_UNINITIALIZED;         /*COVERAGE_IGNORE*/
+	                                                ret = FALSE;                    /*COVERAGE_IGNORE*/
+	                                            }
+	                                        }   /*COVERAGE_IGNORE*/
+	                                        if (ret) {
+	                                            /*Encode destination_file_name */
+	                                            ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->destination_file_name.arr, pVal->destination_file_name.nCount);
+	                                        }   /*COVERAGE_IGNORE*/
+	                                    }   /*COVERAGE_IGNORE*/
+	                                }   /*COVERAGE_IGNORE*/
+	                            }   /*COVERAGE_IGNORE*/
+	                        }   /*COVERAGE_IGNORE*/
+	                    }   /*COVERAGE_IGNORE*/
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+	asn1SccUint MetadataPDU_source_file_name_size;
+	asn1SccUint MetadataPDU_destination_file_name_size;
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_ACN_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode MetadataPDU_directive_code */
+	    {
+	    	static byte tmp[] = {0x07};
+	        flag bDecodingPatternMatches;
+	    	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 8, &bDecodingPatternMatches);
+	        ret = ret && bDecodingPatternMatches;
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_DIRECTIVE_CODE;
+	    }
+
+	    if (ret) {
+	        /*Decode MetadataPDU_reserved1 */
+	        {
+	        	static byte tmp[] = {0x00};
+	            flag bDecodingPatternMatches;
+	        	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 1, &bDecodingPatternMatches);
+	            ret = ret && bDecodingPatternMatches;
+	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_RESERVED1;
+	        }
+
+	        if (ret) {
+	            /*Decode closure_requested */
+	            ret = cfdpClosureRequested_ACN_Decode((&(pVal->closure_requested)), pBitStrm, pErrCode);
+	            if (ret) {
+	                /*Decode MetadataPDU_reserved2 */
+	                {
+	                	static byte tmp[] = {0x00};
+	                    flag bDecodingPatternMatches;
+	                	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 2, &bDecodingPatternMatches);
+	                    ret = ret && bDecodingPatternMatches;
+	                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_RESERVED2;
+	                }
+
+	                if (ret) {
+	                    /*Decode checksum_type */
+	                    ret = cfdpChecksumType_ACN_Decode((&(pVal->checksum_type)), pBitStrm, pErrCode);
+	                    if (ret) {
+	                        /*Decode file_size */
+	                        ret = cfdpFileSize_ACN_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
+	                        if (ret) {
+	                            /*Decode MetadataPDU_source_file_name_size */
+	                            ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(MetadataPDU_source_file_name_size)));
+	                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_SOURCE_FILE_NAME_SIZE;
+	                            if (ret) {
+	                                /*Decode source_file_name */
+	                                ret = ((MetadataPDU_source_file_name_size<=254));
+	                                if (ret) {
+	                                    pVal->source_file_name.nCount = (int)MetadataPDU_source_file_name_size;
+	                                    ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->source_file_name.arr, pVal->source_file_name.nCount);
+	                                	*pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_SOURCE_FILE_NAME;
+	                                }
+	                                if (ret) {
+	                                    /*Decode MetadataPDU_destination_file_name_size */
+	                                    ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(MetadataPDU_destination_file_name_size)));
+	                                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_DESTINATION_FILE_NAME_SIZE;
+	                                    if (ret) {
+	                                        /*Decode destination_file_name */
+	                                        ret = ((MetadataPDU_destination_file_name_size<=254));
+	                                        if (ret) {
+	                                            pVal->destination_file_name.nCount = (int)MetadataPDU_destination_file_name_size;
+	                                            ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->destination_file_name.arr, pVal->destination_file_name.nCount);
+	                                        	*pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_DESTINATION_FILE_NAME;
+	                                        }
+	                                    }   /*COVERAGE_IGNORE*/
+	                                }   /*COVERAGE_IGNORE*/
+	                            }   /*COVERAGE_IGNORE*/
+	                        }   /*COVERAGE_IGNORE*/
+	                    }   /*COVERAGE_IGNORE*/
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+    return ret && cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpFileDataPDU_Equal(const cfdpFileDataPDU* pVal1, const cfdpFileDataPDU* pVal2)
+{
+	flag ret=TRUE;
+
+    ret = cfdpPDUHeader_Equal((&(pVal1->pdu_header)), (&(pVal2->pdu_header)));
+
+    if (ret) {
+        ret = (pVal1->segment_offset == pVal2->segment_offset);
+
+        if (ret) {
+            ret = cfdpFileData_Equal((&(pVal1->file_data)), (&(pVal2->file_data)));
+
+        }
+
+    }
+
+	return ret;
+
+}
+
+flag cfdpFileDataPDU_IsConstraintValid(const cfdpFileDataPDU* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = cfdpPDUHeader_IsConstraintValid((&(pVal->pdu_header)), pErrCode);
+    if (ret) {
+        ret = cfdpSegmentOffset_IsConstraintValid((&(pVal->segment_offset)), pErrCode);
+        if (ret) {
+            ret = cfdpFileData_IsConstraintValid((&(pVal->file_data)), pErrCode);
+        }   /*COVERAGE_IGNORE*/
+    }   /*COVERAGE_IGNORE*/
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpFileDataPDU cfdpFileDataPDU_constant = {.pdu_header = cfdpPDUHeader_constant, .segment_offset = 0UL, .file_data = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}};
+#endif
+
+void cfdpFileDataPDU_Initialize(cfdpFileDataPDU* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpFileDataPDU)cfdpFileDataPDU_constant;
+}
+
+flag cfdpFileDataPDU_Encode(const cfdpFileDataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpFileDataPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode segment_offset */
+	        ret = cfdpSegmentOffset_Encode((&(pVal->segment_offset)), pBitStrm, pErrCode, FALSE);
+	        if (ret) {
+	            /*Encode file_data */
+	            ret = cfdpFileData_Encode((&(pVal->file_data)), pBitStrm, pErrCode, FALSE);
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpFileDataPDU_Decode(cfdpFileDataPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode segment_offset */
+	    ret = cfdpSegmentOffset_Decode((&(pVal->segment_offset)), pBitStrm, pErrCode);
+	    if (ret) {
+	        /*Decode file_data */
+	        ret = cfdpFileData_Decode((&(pVal->file_data)), pBitStrm, pErrCode);
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+	return ret  && cfdpFileDataPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpPromptPDU_Equal(const cfdpPromptPDU* pVal1, const cfdpPromptPDU* pVal2)
+{
+	flag ret=TRUE;
+
+    ret = cfdpPDUHeader_Equal((&(pVal1->pdu_header)), (&(pVal2->pdu_header)));
+
+    if (ret) {
+        ret = (pVal1->response_required == pVal2->response_required);
+
+    }
+
+	return ret;
+
+}
+
+flag cfdpPromptPDU_IsConstraintValid(const cfdpPromptPDU* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = cfdpPDUHeader_IsConstraintValid((&(pVal->pdu_header)), pErrCode);
+    if (ret) {
+        ret = cfdpResponseRequired_IsConstraintValid((&(pVal->response_required)), pErrCode);
+    }   /*COVERAGE_IGNORE*/
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpPromptPDU cfdpPromptPDU_constant = {.pdu_header = cfdpPDUHeader_constant, .response_required = ResponseRequired_nak};
+#endif
+
+void cfdpPromptPDU_Initialize(cfdpPromptPDU* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpPromptPDU)cfdpPromptPDU_constant;
+}
+
+flag cfdpPromptPDU_Encode(const cfdpPromptPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpPromptPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode response_required */
+	        ret = cfdpResponseRequired_Encode((&(pVal->response_required)), pBitStrm, pErrCode, FALSE);
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpPromptPDU_Decode(cfdpPromptPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode response_required */
+	    ret = cfdpResponseRequired_Decode((&(pVal->response_required)), pBitStrm, pErrCode);
+	}   /*COVERAGE_IGNORE*/
+
+	return ret  && cfdpPromptPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpPromptPDU_ACN_Encode(const cfdpPromptPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpPromptPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_ACN_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode PromptPDU_directive_code */
+	        {
+	        	static byte tmp[] = {0x09};
+	        	BitStream_AppendBits(pBitStrm, tmp, 8);
+	        }
+	        if (ret) {
+	            /*Encode response_required */
+	            ret = cfdpResponseRequired_ACN_Encode((&(pVal->response_required)), pBitStrm, pErrCode, FALSE);
+	            if (ret) {
+	                /*Encode PromptPDU_spare */
+	                {
+	                	static byte tmp[] = {0x00};
+	                	BitStream_AppendBits(pBitStrm, tmp, 7);
+	                }
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpPromptPDU_ACN_Decode(cfdpPromptPDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_ACN_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode PromptPDU_directive_code */
+	    {
+	    	static byte tmp[] = {0x09};
+	        flag bDecodingPatternMatches;
+	    	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 8, &bDecodingPatternMatches);
+	        ret = ret && bDecodingPatternMatches;
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_PROMPTPDU_DIRECTIVE_CODE;
+	    }
+
+	    if (ret) {
+	        /*Decode response_required */
+	        ret = cfdpResponseRequired_ACN_Decode((&(pVal->response_required)), pBitStrm, pErrCode);
+	        if (ret) {
+	            /*Decode PromptPDU_spare */
+	            {
+	            	static byte tmp[] = {0x00};
+	                flag bDecodingPatternMatches;
+	            	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 7, &bDecodingPatternMatches);
+	                ret = ret && bDecodingPatternMatches;
+	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_PROMPTPDU_SPARE;
+	            }
+
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+    return ret && cfdpPromptPDU_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpKeepAlivePDU_Equal(const cfdpKeepAlivePDU* pVal1, const cfdpKeepAlivePDU* pVal2)
+{
+	flag ret=TRUE;
+
+    ret = cfdpPDUHeader_Equal((&(pVal1->pdu_header)), (&(pVal2->pdu_header)));
+
+    if (ret) {
+        ret = (pVal1->progress == pVal2->progress);
+
+    }
+
+	return ret;
+
+}
+
+flag cfdpKeepAlivePDU_IsConstraintValid(const cfdpKeepAlivePDU* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = cfdpPDUHeader_IsConstraintValid((&(pVal->pdu_header)), pErrCode);
+    if (ret) {
+        ret = cfdpProgress_IsConstraintValid((&(pVal->progress)), pErrCode);
+    }   /*COVERAGE_IGNORE*/
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpKeepAlivePDU cfdpKeepAlivePDU_constant = {.pdu_header = cfdpPDUHeader_constant, .progress = 0UL};
+#endif
+
+void cfdpKeepAlivePDU_Initialize(cfdpKeepAlivePDU* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpKeepAlivePDU)cfdpKeepAlivePDU_constant;
+}
+
+flag cfdpKeepAlivePDU_Encode(const cfdpKeepAlivePDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpKeepAlivePDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode progress */
+	        ret = cfdpProgress_Encode((&(pVal->progress)), pBitStrm, pErrCode, FALSE);
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpKeepAlivePDU_Decode(cfdpKeepAlivePDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode progress */
+	    ret = cfdpProgress_Decode((&(pVal->progress)), pBitStrm, pErrCode);
+	}   /*COVERAGE_IGNORE*/
+
+	return ret  && cfdpKeepAlivePDU_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpKeepAlivePDU_ACN_Encode(const cfdpKeepAlivePDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpKeepAlivePDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode pdu_header */
+	    ret = cfdpPDUHeader_ACN_Encode((&(pVal->pdu_header)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode KeepAlivePDU_directive_code */
+	        {
+	        	static byte tmp[] = {0x0C};
+	        	BitStream_AppendBits(pBitStrm, tmp, 8);
+	        }
+	        if (ret) {
+	            /*Encode progress */
+	            ret = cfdpProgress_ACN_Encode((&(pVal->progress)), pBitStrm, pErrCode, FALSE);
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpKeepAlivePDU_ACN_Decode(cfdpKeepAlivePDU* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode pdu_header */
+	ret = cfdpPDUHeader_ACN_Decode((&(pVal->pdu_header)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode KeepAlivePDU_directive_code */
+	    {
+	    	static byte tmp[] = {0x0C};
+	        flag bDecodingPatternMatches;
+	    	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 8, &bDecodingPatternMatches);
+	        ret = ret && bDecodingPatternMatches;
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_KEEPALIVEPDU_DIRECTIVE_CODE;
+	    }
+
+	    if (ret) {
+	        /*Decode progress */
+	        ret = cfdpProgress_ACN_Decode((&(pVal->progress)), pBitStrm, pErrCode);
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+    return ret && cfdpKeepAlivePDU_IsConstraintValid(pVal, pErrCode);
 }
 
 
