@@ -7,16 +7,10 @@
 
 #include "constants.h"
 #include "transport.h"
-#include "transaction.h"
-#include "filestore.h"
 #include "sender_machine.h"
 #include "receiver_machine.h"
-
-struct transaction_id
-{
-    uint32_t source_entity_id;
-    uint32_t seq_number;
-};
+#include "filestore.h"
+#include "transaction_id.h"
 
 struct cfdp_core
 {
@@ -41,5 +35,17 @@ struct transaction_id cfdp_core_put(struct cfdp_core *core,
                                     uint32_t destination_entity_id,
                                     char source_filename[MAX_FILE_NAME_SIZE],
                                     char destination_filename[MAX_FILE_NAME_SIZE]);
+
+void cfdp_core_cancel(struct cfdp_core *core,
+                      struct transaction_id transaction_id);
+
+void cfdp_core_suspend(struct cfdp_core *core,
+                       struct transaction_id transaction_id);
+
+void cfdp_core_resume(struct cfdp_core *core,
+                      struct transaction_id transaction_id);
+                    
+void cfdp_core_report(struct cfdp_core *core,
+                      struct transaction_id transaction_id);
 
 #endif

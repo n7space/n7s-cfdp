@@ -1,5 +1,6 @@
 #include "transaction.h"
 #include "filestore.h"
+#include "cfdp_core.h"
 
 uint32_t transaction_get_file_size(struct transaction *transaction)
 {

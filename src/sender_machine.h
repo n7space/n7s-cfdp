@@ -5,10 +5,15 @@
 #include "stdbool.h"
 
 #include "constants.h"
-#include "event.h"
+#include "transaction.h"
+#include "transaction_id.h"
+
+struct event;
 
 struct sender_machine
 {
+    struct transaction_id transaction_id;
+    struct transaction transaction;
     enum MachineState state;
 };
 

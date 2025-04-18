@@ -5,7 +5,6 @@
 #include "stdbool.h"
 
 #include "constants.h"
-#include "cfdp_core.h"
 
 struct cfdp_core;
 
