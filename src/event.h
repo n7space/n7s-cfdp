@@ -1,8 +1,6 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include "transaction.h"
-
 enum EventType {
     E0_ENTERED_STATE,
     E1_SEND_FILE_DATA,
@@ -36,11 +34,11 @@ enum EventType {
     E41_RECEIVED_THAW
 };
 
-typedef struct
+struct event
 {
-    transaction *transaction;
+    struct transaction *transaction;
     enum EventType type;
 
-} event;
+};
 
 #endif

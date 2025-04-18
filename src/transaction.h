@@ -7,23 +7,25 @@
 #include "constants.h"
 #include "cfdp_core.h"
 
-typedef struct
+struct cfdp_core;
+
+struct transaction
 {
-    cfdp_core *kernel;
+    struct cfdp_core *kernel;
     uint32_t source_entity_id;
     uint32_t seq_number;
     uint32_t destination_entity_id;
-    char source_filename[32];
-    char destination_filename[32];
+    char source_filename[MAX_FILE_NAME_SIZE];
+    char destination_filename[MAX_FILE_NAME_SIZE];
 
     uint32_t file_size;
     uint32_t file_position;
 
-} transaction;
+};
 
-uint32_t transaction_get_file_size(transaction *transaction);
-uint32_t transaction_get_file_checksum(transaction *transaction);
-bool transaction_get_file_segment(transaction *transaction, char *data, uint32_t length);
-bool transaction_is_file_send_complete(transaction *transaction);
+uint32_t transaction_get_file_size(struct transaction *transaction);
+uint32_t transaction_get_file_checksum(struct transaction *transaction);
+bool transaction_get_file_segment(struct transaction *transaction, char *data, uint32_t length);
+bool transaction_is_file_send_complete(struct transaction *transaction);
 
 #endif

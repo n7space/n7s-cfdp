@@ -13,6 +13,8 @@ enum MachineState {
   COMPLETED
 };
 
+#define MAX_FILE_NAME_SIZE 32
+
 #define MAX_FILE_SEGMENT_LEN 4096
 #define INACTIVITY_TIMEOUT 30
 #define ACK_TIMER_LIMIT 5

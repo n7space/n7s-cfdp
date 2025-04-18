@@ -5,14 +5,14 @@
 #include "stdbool.h"
 
 #include "constants.h"
+#include "event.h"
 
-typedef struct
+struct receiver_machine
 {
     enum MachineState state;
+};
 
-} receiver_machine;
 
-
-//void receiver_machine_update_state(receiver_machine *receiver_machine, );
+void receiver_machine_update_state(struct receiver_machine *receiver_machine, struct event *event);
 
 #endif
