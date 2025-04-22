@@ -386,7 +386,7 @@ typedef asn1SccUint cfdpFileNameSize;
 
 flag cfdpFileNameSize_Equal(const cfdpFileNameSize* pVal1, const cfdpFileNameSize* pVal2);
 
-#define ERR_FILENAMESIZE		46  /*(0..254)*/
+#define ERR_FILENAMESIZE		46  /*(0..32)*/
 flag cfdpFileNameSize_IsConstraintValid(const cfdpFileNameSize* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -399,7 +399,7 @@ void cfdpFileNameSize_Initialize(cfdpFileNameSize* pVal);
 
 #define ERR_UPER_ENCODE_FILENAMESIZE		47  /**/
 #define cfdpFileNameSize_REQUIRED_BYTES_FOR_ENCODING       1
-#define cfdpFileNameSize_REQUIRED_BITS_FOR_ENCODING        8
+#define cfdpFileNameSize_REQUIRED_BITS_FOR_ENCODING        6
 
 flag cfdpFileNameSize_Encode(const cfdpFileNameSize* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
@@ -416,26 +416,26 @@ flag cfdpFileNameSize_ACN_Encode(const cfdpFileNameSize* pVal, BitStream* pBitSt
 flag cfdpFileNameSize_ACN_Decode(cfdpFileNameSize* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef struct {
     int nCount;
-    byte arr[254];
+    byte arr[32];
 } cfdpFileName;
 
 
 flag cfdpFileName_Equal(const cfdpFileName* pVal1, const cfdpFileName* pVal2);
 
-#define ERR_FILENAME		51  /*(SIZE(0..254))*/
+#define ERR_FILENAME		51  /*(SIZE(0..32))*/
 flag cfdpFileName_IsConstraintValid(const cfdpFileName* pVal, int* pErrCode);
 
 #ifdef __cplusplus
 extern const cfdpFileName cfdpFileName_constant;
 #else
-#define cfdpFileName_constant {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}
+#define cfdpFileName_constant {.nCount = 0, .arr  = {[0 ... 32-1] = 0 }}
 #endif
 
 void cfdpFileName_Initialize(cfdpFileName* pVal);
 
 #define ERR_UPER_ENCODE_FILENAME		52  /**/
-#define cfdpFileName_REQUIRED_BYTES_FOR_ENCODING       255
-#define cfdpFileName_REQUIRED_BITS_FOR_ENCODING        2040
+#define cfdpFileName_REQUIRED_BYTES_FOR_ENCODING       33
+#define cfdpFileName_REQUIRED_BITS_FOR_ENCODING        262
 
 flag cfdpFileName_Encode(const cfdpFileName* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
@@ -443,8 +443,8 @@ flag cfdpFileName_Encode(const cfdpFileName* pVal, BitStream* pBitStrm, int* pEr
 flag cfdpFileName_Decode(cfdpFileName* pVal, BitStream* pBitStrm, int* pErrCode);
 
 #define ERR_ACN_ENCODE_FILENAME		54  /**/
-#define cfdpFileName_REQUIRED_BYTES_FOR_ACN_ENCODING       255
-#define cfdpFileName_REQUIRED_BITS_FOR_ACN_ENCODING        2040
+#define cfdpFileName_REQUIRED_BYTES_FOR_ACN_ENCODING       33
+#define cfdpFileName_REQUIRED_BITS_FOR_ACN_ENCODING        262
 
 flag cfdpFileName_ACN_Encode(const cfdpFileName* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
@@ -1600,7 +1600,7 @@ flag cfdpMetadataPDU_IsConstraintValid(const cfdpMetadataPDU* pVal, int* pErrCod
 #ifdef __cplusplus
 extern const cfdpMetadataPDU cfdpMetadataPDU_constant;
 #else
-#define cfdpMetadataPDU_constant {.pdu_header = cfdpPDUHeader_constant, .closure_requested = ClosureRequested_requested, .checksum_type = 0UL, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}}
+#define cfdpMetadataPDU_constant {.pdu_header = cfdpPDUHeader_constant, .closure_requested = ClosureRequested_requested, .checksum_type = 0UL, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 32-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 32-1] = 0 }}}
 #endif
 
 void cfdpMetadataPDU_Initialize(cfdpMetadataPDU* pVal);
@@ -1612,8 +1612,8 @@ void cfdpMetadataPDU_Initialize(cfdpMetadataPDU* pVal);
 #define ERR_UPER_ENCODE_METADATAPDU_FILE_SIZE_2		466  /**/
 #define ERR_UPER_ENCODE_METADATAPDU_SOURCE_FILE_NAME_2		478  /**/
 #define ERR_UPER_ENCODE_METADATAPDU_DESTINATION_FILE_NAME_2		488  /**/
-#define cfdpMetadataPDU_REQUIRED_BYTES_FOR_ENCODING       540
-#define cfdpMetadataPDU_REQUIRED_BITS_FOR_ENCODING        4320
+#define cfdpMetadataPDU_REQUIRED_BYTES_FOR_ENCODING       96
+#define cfdpMetadataPDU_REQUIRED_BITS_FOR_ENCODING        764
 
 flag cfdpMetadataPDU_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
@@ -1640,8 +1640,8 @@ flag cfdpMetadataPDU_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pEr
 #define ERR_ACN_ENCODE_METADATAPDU_DESTINATION_FILE_NAME_SIZE_UNINITIALIZED		495  /**/
 #define ERR_ACN_ENCODE_METADATAPDU_DESTINATION_FILE_NAME_SIZE		480  /**/
 #define ERR_ACN_ENCODE_METADATAPDU_DESTINATION_FILE_NAME		485  /**/
-#define cfdpMetadataPDU_REQUIRED_BYTES_FOR_ACN_ENCODING       541
-#define cfdpMetadataPDU_REQUIRED_BITS_FOR_ACN_ENCODING        4328
+#define cfdpMetadataPDU_REQUIRED_BYTES_FOR_ACN_ENCODING       97
+#define cfdpMetadataPDU_REQUIRED_BITS_FOR_ACN_ENCODING        776
 
 flag cfdpMetadataPDU_ACN_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 

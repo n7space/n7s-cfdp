@@ -4,14 +4,14 @@
 
 static bool cfdp_core_is_request_to_sender(struct cfdp_core *core, struct transaction_id transaction_id)
 {
-    return transaction_id.source_entity_id == core->sender.transaction_id.source_entity_id &&
-           transaction_id.seq_number == core->sender.transaction_id.seq_number;
+    return transaction_id.source_entity_id == core->sender[0].transaction_id.source_entity_id &&
+           transaction_id.seq_number == core->sender[0].transaction_id.seq_number;
 }
 
 static bool cfdp_core_is_request_to_receiver(struct cfdp_core *core, struct transaction_id transaction_id)
 {
-    return transaction_id.source_entity_id == core->receiver.transaction_id.source_entity_id &&
-           transaction_id.seq_number == core->receiver.transaction_id.seq_number;
+    return transaction_id.source_entity_id == core->receiver[0].transaction_id.source_entity_id &&
+           transaction_id.seq_number == core->receiver[0].transaction_id.seq_number;
 }
 
 static void cfdp_core_issue_request(struct cfdp_core *core, struct transaction_id transaction_id, enum EventType event_type)
@@ -20,15 +20,15 @@ static void cfdp_core_issue_request(struct cfdp_core *core, struct transaction_i
 
     if(cfdp_core_is_request_to_sender(core, transaction_id))
     {
-        event.transaction = core->sender.transaction;
+        event.transaction = core->sender[0].transaction;
         event.type = event_type;
-        sender_machine_update_state(&core->sender, &event);
+        sender_machine_update_state(&core->sender[0], &event);
     }
     else if(cfdp_core_is_request_to_receiver(core, transaction_id))
     {
-        event.transaction = core->receiver.transaction;
+        event.transaction = core->receiver[0].transaction;
         event.type = event_type;
-        receiver_machine_update_state(&core->receiver, &event);
+        receiver_machine_update_state(&core->receiver[0], &event);
     }
     else
     {
@@ -60,21 +60,21 @@ struct transaction_id cfdp_core_put(struct cfdp_core *core,
     strncpy(transaction.destination_filename, destination_filename, MAX_FILE_NAME_SIZE);
     transaction.destination_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
 
-    if(core->sender.state != COMPLETED)
+    if(core->sender[0].state != COMPLETED)
     {
         // TODO handle sender busy
     }
-    core->sender.state = SEND_METADATA;
+    core->sender[0].state = SEND_METADATA;
 
     struct event event =
     {
         .transaction = transaction,
         .type = E0_ENTERED_STATE
     };
-    sender_machine_update_state(&core->sender, &event);
+    sender_machine_update_state(&core->sender[0], &event);
 
     event.type = E30_RECEIVED_PUT_REQUEST;
-    sender_machine_update_state(&core->sender, &event);
+    sender_machine_update_state(&core->sender[0], &event);
 
     struct transaction_id transaction_id =
     {

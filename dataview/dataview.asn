@@ -48,9 +48,9 @@ ClosureRequested ::= ENUMERATED {requested (0), not-requested (1)}
 
 ChecksumType ::= INTEGER (0..15)
 
-FileNameSize ::= INTEGER (0..254)
+FileNameSize ::= INTEGER (0..32)
 
-FileName ::= OCTET STRING (SIZE(0..254))
+FileName ::= OCTET STRING (SIZE(0..32))
 
 FileStatus ::= ENUMERATED {
    discarted-deliberately (0),

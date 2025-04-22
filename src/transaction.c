@@ -4,18 +4,18 @@
 
 uint32_t transaction_get_file_size(struct transaction *transaction)
 {
-    filestore_open(transaction->kernel->filestore, transaction->source_filename);
-    transaction->file_size = filestore_get_file_size(transaction->kernel->filestore, transaction->source_filename);
-    filestore_close(transaction->kernel->filestore, transaction->source_filename);
+    filestore_open(transaction->source_filename);
+    transaction->file_size = filestore_get_file_size(transaction->source_filename);
+    filestore_close(transaction->source_filename);
 
     return transaction->file_size;
 }
 
 uint32_t transaction_get_file_checksum(struct transaction *transaction)
 {
-    filestore_open(transaction->kernel->filestore, transaction->source_filename);
-    uint32_t checksum = filestore_calculate_checksum(transaction->kernel->filestore, transaction->source_filename);
-    filestore_close(transaction->kernel->filestore, transaction->source_filename);
+    filestore_open(transaction->source_filename);
+    uint32_t checksum = filestore_calculate_checksum(transaction->source_filename);
+    filestore_close(transaction->source_filename);
 
     return checksum;
 }
@@ -27,10 +27,10 @@ bool transaction_get_file_segment(struct transaction *transaction, char *data, u
         return false;
     }
 
-    filestore_open(transaction->kernel->filestore, transaction->source_filename);
-    filestore_seek(transaction->kernel->filestore, transaction->source_filename, transaction->file_position);
-    filestore_read(transaction->kernel->filestore, transaction->source_filename, data, length);
-    filestore_close(transaction->kernel->filestore, transaction->source_filename);
+    filestore_open(transaction->source_filename);
+    filestore_seek(transaction->source_filename, transaction->file_position);
+    filestore_read(transaction->source_filename, data, length);
+    filestore_close(transaction->source_filename);
 
     transaction->file_position += length;
 

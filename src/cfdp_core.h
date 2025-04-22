@@ -25,8 +25,8 @@ struct cfdp_core
     bool resumed_indication_required;
 
     uint32_t transaction_sequence_number;
-    struct sender_machine sender;
-    struct receiver_machine receiver;
+    struct sender_machine sender[MAX_NUMBER_OF_SENDER_MACHINES];
+    struct receiver_machine receiver[MAX_NUMBER_OF_RECEIVER_MACHINES];
 };
 
 

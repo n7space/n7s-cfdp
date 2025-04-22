@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include "dataview.h"
+
 enum MachineState {
   SEND_METADATA,
   SEND_FILE,
@@ -13,7 +15,9 @@ enum MachineState {
   COMPLETED
 };
 
-#define MAX_FILE_NAME_SIZE 32
+#define MAX_FILE_NAME_SIZE (cfdpFileName_REQUIRED_BYTES_FOR_ACN_ENCODING - 1)
+#define MAX_NUMBER_OF_SENDER_MACHINES 1
+#define MAX_NUMBER_OF_RECEIVER_MACHINES 1
 
 #define MAX_FILE_SEGMENT_LEN 4096
 #define INACTIVITY_TIMEOUT 30

@@ -1302,7 +1302,7 @@ flag cfdpFileNameSize_Equal(const cfdpFileNameSize* pVal1, const cfdpFileNameSiz
 flag cfdpFileNameSize_IsConstraintValid(const cfdpFileNameSize* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-    ret = ((*(pVal)) <= 254UL);
+    ret = ((*(pVal)) <= 32UL);
     *pErrCode = ret ? 0 :  ERR_FILENAMESIZE;
 
 	return ret;
@@ -1328,7 +1328,7 @@ flag cfdpFileNameSize_Encode(const cfdpFileNameSize* pVal, BitStream* pBitStrm, 
 	*pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileNameSize_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    BitStream_EncodeConstraintPosWholeNumber(pBitStrm, (*(pVal)), 0, 254);
+	    BitStream_EncodeConstraintPosWholeNumber(pBitStrm, (*(pVal)), 0, 32);
     } /*COVERAGE_IGNORE*/
 
 
@@ -1341,7 +1341,7 @@ flag cfdpFileNameSize_Decode(cfdpFileNameSize* pVal, BitStream* pBitStrm, int* p
 	*pErrCode = 0;
 
 
-	ret = BitStream_DecodeConstraintPosWholeNumber(pBitStrm, pVal, 0, 254);
+	ret = BitStream_DecodeConstraintPosWholeNumber(pBitStrm, pVal, 0, 32);
 	*pErrCode = ret ? 0 : ERR_UPER_DECODE_FILENAMESIZE;
 
 	return ret  && cfdpFileNameSize_IsConstraintValid(pVal, pErrCode);
@@ -1383,14 +1383,14 @@ flag cfdpFileName_Equal(const cfdpFileName* pVal1, const cfdpFileName* pVal2)
 flag cfdpFileName_IsConstraintValid(const cfdpFileName* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-    ret = (pVal->nCount <= 254);
+    ret = (pVal->nCount <= 32);
     *pErrCode = ret ? 0 :  ERR_FILENAME;
 
 	return ret;
 }
 
 #ifdef __cplusplus
-const cfdpFileName cfdpFileName_constant = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }};
+const cfdpFileName cfdpFileName_constant = {.nCount = 0, .arr  = {[0 ... 32-1] = 0 }};
 #endif
 
 void cfdpFileName_Initialize(cfdpFileName* pVal)
@@ -1409,7 +1409,7 @@ flag cfdpFileName_Encode(const cfdpFileName* pVal, BitStream* pBitStrm, int* pEr
 	*pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileName_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 254);
+	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 32);
 	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
     } /*COVERAGE_IGNORE*/
 
@@ -1424,7 +1424,7 @@ flag cfdpFileName_Decode(cfdpFileName* pVal, BitStream* pBitStrm, int* pErrCode)
 
 	asn1SccSint nCount;
 
-	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 254);
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 32);
 	*pErrCode = ret ? 0 : ERR_UPER_DECODE_FILENAME;
 	pVal->nCount = (long)nCount;
 	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
@@ -1439,7 +1439,7 @@ flag cfdpFileName_ACN_Encode(const cfdpFileName* pVal, BitStream* pBitStrm, int*
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileName_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 254);
+	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 32);
 	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
     } /*COVERAGE_IGNORE*/
 
@@ -1454,7 +1454,7 @@ flag cfdpFileName_ACN_Decode(cfdpFileName* pVal, BitStream* pBitStrm, int* pErrC
 
 	asn1SccSint nCount;
 
-	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 254);
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 32);
 	*pErrCode = ret ? 0 : ERR_ACN_DECODE_FILENAME;
 	pVal->nCount = (long)nCount;
 	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
@@ -5213,7 +5213,7 @@ flag cfdpMetadataPDU_IsConstraintValid(const cfdpMetadataPDU* pVal, int* pErrCod
 }
 
 #ifdef __cplusplus
-const cfdpMetadataPDU cfdpMetadataPDU_constant = {.pdu_header = cfdpPDUHeader_constant, .closure_requested = ClosureRequested_requested, .checksum_type = 0UL, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}};
+const cfdpMetadataPDU cfdpMetadataPDU_constant = {.pdu_header = cfdpPDUHeader_constant, .closure_requested = ClosureRequested_requested, .checksum_type = 0UL, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 32-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 32-1] = 0 }}};
 #endif
 
 void cfdpMetadataPDU_Initialize(cfdpMetadataPDU* pVal)
@@ -5435,7 +5435,7 @@ flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int*
 	                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_SOURCE_FILE_NAME_SIZE;
 	                            if (ret) {
 	                                /*Decode source_file_name */
-	                                ret = ((MetadataPDU_source_file_name_size<=254));
+	                                ret = ((MetadataPDU_source_file_name_size<=32));
 	                                if (ret) {
 	                                    pVal->source_file_name.nCount = (int)MetadataPDU_source_file_name_size;
 	                                    ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->source_file_name.arr, pVal->source_file_name.nCount);
@@ -5447,7 +5447,7 @@ flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int*
 	                                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_DESTINATION_FILE_NAME_SIZE;
 	                                    if (ret) {
 	                                        /*Decode destination_file_name */
-	                                        ret = ((MetadataPDU_destination_file_name_size<=254));
+	                                        ret = ((MetadataPDU_destination_file_name_size<=32));
 	                                        if (ret) {
 	                                            pVal->destination_file_name.nCount = (int)MetadataPDU_destination_file_name_size;
 	                                            ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->destination_file_name.arr, pVal->destination_file_name.nCount);
