@@ -130,6 +130,8 @@ EntityId ::= OCTET STRING (SIZE(1..7))
 
 TransactionSequenceNumber ::= OCTET STRING (SIZE(1..7))
 
+Options ::= OCTET STRING (SIZE(0..32))
+
 PDUHeader ::= SEQUENCE {
    version ProtocolVersion,
    pdu-type PDUType,
@@ -157,7 +159,6 @@ FinishedPDU ::= SEQUENCE {
    condition-code ConditionCode,
    delivery-code DeliveryCode,
    file-status FileStatus
-   -- file store responses not implemented
 }
 
 AckPDU ::= SEQUENCE {
@@ -175,7 +176,6 @@ MetadataPDU ::= SEQUENCE {
    file-size FileSize,
    source-file-name FileName,
    destination-file-name FileName
-   -- TODO options
 }
 
 FileDataPDU ::= SEQUENCE {

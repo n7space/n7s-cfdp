@@ -5833,3 +5833,92 @@ flag cfdpKeepAlivePDU_ACN_Decode(cfdpKeepAlivePDU* pVal, BitStream* pBitStrm, in
 }
 
 
+flag cfdpOptions_Equal(const cfdpOptions* pVal1, const cfdpOptions* pVal2)
+{
+	return (pVal1->nCount == pVal2->nCount) && (memcmp(pVal1->arr, pVal2->arr, pVal1->nCount) ==0);
+
+}
+
+flag cfdpOptions_IsConstraintValid(const cfdpOptions* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = (pVal->nCount <= 32);
+    *pErrCode = ret ? 0 :  ERR_OPTIONS;
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpOptions cfdpOptions_constant = {.nCount = 0, .arr  = {[0 ... 32-1] = 0 }};
+#endif
+
+void cfdpOptions_Initialize(cfdpOptions* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpOptions)cfdpOptions_constant;
+}
+
+flag cfdpOptions_Encode(const cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpOptions_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 32);
+	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpOptions_Decode(cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+	asn1SccSint nCount;
+
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 32);
+	*pErrCode = ret ? 0 : ERR_UPER_DECODE_OPTIONS;
+	pVal->nCount = (long)nCount;
+	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
+
+	return ret  && cfdpOptions_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpOptions_ACN_Encode(const cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpOptions_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 32);
+	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpOptions_ACN_Decode(cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+	asn1SccSint nCount;
+
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 32);
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_OPTIONS;
+	pVal->nCount = (long)nCount;
+	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
+
+    return ret && cfdpOptions_IsConstraintValid(pVal, pErrCode);
+}
+
+

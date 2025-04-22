@@ -1796,6 +1796,42 @@ flag cfdpKeepAlivePDU_ACN_Encode(const cfdpKeepAlivePDU* pVal, BitStream* pBitSt
 #define ERR_ACN_DECODE_KEEPALIVEPDU_DIRECTIVE_CODE		555  /**/
 #define ERR_ACN_DECODE_KEEPALIVEPDU_PROGRESS_2		565  /**/
 flag cfdpKeepAlivePDU_ACN_Decode(cfdpKeepAlivePDU* pVal, BitStream* pBitStrm, int* pErrCode);
+typedef struct {
+    int nCount;
+    byte arr[32];
+} cfdpOptions;
+
+
+flag cfdpOptions_Equal(const cfdpOptions* pVal1, const cfdpOptions* pVal2);
+
+#define ERR_OPTIONS		571  /*(SIZE(0..32))*/
+flag cfdpOptions_IsConstraintValid(const cfdpOptions* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpOptions cfdpOptions_constant;
+#else
+#define cfdpOptions_constant {.nCount = 0, .arr  = {[0 ... 32-1] = 0 }}
+#endif
+
+void cfdpOptions_Initialize(cfdpOptions* pVal);
+
+#define ERR_UPER_ENCODE_OPTIONS		572  /**/
+#define cfdpOptions_REQUIRED_BYTES_FOR_ENCODING       33
+#define cfdpOptions_REQUIRED_BITS_FOR_ENCODING        262
+
+flag cfdpOptions_Encode(const cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_OPTIONS		573  /**/
+flag cfdpOptions_Decode(cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define ERR_ACN_ENCODE_OPTIONS		574  /**/
+#define cfdpOptions_REQUIRED_BYTES_FOR_ACN_ENCODING       33
+#define cfdpOptions_REQUIRED_BITS_FOR_ACN_ENCODING        262
+
+flag cfdpOptions_ACN_Encode(const cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_OPTIONS		575  /**/
+flag cfdpOptions_ACN_Decode(cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode);
 
 
 /* ================= Encoding/Decoding function prototypes =================
