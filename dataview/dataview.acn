@@ -93,11 +93,6 @@ FileDirectiveType [] {
    file-directive-pdu                        <directive-code> []
 }
 
-Payload <PDUType:pdu-type> [] {
-   file-directive                            [present-when pdu-type==0],
-   file-data                                 [present-when pdu-type==1]
-}
-
 CfdpPDU [] {
    pdu-header                                [] {
       version                                [],
@@ -115,7 +110,10 @@ CfdpPDU [] {
       transaction-sequence-number            [size length-of-transaction-sequence-number],
       destination-entity-id                  [size length-of-entity-ids]
    },
-   payload                                   <pdu-header.pdu-type> [size pdu-header.pdu-data-field-length]
+   payload                                   [size pdu-header.pdu-data-field-length] {
+      file-directive                         [present-when pdu-header.pdu-type==0],
+      file-data                              [present-when pdu-header.pdu-type==1]
+   }
 }
 
 

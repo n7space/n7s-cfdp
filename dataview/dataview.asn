@@ -184,14 +184,14 @@ FileDirectiveType ::= SEQUENCE {
    file-directive-pdu FileDirectivePDU
 }
 
-Payload ::= CHOICE {
+PayloadData ::= CHOICE {
    file-directive FileDirectiveType,
    file-data FileDataType
-} 
+}
 
 CfdpPDU ::= SEQUENCE {
    pdu-header PDUHeader,
-   payload OCTET STRING (CONTAINING Payload)
+   payload OCTET STRING (CONTAINING PayloadData)
 }
 
 
