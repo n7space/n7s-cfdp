@@ -140,21 +140,18 @@ PDUHeader ::= SEQUENCE {
 }
 
 EofPDU ::= SEQUENCE {
-   pdu-header PDUHeader,
    condition-code ConditionCode,
    file-checksum FileChecksum,
    file-size FileSize
 }
 
 FinishedPDU ::= SEQUENCE {
-   pdu-header PDUHeader,
    condition-code ConditionCode,
    delivery-code DeliveryCode,
    file-status FileStatus
 }
 
 AckPDU ::= SEQUENCE {
-   pdu-header PDUHeader,
    directive-code-of-ack-pdu DirectiveCode,
    directive-subtype-code DirectiveSubtypeCode,
    condition-code ConditionCode,
@@ -162,7 +159,6 @@ AckPDU ::= SEQUENCE {
 }
 
 MetadataPDU ::= SEQUENCE {
-   pdu-header PDUHeader,
    closure-requested ClosureRequested,
    checksum-type ChecksumType,
    file-size FileSize,

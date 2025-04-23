@@ -54,8 +54,6 @@ PDUHeader [] {
 }
 
 EofPDU [] {
-   pdu-header                                [],
-   directive-code                            NULL [pattern '04'H],
    condition-code                            [],
    spare                                     NULL [pattern '0000'B],
    file-checksum                             [],
@@ -63,8 +61,6 @@ EofPDU [] {
 }
 
 FinishedPDU [] {
-   pdu-header                                [],
-   directive-code                            NULL [pattern '05'H],
    condition-code                            [],
    end-system-status                         NULL [pattern '1'B],
    delivery-code                             [],
@@ -72,8 +68,6 @@ FinishedPDU [] {
 }
 
 AckPDU [] {
-   pdu-header                                [],
-   directive-code                            NULL [pattern '06'H],
    directive-code-of-ack-pdu                 [],
    directive-subtype-code                    [],
    condition-code                            [],
@@ -82,8 +76,6 @@ AckPDU [] {
 }
 
 MetadataPDU [] {
-   pdu-header                                [],
-   directive-code                            NULL [pattern '07'H],
    reserved1                                 NULL [pattern '0'B],
    closure-requested                         [],
    reserved2                                 NULL [pattern '00'B],
