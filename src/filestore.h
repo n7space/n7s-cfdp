@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 
-struct filestore {
+struct filestore_cfg {
 
     void (*filestore_create_file)(char *filepath);
     void (*filestore_delete_file)(char *filepath);
