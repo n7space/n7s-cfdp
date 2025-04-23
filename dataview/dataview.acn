@@ -36,22 +36,7 @@ LengthOfTransactionSequenceNumber            [encoding pos-int, size 3]
 EntityId                                     []
 TransactionSequenceNumber                    []
    
-PDUHeader [] {
-   version                                   [],
-   pdu-type                                  [],
-   direction                                 [],
-   transmission-mode                         [],
-   crc-flag                                  [],
-   large-file-flag                           [],
-   pdu-data-field-length                     [],
-   segmentation-control                      [],
-   length-of-entity-ids                      LengthOfEntityIds [], -- TODO add proper mapping function, 0 means 1 octet string
-   segment-metadata-flag                     [],
-   length-of-transaction-sequence-number     LengthOfTransactionSequenceNumber [], -- TODO add proper mapping function, 0 means 1 octet string
-   source-entity-id                          [size length-of-entity-ids],
-   transaction-sequence-number               [size length-of-transaction-sequence-number],
-   destination-entity-id                     [size length-of-entity-ids]
-}
+PDUHeader []
 
 EofPDU [] {
    condition-code                            [],
@@ -87,6 +72,11 @@ MetadataPDU [] {
    destination-file-name                     [size destination-file-name-size]
 }
 
+FileDataPDU [] {
+   segment-offset                            [],
+   file-data                                 []
+}
+
 FileDirectivePDU <DirectiveCode:directive-code> [] {
    eof-pdu                                   [present-when directive-code==4],
    finished-pdu                              [present-when directive-code==5],
@@ -94,17 +84,41 @@ FileDirectivePDU <DirectiveCode:directive-code> [] {
    metadata-pdu                              [present-when directive-code==7]
 }
 
-CfdpPDU [] {
-   pdu-header                                [],
-   directive-code                            DirectiveCode [],
-   file-data-pdu                             <directive-code> []
+FileDataType [] {
+   file-data-pdu                             []
 }
 
-FileDataPDU <PDUDataFieldLength: pdu-data-field-length> [] {
-   pdu-header                                [],
-   segment-offset                            [],
-   file-data                                 [size pdu-data-field-length] -- add proper mapping function
+FileDirectiveType [] {
+   directive-code                            DirectiveCode [],
+   file-directive-pdu                        <directive-code> []
 }
+
+Payload <PDUType:pdu-type> [] {
+   file-directive                            [present-when pdu-type==0],
+   file-data                                 [present-when pdu-type==1]
+}
+
+CfdpPDU [] {
+   pdu-header                                [] {
+      version                                [],
+      pdu-type                               PDUType [],
+      direction                              [],
+      transmission-mode                      [],
+      crc-flag                               [],
+      large-file-flag                        [],
+      pdu-data-field-length                  PDUDataFieldLength [],
+      segmentation-control                   [],
+      length-of-entity-ids                   LengthOfEntityIds [], -- TODO add proper mapping function, 0 means 1 octet string
+      segment-metadata-flag                  [],
+      length-of-transaction-sequence-number  LengthOfTransactionSequenceNumber [], -- TODO add proper mapping function, 0 means 1 octet string
+      source-entity-id                       [size length-of-entity-ids],
+      transaction-sequence-number            [size length-of-transaction-sequence-number],
+      destination-entity-id                  [size length-of-entity-ids]
+   },
+   payload                                   <pdu-header.pdu-type> [size pdu-header.pdu-data-field-length]
+}
+
+
 
 END
 

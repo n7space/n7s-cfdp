@@ -98,7 +98,7 @@ MessageType ::= ENUMERATED {
 
 ProtocolVersion ::= INTEGER (0 .. 7)
 
-PDUType ::= ENUMERATED {file-directive (0), file-data (1)}
+PDUType ::= INTEGER (0 .. 1)
 
 Direction ::= ENUMERATED {toward-receiver (0), toward-sender (1)}
 
@@ -126,12 +126,10 @@ Options ::= OCTET STRING (SIZE(0..32))
 
 PDUHeader ::= SEQUENCE {
    version ProtocolVersion,
-   pdu-type PDUType,
    direction Direction,
    transmission-mode TransmissionMode,
    crc-flag CRCFlag,
    large-file-flag LargeFileFlag,
-   pdu-data-field-length PDUDataFieldLength,
    segmentation-control SegmentationControl,
    segment-metadata-flag SegmentMetadataFlag,
    source-entity-id EntityId,
@@ -166,24 +164,37 @@ MetadataPDU ::= SEQUENCE {
    destination-file-name FileName
 }
 
-FileDirectivePDU ::= CHOICE {
-    eof-pdu EofPDU,
-    finished-pdu FinishedPDU,
-    ack-pdu AckPDU,
-    metadata-pdu MetadataPDU
- } 
-
-CfdpPDU ::= SEQUENCE {
-   pdu-header PDUHeader,
-   file-data-pdu FileDirectivePDU
-}
-
 FileDataPDU ::= SEQUENCE {
-   pdu-header PDUHeader,
-   -- segment metada flags
    segment-offset SegmentOffset,
    file-data FileData
 }
+
+FileDirectivePDU ::= CHOICE {
+   eof-pdu EofPDU,
+   finished-pdu FinishedPDU,
+   ack-pdu AckPDU,
+   metadata-pdu MetadataPDU
+}
+
+FileDataType ::= SEQUENCE {
+   file-data-pdu FileDataPDU
+}
+
+FileDirectiveType ::= SEQUENCE {
+   file-directive-pdu FileDirectivePDU
+}
+
+Payload ::= CHOICE {
+   file-directive FileDirectiveType,
+   file-data FileDataType
+} 
+
+CfdpPDU ::= SEQUENCE {
+   pdu-header PDUHeader,
+   payload OCTET STRING (CONTAINING Payload)
+}
+
+
 
 END
 

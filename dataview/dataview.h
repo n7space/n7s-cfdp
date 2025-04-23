@@ -779,12 +779,110 @@ flag cfdpFileDirectivePDU_Encode(const cfdpFileDirectivePDU* pVal, BitStream* pB
 #define ERR_UPER_DECODE_FILEDIRECTIVEPDU_ACK_PDU_2		372  /**/
 #define ERR_UPER_DECODE_FILEDIRECTIVEPDU_METADATA_PDU_2		434  /**/
 flag cfdpFileDirectivePDU_Decode(cfdpFileDirectivePDU* pVal, BitStream* pBitStrm, int* pErrCode);
+/*-- cfdpFileDirectiveType --------------------------------------------*/
+typedef struct {
+    cfdpFileDirectivePDU file_directive_pdu;
+
+} cfdpFileDirectiveType;
+
+flag cfdpFileDirectiveType_Equal(const cfdpFileDirectiveType* pVal1, const cfdpFileDirectiveType* pVal2);
+
+#define ERR_FILEDIRECTIVETYPE		642  /**/
+#define ERR_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_2		639  /**/
+flag cfdpFileDirectiveType_IsConstraintValid(const cfdpFileDirectiveType* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpFileDirectiveType cfdpFileDirectiveType_constant;
+#else
+#define cfdpFileDirectiveType_constant {.file_directive_pdu = cfdpFileDirectivePDU_constant}
+#endif
+
+void cfdpFileDirectiveType_Initialize(cfdpFileDirectiveType* pVal);
+
+#define ERR_UPER_ENCODE_FILEDIRECTIVETYPE		643  /**/
+#define ERR_UPER_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_2		640  /**/
+#define cfdpFileDirectiveType_REQUIRED_BYTES_FOR_ENCODING       71
+#define cfdpFileDirectiveType_REQUIRED_BITS_FOR_ENCODING        563
+
+flag cfdpFileDirectiveType_Encode(const cfdpFileDirectiveType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_FILEDIRECTIVETYPE		644  /**/
+#define ERR_UPER_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_2		641  /**/
+flag cfdpFileDirectiveType_Decode(cfdpFileDirectiveType* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE		645  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_DIRECTIVE_CODE_UNINITIALIZED		646  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_DIRECTIVE_CODE		440  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU		637  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU		477  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE_2		450  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_SPARE		452  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_CHECKSUM_2		462  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_SIZE_2		472  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU		517  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE_2		490  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_END_SYSTEM_STATUS		492  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE_2		502  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS_2		512  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU		567  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_CODE_OF_ACK_PDU_2		530  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE_2		540  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE_2		550  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_SPARE		552  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS_2		562  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU		629  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_RESERVED1		572  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED_2		582  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_RESERVED2		584  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE_2		594  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_FILE_SIZE_2		604  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE_UNINITIALIZED		647  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE		606  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME		611  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE_UNINITIALIZED		648  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE		616  /**/
+#define ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME		621  /**/
+#define cfdpFileDirectiveType_REQUIRED_BYTES_FOR_ACN_ENCODING       72
+#define cfdpFileDirectiveType_REQUIRED_BITS_FOR_ACN_ENCODING        576
+
+flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE		649  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_DIRECTIVE_CODE		441  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU		638  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU		478  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE_2		451  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_SPARE		453  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_CHECKSUM_2		463  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_SIZE_2		473  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU		518  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE_2		491  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_END_SYSTEM_STATUS		493  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE_2		503  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS_2		513  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU		568  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_CODE_OF_ACK_PDU_2		531  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE_2		541  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE_2		551  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_SPARE		553  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS_2		563  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU		630  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_RESERVED1		573  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED_2		583  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_RESERVED2		585  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE_2		595  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_FILE_SIZE_2		605  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE		607  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME		612  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE		617  /**/
+#define ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME		622  /**/
+flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef asn1SccUint cfdpSegmentOffset;
 
 
 flag cfdpSegmentOffset_Equal(const cfdpSegmentOffset* pVal1, const cfdpSegmentOffset* pVal2);
 
-#define ERR_SEGMENTOFFSET		440  /*(0..4294967295)*/
+#define ERR_SEGMENTOFFSET		650  /*(0..4294967295)*/
 flag cfdpSegmentOffset_IsConstraintValid(const cfdpSegmentOffset* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -795,22 +893,22 @@ extern const cfdpSegmentOffset cfdpSegmentOffset_constant;
 
 void cfdpSegmentOffset_Initialize(cfdpSegmentOffset* pVal);
 
-#define ERR_UPER_ENCODE_SEGMENTOFFSET		441  /**/
+#define ERR_UPER_ENCODE_SEGMENTOFFSET		651  /**/
 #define cfdpSegmentOffset_REQUIRED_BYTES_FOR_ENCODING       4
 #define cfdpSegmentOffset_REQUIRED_BITS_FOR_ENCODING        32
 
 flag cfdpSegmentOffset_Encode(const cfdpSegmentOffset* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_SEGMENTOFFSET		442  /**/
+#define ERR_UPER_DECODE_SEGMENTOFFSET		652  /**/
 flag cfdpSegmentOffset_Decode(cfdpSegmentOffset* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_SEGMENTOFFSET		443  /**/
+#define ERR_ACN_ENCODE_SEGMENTOFFSET		653  /**/
 #define cfdpSegmentOffset_REQUIRED_BYTES_FOR_ACN_ENCODING       4
 #define cfdpSegmentOffset_REQUIRED_BITS_FOR_ACN_ENCODING        32
 
 flag cfdpSegmentOffset_ACN_Encode(const cfdpSegmentOffset* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_SEGMENTOFFSET		444  /**/
+#define ERR_ACN_DECODE_SEGMENTOFFSET		654  /**/
 flag cfdpSegmentOffset_ACN_Decode(cfdpSegmentOffset* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef struct {
     int nCount;
@@ -820,7 +918,7 @@ typedef struct {
 
 flag cfdpFileData_Equal(const cfdpFileData* pVal1, const cfdpFileData* pVal2);
 
-#define ERR_FILEDATA		445  /*(SIZE(0..254))*/
+#define ERR_FILEDATA		655  /*(SIZE(0..254))*/
 flag cfdpFileData_IsConstraintValid(const cfdpFileData* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -831,23 +929,111 @@ extern const cfdpFileData cfdpFileData_constant;
 
 void cfdpFileData_Initialize(cfdpFileData* pVal);
 
-#define ERR_UPER_ENCODE_FILEDATA		446  /**/
+#define ERR_UPER_ENCODE_FILEDATA		656  /**/
 #define cfdpFileData_REQUIRED_BYTES_FOR_ENCODING       255
 #define cfdpFileData_REQUIRED_BITS_FOR_ENCODING        2040
 
 flag cfdpFileData_Encode(const cfdpFileData* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_FILEDATA		447  /**/
+#define ERR_UPER_DECODE_FILEDATA		657  /**/
 flag cfdpFileData_Decode(cfdpFileData* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_FILEDATA		448  /**/
+#define ERR_ACN_ENCODE_FILEDATA		658  /**/
 #define cfdpFileData_REQUIRED_BYTES_FOR_ACN_ENCODING       255
 #define cfdpFileData_REQUIRED_BITS_FOR_ACN_ENCODING        2040
 
 flag cfdpFileData_ACN_Encode(const cfdpFileData* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_FILEDATA		449  /**/
+#define ERR_ACN_DECODE_FILEDATA		659  /**/
 flag cfdpFileData_ACN_Decode(cfdpFileData* pVal, BitStream* pBitStrm, int* pErrCode);
+/*-- cfdpFileDataPDU --------------------------------------------*/
+typedef struct {
+    cfdpSegmentOffset segment_offset;
+    cfdpFileData file_data;
+
+} cfdpFileDataPDU;
+
+flag cfdpFileDataPDU_Equal(const cfdpFileDataPDU* pVal1, const cfdpFileDataPDU* pVal2);
+
+#define ERR_FILEDATAPDU		680  /**/
+#define ERR_FILEDATAPDU_SEGMENT_OFFSET_2		665  /**/
+#define ERR_FILEDATAPDU_FILE_DATA_2		675  /**/
+flag cfdpFileDataPDU_IsConstraintValid(const cfdpFileDataPDU* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpFileDataPDU cfdpFileDataPDU_constant;
+#else
+#define cfdpFileDataPDU_constant {.segment_offset = 0UL, .file_data = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}}
+#endif
+
+void cfdpFileDataPDU_Initialize(cfdpFileDataPDU* pVal);
+
+#define ERR_UPER_ENCODE_FILEDATAPDU		681  /**/
+#define ERR_UPER_ENCODE_FILEDATAPDU_SEGMENT_OFFSET_2		666  /**/
+#define ERR_UPER_ENCODE_FILEDATAPDU_FILE_DATA_2		676  /**/
+#define cfdpFileDataPDU_REQUIRED_BYTES_FOR_ENCODING       259
+#define cfdpFileDataPDU_REQUIRED_BITS_FOR_ENCODING        2072
+
+flag cfdpFileDataPDU_Encode(const cfdpFileDataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_FILEDATAPDU		682  /**/
+#define ERR_UPER_DECODE_FILEDATAPDU_SEGMENT_OFFSET_2		667  /**/
+#define ERR_UPER_DECODE_FILEDATAPDU_FILE_DATA_2		677  /**/
+flag cfdpFileDataPDU_Decode(cfdpFileDataPDU* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define ERR_ACN_ENCODE_FILEDATAPDU		683  /**/
+#define ERR_ACN_ENCODE_FILEDATAPDU_SEGMENT_OFFSET_2		668  /**/
+#define ERR_ACN_ENCODE_FILEDATAPDU_FILE_DATA_2		678  /**/
+#define cfdpFileDataPDU_REQUIRED_BYTES_FOR_ACN_ENCODING       259
+#define cfdpFileDataPDU_REQUIRED_BITS_FOR_ACN_ENCODING        2072
+
+flag cfdpFileDataPDU_ACN_Encode(const cfdpFileDataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_FILEDATAPDU		684  /**/
+#define ERR_ACN_DECODE_FILEDATAPDU_SEGMENT_OFFSET_2		669  /**/
+#define ERR_ACN_DECODE_FILEDATAPDU_FILE_DATA_2		679  /**/
+flag cfdpFileDataPDU_ACN_Decode(cfdpFileDataPDU* pVal, BitStream* pBitStrm, int* pErrCode);
+/*-- cfdpFileDataType --------------------------------------------*/
+typedef struct {
+    cfdpFileDataPDU file_data_pdu;
+
+} cfdpFileDataType;
+
+flag cfdpFileDataType_Equal(const cfdpFileDataType* pVal1, const cfdpFileDataType* pVal2);
+
+#define ERR_FILEDATATYPE		690  /**/
+#define ERR_FILEDATATYPE_FILE_DATA_PDU		685  /**/
+flag cfdpFileDataType_IsConstraintValid(const cfdpFileDataType* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpFileDataType cfdpFileDataType_constant;
+#else
+#define cfdpFileDataType_constant {.file_data_pdu = cfdpFileDataPDU_constant}
+#endif
+
+void cfdpFileDataType_Initialize(cfdpFileDataType* pVal);
+
+#define ERR_UPER_ENCODE_FILEDATATYPE		691  /**/
+#define ERR_UPER_ENCODE_FILEDATATYPE_FILE_DATA_PDU		686  /**/
+#define cfdpFileDataType_REQUIRED_BYTES_FOR_ENCODING       259
+#define cfdpFileDataType_REQUIRED_BITS_FOR_ENCODING        2072
+
+flag cfdpFileDataType_Encode(const cfdpFileDataType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_FILEDATATYPE		692  /**/
+#define ERR_UPER_DECODE_FILEDATATYPE_FILE_DATA_PDU		687  /**/
+flag cfdpFileDataType_Decode(cfdpFileDataType* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define ERR_ACN_ENCODE_FILEDATATYPE		693  /**/
+#define ERR_ACN_ENCODE_FILEDATATYPE_FILE_DATA_PDU		688  /**/
+#define cfdpFileDataType_REQUIRED_BYTES_FOR_ACN_ENCODING       259
+#define cfdpFileDataType_REQUIRED_BITS_FOR_ACN_ENCODING        2072
+
+flag cfdpFileDataType_ACN_Encode(const cfdpFileDataType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_FILEDATATYPE		694  /**/
+#define ERR_ACN_DECODE_FILEDATATYPE_FILE_DATA_PDU		689  /**/
+flag cfdpFileDataType_ACN_Decode(cfdpFileDataType* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
     ResponseRequired_nak = 0,
     ResponseRequired_keep_alive = 1
@@ -859,7 +1045,7 @@ typedef enum {
 
 flag cfdpResponseRequired_Equal(const cfdpResponseRequired* pVal1, const cfdpResponseRequired* pVal2);
 
-#define ERR_RESPONSEREQUIRED		450  /*nak | keep-alive*/
+#define ERR_RESPONSEREQUIRED		695  /*nak | keep-alive*/
 flag cfdpResponseRequired_IsConstraintValid(const cfdpResponseRequired* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -870,29 +1056,29 @@ extern const cfdpResponseRequired cfdpResponseRequired_constant;
 
 void cfdpResponseRequired_Initialize(cfdpResponseRequired* pVal);
 
-#define ERR_UPER_ENCODE_RESPONSEREQUIRED		451  /**/
+#define ERR_UPER_ENCODE_RESPONSEREQUIRED		696  /**/
 #define cfdpResponseRequired_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpResponseRequired_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpResponseRequired_Encode(const cfdpResponseRequired* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_RESPONSEREQUIRED		452  /**/
+#define ERR_UPER_DECODE_RESPONSEREQUIRED		697  /**/
 flag cfdpResponseRequired_Decode(cfdpResponseRequired* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_RESPONSEREQUIRED		453  /**/
+#define ERR_ACN_ENCODE_RESPONSEREQUIRED		698  /**/
 #define cfdpResponseRequired_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpResponseRequired_REQUIRED_BITS_FOR_ACN_ENCODING        1
 
 flag cfdpResponseRequired_ACN_Encode(const cfdpResponseRequired* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_RESPONSEREQUIRED		454  /**/
+#define ERR_ACN_DECODE_RESPONSEREQUIRED		699  /**/
 flag cfdpResponseRequired_ACN_Decode(cfdpResponseRequired* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef asn1SccUint cfdpProgress;
 
 
 flag cfdpProgress_Equal(const cfdpProgress* pVal1, const cfdpProgress* pVal2);
 
-#define ERR_PROGRESS		455  /*(0..4294967295)*/
+#define ERR_PROGRESS		700  /*(0..4294967295)*/
 flag cfdpProgress_IsConstraintValid(const cfdpProgress* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -903,22 +1089,22 @@ extern const cfdpProgress cfdpProgress_constant;
 
 void cfdpProgress_Initialize(cfdpProgress* pVal);
 
-#define ERR_UPER_ENCODE_PROGRESS		456  /**/
+#define ERR_UPER_ENCODE_PROGRESS		701  /**/
 #define cfdpProgress_REQUIRED_BYTES_FOR_ENCODING       4
 #define cfdpProgress_REQUIRED_BITS_FOR_ENCODING        32
 
 flag cfdpProgress_Encode(const cfdpProgress* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_PROGRESS		457  /**/
+#define ERR_UPER_DECODE_PROGRESS		702  /**/
 flag cfdpProgress_Decode(cfdpProgress* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_PROGRESS		458  /**/
+#define ERR_ACN_ENCODE_PROGRESS		703  /**/
 #define cfdpProgress_REQUIRED_BYTES_FOR_ACN_ENCODING       4
 #define cfdpProgress_REQUIRED_BITS_FOR_ACN_ENCODING        32
 
 flag cfdpProgress_ACN_Encode(const cfdpProgress* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_PROGRESS		459  /**/
+#define ERR_ACN_DECODE_PROGRESS		704  /**/
 flag cfdpProgress_ACN_Decode(cfdpProgress* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
     TransactionStatus_discarted_deliberately = 0,
@@ -935,7 +1121,7 @@ typedef enum {
 
 flag cfdpTransactionStatus_Equal(const cfdpTransactionStatus* pVal1, const cfdpTransactionStatus* pVal2);
 
-#define ERR_TRANSACTIONSTATUS		460  /*discarted-deliberately | discarted-file-rejection | retained-successfully | unreported*/
+#define ERR_TRANSACTIONSTATUS		705  /*discarted-deliberately | discarted-file-rejection | retained-successfully | unreported*/
 flag cfdpTransactionStatus_IsConstraintValid(const cfdpTransactionStatus* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -946,22 +1132,22 @@ extern const cfdpTransactionStatus cfdpTransactionStatus_constant;
 
 void cfdpTransactionStatus_Initialize(cfdpTransactionStatus* pVal);
 
-#define ERR_UPER_ENCODE_TRANSACTIONSTATUS		461  /**/
+#define ERR_UPER_ENCODE_TRANSACTIONSTATUS		706  /**/
 #define cfdpTransactionStatus_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpTransactionStatus_REQUIRED_BITS_FOR_ENCODING        2
 
 flag cfdpTransactionStatus_Encode(const cfdpTransactionStatus* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_TRANSACTIONSTATUS		462  /**/
+#define ERR_UPER_DECODE_TRANSACTIONSTATUS		707  /**/
 flag cfdpTransactionStatus_Decode(cfdpTransactionStatus* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_TRANSACTIONSTATUS		463  /**/
+#define ERR_ACN_ENCODE_TRANSACTIONSTATUS		708  /**/
 #define cfdpTransactionStatus_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpTransactionStatus_REQUIRED_BITS_FOR_ACN_ENCODING        2
 
 flag cfdpTransactionStatus_ACN_Encode(const cfdpTransactionStatus* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_TRANSACTIONSTATUS		464  /**/
+#define ERR_ACN_DECODE_TRANSACTIONSTATUS		709  /**/
 flag cfdpTransactionStatus_ACN_Decode(cfdpTransactionStatus* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
     TypeFieldCode_filestore_request = 0,
@@ -982,7 +1168,7 @@ typedef enum {
 
 flag cfdpTypeFieldCode_Equal(const cfdpTypeFieldCode* pVal1, const cfdpTypeFieldCode* pVal2);
 
-#define ERR_TYPEFIELDCODE		465  /*filestore-request | filestore-response | message-to-user | fault-handler-overrides | flow-label | entity-id*/
+#define ERR_TYPEFIELDCODE		710  /*filestore-request | filestore-response | message-to-user | fault-handler-overrides | flow-label | entity-id*/
 flag cfdpTypeFieldCode_IsConstraintValid(const cfdpTypeFieldCode* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -993,22 +1179,22 @@ extern const cfdpTypeFieldCode cfdpTypeFieldCode_constant;
 
 void cfdpTypeFieldCode_Initialize(cfdpTypeFieldCode* pVal);
 
-#define ERR_UPER_ENCODE_TYPEFIELDCODE		466  /**/
+#define ERR_UPER_ENCODE_TYPEFIELDCODE		711  /**/
 #define cfdpTypeFieldCode_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpTypeFieldCode_REQUIRED_BITS_FOR_ENCODING        3
 
 flag cfdpTypeFieldCode_Encode(const cfdpTypeFieldCode* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_TYPEFIELDCODE		467  /**/
+#define ERR_UPER_DECODE_TYPEFIELDCODE		712  /**/
 flag cfdpTypeFieldCode_Decode(cfdpTypeFieldCode* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_TYPEFIELDCODE		468  /**/
+#define ERR_ACN_ENCODE_TYPEFIELDCODE		713  /**/
 #define cfdpTypeFieldCode_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpTypeFieldCode_REQUIRED_BITS_FOR_ACN_ENCODING        8
 
 flag cfdpTypeFieldCode_ACN_Encode(const cfdpTypeFieldCode* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_TYPEFIELDCODE		469  /**/
+#define ERR_ACN_DECODE_TYPEFIELDCODE		714  /**/
 flag cfdpTypeFieldCode_ACN_Decode(cfdpTypeFieldCode* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
     MessageType_proxy_put_request = 0,
@@ -1053,7 +1239,7 @@ typedef enum {
 
 flag cfdpMessageType_Equal(const cfdpMessageType* pVal1, const cfdpMessageType* pVal2);
 
-#define ERR_MESSAGETYPE		470  /*proxy-put-request | proxy-message-to-user | proxy-filestore-request | proxy-fault-handler-override | proxy-transmission-mode | proxy-flow-label | proxy-segmentation-control | proxy-put-response | proxy-filestore-response | proxy-put-cancel | directory-listing-request | directory-listing-response | remote-status-report-request | remote-status-report-response | remote-suspend-request | remote-suspend-response | remote-resume-request | remote-resume-response*/
+#define ERR_MESSAGETYPE		715  /*proxy-put-request | proxy-message-to-user | proxy-filestore-request | proxy-fault-handler-override | proxy-transmission-mode | proxy-flow-label | proxy-segmentation-control | proxy-put-response | proxy-filestore-response | proxy-put-cancel | directory-listing-request | directory-listing-response | remote-status-report-request | remote-status-report-response | remote-suspend-request | remote-suspend-response | remote-resume-request | remote-resume-response*/
 flag cfdpMessageType_IsConstraintValid(const cfdpMessageType* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1064,29 +1250,29 @@ extern const cfdpMessageType cfdpMessageType_constant;
 
 void cfdpMessageType_Initialize(cfdpMessageType* pVal);
 
-#define ERR_UPER_ENCODE_MESSAGETYPE		471  /**/
+#define ERR_UPER_ENCODE_MESSAGETYPE		716  /**/
 #define cfdpMessageType_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpMessageType_REQUIRED_BITS_FOR_ENCODING        5
 
 flag cfdpMessageType_Encode(const cfdpMessageType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_MESSAGETYPE		472  /**/
+#define ERR_UPER_DECODE_MESSAGETYPE		717  /**/
 flag cfdpMessageType_Decode(cfdpMessageType* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_MESSAGETYPE		473  /**/
+#define ERR_ACN_ENCODE_MESSAGETYPE		718  /**/
 #define cfdpMessageType_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpMessageType_REQUIRED_BITS_FOR_ACN_ENCODING        8
 
 flag cfdpMessageType_ACN_Encode(const cfdpMessageType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_MESSAGETYPE		474  /**/
+#define ERR_ACN_DECODE_MESSAGETYPE		719  /**/
 flag cfdpMessageType_ACN_Decode(cfdpMessageType* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef asn1SccUint cfdpProtocolVersion;
 
 
 flag cfdpProtocolVersion_Equal(const cfdpProtocolVersion* pVal1, const cfdpProtocolVersion* pVal2);
 
-#define ERR_PROTOCOLVERSION		475  /*(0 .. 7)*/
+#define ERR_PROTOCOLVERSION		720  /*(0 .. 7)*/
 flag cfdpProtocolVersion_IsConstraintValid(const cfdpProtocolVersion* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1097,62 +1283,102 @@ extern const cfdpProtocolVersion cfdpProtocolVersion_constant;
 
 void cfdpProtocolVersion_Initialize(cfdpProtocolVersion* pVal);
 
-#define ERR_UPER_ENCODE_PROTOCOLVERSION		476  /**/
+#define ERR_UPER_ENCODE_PROTOCOLVERSION		721  /**/
 #define cfdpProtocolVersion_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpProtocolVersion_REQUIRED_BITS_FOR_ENCODING        3
 
 flag cfdpProtocolVersion_Encode(const cfdpProtocolVersion* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_PROTOCOLVERSION		477  /**/
+#define ERR_UPER_DECODE_PROTOCOLVERSION		722  /**/
 flag cfdpProtocolVersion_Decode(cfdpProtocolVersion* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_PROTOCOLVERSION		478  /**/
+#define ERR_ACN_ENCODE_PROTOCOLVERSION		723  /**/
 #define cfdpProtocolVersion_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpProtocolVersion_REQUIRED_BITS_FOR_ACN_ENCODING        3
 
 flag cfdpProtocolVersion_ACN_Encode(const cfdpProtocolVersion* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_PROTOCOLVERSION		479  /**/
+#define ERR_ACN_DECODE_PROTOCOLVERSION		724  /**/
 flag cfdpProtocolVersion_ACN_Decode(cfdpProtocolVersion* pVal, BitStream* pBitStrm, int* pErrCode);
-typedef enum {
-    PDUType_file_directive = 0,
-    PDUType_file_data = 1
-} cfdpPDUType;
+typedef asn1SccUint cfdpPDUType;
 
-// please use the following macros to avoid breaking code.
-#define cfdpPDUType_file_directive PDUType_file_directive
-#define cfdpPDUType_file_data PDUType_file_data
 
 flag cfdpPDUType_Equal(const cfdpPDUType* pVal1, const cfdpPDUType* pVal2);
 
-#define ERR_PDUTYPE		480  /*file-directive | file-data*/
+#define ERR_PDUTYPE		725  /*(0 .. 1)*/
 flag cfdpPDUType_IsConstraintValid(const cfdpPDUType* pVal, int* pErrCode);
 
 #ifdef __cplusplus
 extern const cfdpPDUType cfdpPDUType_constant;
 #else
-#define cfdpPDUType_constant PDUType_file_directive
+#define cfdpPDUType_constant 0UL
 #endif
 
 void cfdpPDUType_Initialize(cfdpPDUType* pVal);
 
-#define ERR_UPER_ENCODE_PDUTYPE		481  /**/
+#define ERR_UPER_ENCODE_PDUTYPE		726  /**/
 #define cfdpPDUType_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpPDUType_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpPDUType_Encode(const cfdpPDUType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_PDUTYPE		482  /**/
+#define ERR_UPER_DECODE_PDUTYPE		727  /**/
 flag cfdpPDUType_Decode(cfdpPDUType* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_PDUTYPE		483  /**/
+#define ERR_ACN_ENCODE_PDUTYPE		728  /**/
 #define cfdpPDUType_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpPDUType_REQUIRED_BITS_FOR_ACN_ENCODING        1
 
 flag cfdpPDUType_ACN_Encode(const cfdpPDUType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_PDUTYPE		484  /**/
+#define ERR_ACN_DECODE_PDUTYPE		729  /**/
 flag cfdpPDUType_ACN_Decode(cfdpPDUType* pVal, BitStream* pBitStrm, int* pErrCode);
+/*-- cfdpPayload --------------------------------------------*/
+
+typedef enum {
+    Payload_NONE,
+    Payload_file_directive_PRESENT,
+    Payload_file_data_PRESENT
+} cfdpPayload_selection;
+
+typedef union {
+    cfdpFileDirectiveType file_directive;
+    cfdpFileDataType file_data;
+} cfdpPayload_unchecked_union;
+
+typedef struct {
+    cfdpPayload_selection kind;
+
+    cfdpPayload_unchecked_union u;
+} cfdpPayload;
+
+flag cfdpPayload_Equal(const cfdpPayload* pVal1, const cfdpPayload* pVal2);
+
+#define ERR_PAYLOAD		953  /**/
+#define ERR_PAYLOAD_FILE_DIRECTIVE_2		937  /**/
+#define ERR_PAYLOAD_FILE_DATA_2		950  /**/
+flag cfdpPayload_IsConstraintValid(const cfdpPayload* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpPayload cfdpPayload_constant;
+#else
+#define cfdpPayload_constant {.kind = Payload_file_directive_PRESENT, .u.file_directive = cfdpFileDirectiveType_constant}
+#endif
+
+void cfdpPayload_Initialize(cfdpPayload* pVal);
+
+#define ERR_UPER_ENCODE_PAYLOAD		954  /**/
+#define ERR_UPER_ENCODE_PAYLOAD_FILE_DIRECTIVE_2		938  /**/
+#define ERR_UPER_ENCODE_PAYLOAD_FILE_DATA_2		951  /**/
+#define cfdpPayload_REQUIRED_BYTES_FOR_ENCODING       260
+#define cfdpPayload_REQUIRED_BITS_FOR_ENCODING        2073
+
+flag cfdpPayload_Encode(const cfdpPayload* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_PAYLOAD		955  /**/
+#define ERR_UPER_DECODE_PAYLOAD_FILE_DIRECTIVE_2		939  /**/
+#define ERR_UPER_DECODE_PAYLOAD_FILE_DATA_2		952  /**/
+flag cfdpPayload_Decode(cfdpPayload* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
     Direction_toward_receiver = 0,
     Direction_toward_sender = 1
@@ -1164,7 +1390,7 @@ typedef enum {
 
 flag cfdpDirection_Equal(const cfdpDirection* pVal1, const cfdpDirection* pVal2);
 
-#define ERR_DIRECTION		485  /*toward-receiver | toward-sender*/
+#define ERR_DIRECTION		958  /*toward-receiver | toward-sender*/
 flag cfdpDirection_IsConstraintValid(const cfdpDirection* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1175,22 +1401,22 @@ extern const cfdpDirection cfdpDirection_constant;
 
 void cfdpDirection_Initialize(cfdpDirection* pVal);
 
-#define ERR_UPER_ENCODE_DIRECTION		486  /**/
+#define ERR_UPER_ENCODE_DIRECTION		959  /**/
 #define cfdpDirection_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpDirection_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpDirection_Encode(const cfdpDirection* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_DIRECTION		487  /**/
+#define ERR_UPER_DECODE_DIRECTION		960  /**/
 flag cfdpDirection_Decode(cfdpDirection* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_DIRECTION		488  /**/
+#define ERR_ACN_ENCODE_DIRECTION		961  /**/
 #define cfdpDirection_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpDirection_REQUIRED_BITS_FOR_ACN_ENCODING        1
 
 flag cfdpDirection_ACN_Encode(const cfdpDirection* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_DIRECTION		489  /**/
+#define ERR_ACN_DECODE_DIRECTION		962  /**/
 flag cfdpDirection_ACN_Decode(cfdpDirection* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
     TransmissionMode_acknowledged = 0,
@@ -1203,7 +1429,7 @@ typedef enum {
 
 flag cfdpTransmissionMode_Equal(const cfdpTransmissionMode* pVal1, const cfdpTransmissionMode* pVal2);
 
-#define ERR_TRANSMISSIONMODE		490  /*acknowledged | unacknowledged*/
+#define ERR_TRANSMISSIONMODE		963  /*acknowledged | unacknowledged*/
 flag cfdpTransmissionMode_IsConstraintValid(const cfdpTransmissionMode* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1214,22 +1440,22 @@ extern const cfdpTransmissionMode cfdpTransmissionMode_constant;
 
 void cfdpTransmissionMode_Initialize(cfdpTransmissionMode* pVal);
 
-#define ERR_UPER_ENCODE_TRANSMISSIONMODE		491  /**/
+#define ERR_UPER_ENCODE_TRANSMISSIONMODE		964  /**/
 #define cfdpTransmissionMode_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpTransmissionMode_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpTransmissionMode_Encode(const cfdpTransmissionMode* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_TRANSMISSIONMODE		492  /**/
+#define ERR_UPER_DECODE_TRANSMISSIONMODE		965  /**/
 flag cfdpTransmissionMode_Decode(cfdpTransmissionMode* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_TRANSMISSIONMODE		493  /**/
+#define ERR_ACN_ENCODE_TRANSMISSIONMODE		966  /**/
 #define cfdpTransmissionMode_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpTransmissionMode_REQUIRED_BITS_FOR_ACN_ENCODING        1
 
 flag cfdpTransmissionMode_ACN_Encode(const cfdpTransmissionMode* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_TRANSMISSIONMODE		494  /**/
+#define ERR_ACN_DECODE_TRANSMISSIONMODE		967  /**/
 flag cfdpTransmissionMode_ACN_Decode(cfdpTransmissionMode* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
     CRCFlag_crc_not_present = 0,
@@ -1242,7 +1468,7 @@ typedef enum {
 
 flag cfdpCRCFlag_Equal(const cfdpCRCFlag* pVal1, const cfdpCRCFlag* pVal2);
 
-#define ERR_CRCFLAG		495  /*crc-not-present | crc-present*/
+#define ERR_CRCFLAG		968  /*crc-not-present | crc-present*/
 flag cfdpCRCFlag_IsConstraintValid(const cfdpCRCFlag* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1253,29 +1479,29 @@ extern const cfdpCRCFlag cfdpCRCFlag_constant;
 
 void cfdpCRCFlag_Initialize(cfdpCRCFlag* pVal);
 
-#define ERR_UPER_ENCODE_CRCFLAG		496  /**/
+#define ERR_UPER_ENCODE_CRCFLAG		969  /**/
 #define cfdpCRCFlag_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpCRCFlag_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpCRCFlag_Encode(const cfdpCRCFlag* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_CRCFLAG		497  /**/
+#define ERR_UPER_DECODE_CRCFLAG		970  /**/
 flag cfdpCRCFlag_Decode(cfdpCRCFlag* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_CRCFLAG		498  /**/
+#define ERR_ACN_ENCODE_CRCFLAG		971  /**/
 #define cfdpCRCFlag_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpCRCFlag_REQUIRED_BITS_FOR_ACN_ENCODING        1
 
 flag cfdpCRCFlag_ACN_Encode(const cfdpCRCFlag* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_CRCFLAG		499  /**/
+#define ERR_ACN_DECODE_CRCFLAG		972  /**/
 flag cfdpCRCFlag_ACN_Decode(cfdpCRCFlag* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef asn1SccUint cfdpLargeFileFlag;
 
 
 flag cfdpLargeFileFlag_Equal(const cfdpLargeFileFlag* pVal1, const cfdpLargeFileFlag* pVal2);
 
-#define ERR_LARGEFILEFLAG		500  /*(0..1)*/
+#define ERR_LARGEFILEFLAG		973  /*(0..1)*/
 flag cfdpLargeFileFlag_IsConstraintValid(const cfdpLargeFileFlag* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1286,29 +1512,29 @@ extern const cfdpLargeFileFlag cfdpLargeFileFlag_constant;
 
 void cfdpLargeFileFlag_Initialize(cfdpLargeFileFlag* pVal);
 
-#define ERR_UPER_ENCODE_LARGEFILEFLAG		501  /**/
+#define ERR_UPER_ENCODE_LARGEFILEFLAG		974  /**/
 #define cfdpLargeFileFlag_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpLargeFileFlag_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpLargeFileFlag_Encode(const cfdpLargeFileFlag* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_LARGEFILEFLAG		502  /**/
+#define ERR_UPER_DECODE_LARGEFILEFLAG		975  /**/
 flag cfdpLargeFileFlag_Decode(cfdpLargeFileFlag* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_LARGEFILEFLAG		503  /**/
+#define ERR_ACN_ENCODE_LARGEFILEFLAG		976  /**/
 #define cfdpLargeFileFlag_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpLargeFileFlag_REQUIRED_BITS_FOR_ACN_ENCODING        1
 
 flag cfdpLargeFileFlag_ACN_Encode(const cfdpLargeFileFlag* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_LARGEFILEFLAG		504  /**/
+#define ERR_ACN_DECODE_LARGEFILEFLAG		977  /**/
 flag cfdpLargeFileFlag_ACN_Decode(cfdpLargeFileFlag* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef asn1SccUint cfdpPDUDataFieldLength;
 
 
 flag cfdpPDUDataFieldLength_Equal(const cfdpPDUDataFieldLength* pVal1, const cfdpPDUDataFieldLength* pVal2);
 
-#define ERR_PDUDATAFIELDLENGTH		505  /*(0 .. 65535)*/
+#define ERR_PDUDATAFIELDLENGTH		978  /*(0 .. 65535)*/
 flag cfdpPDUDataFieldLength_IsConstraintValid(const cfdpPDUDataFieldLength* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1319,22 +1545,22 @@ extern const cfdpPDUDataFieldLength cfdpPDUDataFieldLength_constant;
 
 void cfdpPDUDataFieldLength_Initialize(cfdpPDUDataFieldLength* pVal);
 
-#define ERR_UPER_ENCODE_PDUDATAFIELDLENGTH		506  /**/
+#define ERR_UPER_ENCODE_PDUDATAFIELDLENGTH		979  /**/
 #define cfdpPDUDataFieldLength_REQUIRED_BYTES_FOR_ENCODING       2
 #define cfdpPDUDataFieldLength_REQUIRED_BITS_FOR_ENCODING        16
 
 flag cfdpPDUDataFieldLength_Encode(const cfdpPDUDataFieldLength* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_PDUDATAFIELDLENGTH		507  /**/
+#define ERR_UPER_DECODE_PDUDATAFIELDLENGTH		980  /**/
 flag cfdpPDUDataFieldLength_Decode(cfdpPDUDataFieldLength* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_PDUDATAFIELDLENGTH		508  /**/
+#define ERR_ACN_ENCODE_PDUDATAFIELDLENGTH		981  /**/
 #define cfdpPDUDataFieldLength_REQUIRED_BYTES_FOR_ACN_ENCODING       2
 #define cfdpPDUDataFieldLength_REQUIRED_BITS_FOR_ACN_ENCODING        16
 
 flag cfdpPDUDataFieldLength_ACN_Encode(const cfdpPDUDataFieldLength* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_PDUDATAFIELDLENGTH		509  /**/
+#define ERR_ACN_DECODE_PDUDATAFIELDLENGTH		982  /**/
 flag cfdpPDUDataFieldLength_ACN_Decode(cfdpPDUDataFieldLength* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
     SegmentationControl_record_boundries_not_preserved = 0,
@@ -1347,7 +1573,7 @@ typedef enum {
 
 flag cfdpSegmentationControl_Equal(const cfdpSegmentationControl* pVal1, const cfdpSegmentationControl* pVal2);
 
-#define ERR_SEGMENTATIONCONTROL		510  /*record-boundries-not-preserved | record-boundries-preserved*/
+#define ERR_SEGMENTATIONCONTROL		983  /*record-boundries-not-preserved | record-boundries-preserved*/
 flag cfdpSegmentationControl_IsConstraintValid(const cfdpSegmentationControl* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1358,29 +1584,29 @@ extern const cfdpSegmentationControl cfdpSegmentationControl_constant;
 
 void cfdpSegmentationControl_Initialize(cfdpSegmentationControl* pVal);
 
-#define ERR_UPER_ENCODE_SEGMENTATIONCONTROL		511  /**/
+#define ERR_UPER_ENCODE_SEGMENTATIONCONTROL		984  /**/
 #define cfdpSegmentationControl_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpSegmentationControl_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpSegmentationControl_Encode(const cfdpSegmentationControl* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_SEGMENTATIONCONTROL		512  /**/
+#define ERR_UPER_DECODE_SEGMENTATIONCONTROL		985  /**/
 flag cfdpSegmentationControl_Decode(cfdpSegmentationControl* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_SEGMENTATIONCONTROL		513  /**/
+#define ERR_ACN_ENCODE_SEGMENTATIONCONTROL		986  /**/
 #define cfdpSegmentationControl_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpSegmentationControl_REQUIRED_BITS_FOR_ACN_ENCODING        1
 
 flag cfdpSegmentationControl_ACN_Encode(const cfdpSegmentationControl* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_SEGMENTATIONCONTROL		514  /**/
+#define ERR_ACN_DECODE_SEGMENTATIONCONTROL		987  /**/
 flag cfdpSegmentationControl_ACN_Decode(cfdpSegmentationControl* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef asn1SccUint cfdpLengthOfEntityIds;
 
 
 flag cfdpLengthOfEntityIds_Equal(const cfdpLengthOfEntityIds* pVal1, const cfdpLengthOfEntityIds* pVal2);
 
-#define ERR_LENGTHOFENTITYIDS		515  /*(0 .. 7)*/
+#define ERR_LENGTHOFENTITYIDS		988  /*(0 .. 7)*/
 flag cfdpLengthOfEntityIds_IsConstraintValid(const cfdpLengthOfEntityIds* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1391,22 +1617,22 @@ extern const cfdpLengthOfEntityIds cfdpLengthOfEntityIds_constant;
 
 void cfdpLengthOfEntityIds_Initialize(cfdpLengthOfEntityIds* pVal);
 
-#define ERR_UPER_ENCODE_LENGTHOFENTITYIDS		516  /**/
+#define ERR_UPER_ENCODE_LENGTHOFENTITYIDS		989  /**/
 #define cfdpLengthOfEntityIds_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpLengthOfEntityIds_REQUIRED_BITS_FOR_ENCODING        3
 
 flag cfdpLengthOfEntityIds_Encode(const cfdpLengthOfEntityIds* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_LENGTHOFENTITYIDS		517  /**/
+#define ERR_UPER_DECODE_LENGTHOFENTITYIDS		990  /**/
 flag cfdpLengthOfEntityIds_Decode(cfdpLengthOfEntityIds* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_LENGTHOFENTITYIDS		518  /**/
+#define ERR_ACN_ENCODE_LENGTHOFENTITYIDS		991  /**/
 #define cfdpLengthOfEntityIds_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpLengthOfEntityIds_REQUIRED_BITS_FOR_ACN_ENCODING        3
 
 flag cfdpLengthOfEntityIds_ACN_Encode(const cfdpLengthOfEntityIds* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_LENGTHOFENTITYIDS		519  /**/
+#define ERR_ACN_DECODE_LENGTHOFENTITYIDS		992  /**/
 flag cfdpLengthOfEntityIds_ACN_Decode(cfdpLengthOfEntityIds* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
     SegmentMetadataFlag_flag_present = 0,
@@ -1419,7 +1645,7 @@ typedef enum {
 
 flag cfdpSegmentMetadataFlag_Equal(const cfdpSegmentMetadataFlag* pVal1, const cfdpSegmentMetadataFlag* pVal2);
 
-#define ERR_SEGMENTMETADATAFLAG		520  /*flag-present | flag-not-present*/
+#define ERR_SEGMENTMETADATAFLAG		993  /*flag-present | flag-not-present*/
 flag cfdpSegmentMetadataFlag_IsConstraintValid(const cfdpSegmentMetadataFlag* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1430,29 +1656,29 @@ extern const cfdpSegmentMetadataFlag cfdpSegmentMetadataFlag_constant;
 
 void cfdpSegmentMetadataFlag_Initialize(cfdpSegmentMetadataFlag* pVal);
 
-#define ERR_UPER_ENCODE_SEGMENTMETADATAFLAG		521  /**/
+#define ERR_UPER_ENCODE_SEGMENTMETADATAFLAG		994  /**/
 #define cfdpSegmentMetadataFlag_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpSegmentMetadataFlag_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpSegmentMetadataFlag_Encode(const cfdpSegmentMetadataFlag* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_SEGMENTMETADATAFLAG		522  /**/
+#define ERR_UPER_DECODE_SEGMENTMETADATAFLAG		995  /**/
 flag cfdpSegmentMetadataFlag_Decode(cfdpSegmentMetadataFlag* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_SEGMENTMETADATAFLAG		523  /**/
+#define ERR_ACN_ENCODE_SEGMENTMETADATAFLAG		996  /**/
 #define cfdpSegmentMetadataFlag_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpSegmentMetadataFlag_REQUIRED_BITS_FOR_ACN_ENCODING        1
 
 flag cfdpSegmentMetadataFlag_ACN_Encode(const cfdpSegmentMetadataFlag* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_SEGMENTMETADATAFLAG		524  /**/
+#define ERR_ACN_DECODE_SEGMENTMETADATAFLAG		997  /**/
 flag cfdpSegmentMetadataFlag_ACN_Decode(cfdpSegmentMetadataFlag* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef asn1SccUint cfdpLengthOfTransactionSequenceNumber;
 
 
 flag cfdpLengthOfTransactionSequenceNumber_Equal(const cfdpLengthOfTransactionSequenceNumber* pVal1, const cfdpLengthOfTransactionSequenceNumber* pVal2);
 
-#define ERR_LENGTHOFTRANSACTIONSEQUENCENUMBER		525  /*(0 .. 7)*/
+#define ERR_LENGTHOFTRANSACTIONSEQUENCENUMBER		998  /*(0 .. 7)*/
 flag cfdpLengthOfTransactionSequenceNumber_IsConstraintValid(const cfdpLengthOfTransactionSequenceNumber* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1463,22 +1689,22 @@ extern const cfdpLengthOfTransactionSequenceNumber cfdpLengthOfTransactionSequen
 
 void cfdpLengthOfTransactionSequenceNumber_Initialize(cfdpLengthOfTransactionSequenceNumber* pVal);
 
-#define ERR_UPER_ENCODE_LENGTHOFTRANSACTIONSEQUENCENUMBER		526  /**/
+#define ERR_UPER_ENCODE_LENGTHOFTRANSACTIONSEQUENCENUMBER		999  /**/
 #define cfdpLengthOfTransactionSequenceNumber_REQUIRED_BYTES_FOR_ENCODING       1
 #define cfdpLengthOfTransactionSequenceNumber_REQUIRED_BITS_FOR_ENCODING        3
 
 flag cfdpLengthOfTransactionSequenceNumber_Encode(const cfdpLengthOfTransactionSequenceNumber* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_LENGTHOFTRANSACTIONSEQUENCENUMBER		527  /**/
+#define ERR_UPER_DECODE_LENGTHOFTRANSACTIONSEQUENCENUMBER		1000  /**/
 flag cfdpLengthOfTransactionSequenceNumber_Decode(cfdpLengthOfTransactionSequenceNumber* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_LENGTHOFTRANSACTIONSEQUENCENUMBER		528  /**/
+#define ERR_ACN_ENCODE_LENGTHOFTRANSACTIONSEQUENCENUMBER		1001  /**/
 #define cfdpLengthOfTransactionSequenceNumber_REQUIRED_BYTES_FOR_ACN_ENCODING       1
 #define cfdpLengthOfTransactionSequenceNumber_REQUIRED_BITS_FOR_ACN_ENCODING        3
 
 flag cfdpLengthOfTransactionSequenceNumber_ACN_Encode(const cfdpLengthOfTransactionSequenceNumber* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_LENGTHOFTRANSACTIONSEQUENCENUMBER		529  /**/
+#define ERR_ACN_DECODE_LENGTHOFTRANSACTIONSEQUENCENUMBER		1002  /**/
 flag cfdpLengthOfTransactionSequenceNumber_ACN_Decode(cfdpLengthOfTransactionSequenceNumber* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef struct {
     int nCount;
@@ -1488,7 +1714,7 @@ typedef struct {
 
 flag cfdpEntityId_Equal(const cfdpEntityId* pVal1, const cfdpEntityId* pVal2);
 
-#define ERR_ENTITYID		530  /*(SIZE(1..7))*/
+#define ERR_ENTITYID		1003  /*(SIZE(1..7))*/
 flag cfdpEntityId_IsConstraintValid(const cfdpEntityId* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1499,22 +1725,22 @@ extern const cfdpEntityId cfdpEntityId_constant;
 
 void cfdpEntityId_Initialize(cfdpEntityId* pVal);
 
-#define ERR_UPER_ENCODE_ENTITYID		531  /**/
+#define ERR_UPER_ENCODE_ENTITYID		1004  /**/
 #define cfdpEntityId_REQUIRED_BYTES_FOR_ENCODING       8
 #define cfdpEntityId_REQUIRED_BITS_FOR_ENCODING        59
 
 flag cfdpEntityId_Encode(const cfdpEntityId* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_ENTITYID		532  /**/
+#define ERR_UPER_DECODE_ENTITYID		1005  /**/
 flag cfdpEntityId_Decode(cfdpEntityId* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_ENTITYID		533  /**/
+#define ERR_ACN_ENCODE_ENTITYID		1006  /**/
 #define cfdpEntityId_REQUIRED_BYTES_FOR_ACN_ENCODING       8
 #define cfdpEntityId_REQUIRED_BITS_FOR_ACN_ENCODING        59
 
 flag cfdpEntityId_ACN_Encode(const cfdpEntityId* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_ENTITYID		534  /**/
+#define ERR_ACN_DECODE_ENTITYID		1007  /**/
 flag cfdpEntityId_ACN_Decode(cfdpEntityId* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef struct {
     int nCount;
@@ -1524,7 +1750,7 @@ typedef struct {
 
 flag cfdpTransactionSequenceNumber_Equal(const cfdpTransactionSequenceNumber* pVal1, const cfdpTransactionSequenceNumber* pVal2);
 
-#define ERR_TRANSACTIONSEQUENCENUMBER		535  /*(SIZE(1..7))*/
+#define ERR_TRANSACTIONSEQUENCENUMBER		1008  /*(SIZE(1..7))*/
 flag cfdpTransactionSequenceNumber_IsConstraintValid(const cfdpTransactionSequenceNumber* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1535,32 +1761,30 @@ extern const cfdpTransactionSequenceNumber cfdpTransactionSequenceNumber_constan
 
 void cfdpTransactionSequenceNumber_Initialize(cfdpTransactionSequenceNumber* pVal);
 
-#define ERR_UPER_ENCODE_TRANSACTIONSEQUENCENUMBER		536  /**/
+#define ERR_UPER_ENCODE_TRANSACTIONSEQUENCENUMBER		1009  /**/
 #define cfdpTransactionSequenceNumber_REQUIRED_BYTES_FOR_ENCODING       8
 #define cfdpTransactionSequenceNumber_REQUIRED_BITS_FOR_ENCODING        59
 
 flag cfdpTransactionSequenceNumber_Encode(const cfdpTransactionSequenceNumber* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_TRANSACTIONSEQUENCENUMBER		537  /**/
+#define ERR_UPER_DECODE_TRANSACTIONSEQUENCENUMBER		1010  /**/
 flag cfdpTransactionSequenceNumber_Decode(cfdpTransactionSequenceNumber* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_TRANSACTIONSEQUENCENUMBER		538  /**/
+#define ERR_ACN_ENCODE_TRANSACTIONSEQUENCENUMBER		1011  /**/
 #define cfdpTransactionSequenceNumber_REQUIRED_BYTES_FOR_ACN_ENCODING       8
 #define cfdpTransactionSequenceNumber_REQUIRED_BITS_FOR_ACN_ENCODING        59
 
 flag cfdpTransactionSequenceNumber_ACN_Encode(const cfdpTransactionSequenceNumber* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_TRANSACTIONSEQUENCENUMBER		539  /**/
+#define ERR_ACN_DECODE_TRANSACTIONSEQUENCENUMBER		1012  /**/
 flag cfdpTransactionSequenceNumber_ACN_Decode(cfdpTransactionSequenceNumber* pVal, BitStream* pBitStrm, int* pErrCode);
 /*-- cfdpPDUHeader --------------------------------------------*/
 typedef struct {
     cfdpProtocolVersion version;
-    cfdpPDUType pdu_type;
     cfdpDirection direction;
     cfdpTransmissionMode transmission_mode;
     cfdpCRCFlag crc_flag;
     cfdpLargeFileFlag large_file_flag;
-    cfdpPDUDataFieldLength pdu_data_field_length;
     cfdpSegmentationControl segmentation_control;
     cfdpSegmentMetadataFlag segment_metadata_flag;
     cfdpEntityId source_entity_id;
@@ -1571,243 +1795,234 @@ typedef struct {
 
 flag cfdpPDUHeader_Equal(const cfdpPDUHeader* pVal1, const cfdpPDUHeader* pVal2);
 
-#define ERR_PDUHEADER		659  /**/
-#define ERR_PDUHEADER_VERSION_2		545  /**/
-#define ERR_PDUHEADER_PDU_TYPE_2		555  /**/
-#define ERR_PDUHEADER_DIRECTION_2		565  /**/
-#define ERR_PDUHEADER_TRANSMISSION_MODE_2		575  /**/
-#define ERR_PDUHEADER_CRC_FLAG_2		585  /**/
-#define ERR_PDUHEADER_LARGE_FILE_FLAG_2		595  /**/
-#define ERR_PDUHEADER_PDU_DATA_FIELD_LENGTH_2		605  /**/
-#define ERR_PDUHEADER_SEGMENTATION_CONTROL_2		615  /**/
-#define ERR_PDUHEADER_SEGMENT_METADATA_FLAG_2		628  /**/
-#define ERR_PDUHEADER_SOURCE_ENTITY_ID_2		640  /**/
-#define ERR_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER_2		648  /**/
-#define ERR_PDUHEADER_DESTINATION_ENTITY_ID_2		656  /**/
+#define ERR_PDUHEADER		1113  /**/
+#define ERR_PDUHEADER_VERSION_2		1018  /**/
+#define ERR_PDUHEADER_DIRECTION_2		1028  /**/
+#define ERR_PDUHEADER_TRANSMISSION_MODE_2		1038  /**/
+#define ERR_PDUHEADER_CRC_FLAG_2		1048  /**/
+#define ERR_PDUHEADER_LARGE_FILE_FLAG_2		1058  /**/
+#define ERR_PDUHEADER_SEGMENTATION_CONTROL_2		1068  /**/
+#define ERR_PDUHEADER_SEGMENT_METADATA_FLAG_2		1078  /**/
+#define ERR_PDUHEADER_SOURCE_ENTITY_ID_2		1088  /**/
+#define ERR_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER_2		1098  /**/
+#define ERR_PDUHEADER_DESTINATION_ENTITY_ID_2		1108  /**/
 flag cfdpPDUHeader_IsConstraintValid(const cfdpPDUHeader* pVal, int* pErrCode);
 
 #ifdef __cplusplus
 extern const cfdpPDUHeader cfdpPDUHeader_constant;
 #else
-#define cfdpPDUHeader_constant {.version = 0UL, .pdu_type = PDUType_file_directive, .direction = Direction_toward_receiver, .transmission_mode = TransmissionMode_acknowledged, .crc_flag = CRCFlag_crc_not_present, .large_file_flag = 0UL, .pdu_data_field_length = 0UL, .segmentation_control = SegmentationControl_record_boundries_not_preserved, .segment_metadata_flag = SegmentMetadataFlag_flag_present, .source_entity_id = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}, .transaction_sequence_number = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}, .destination_entity_id = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}}
+#define cfdpPDUHeader_constant {.version = 0UL, .direction = Direction_toward_receiver, .transmission_mode = TransmissionMode_acknowledged, .crc_flag = CRCFlag_crc_not_present, .large_file_flag = 0UL, .segmentation_control = SegmentationControl_record_boundries_not_preserved, .segment_metadata_flag = SegmentMetadataFlag_flag_present, .source_entity_id = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}, .transaction_sequence_number = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}, .destination_entity_id = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}}
 #endif
 
 void cfdpPDUHeader_Initialize(cfdpPDUHeader* pVal);
 
-#define ERR_UPER_ENCODE_PDUHEADER		660  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_VERSION_2		546  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_PDU_TYPE_2		556  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_DIRECTION_2		566  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_TRANSMISSION_MODE_2		576  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_CRC_FLAG_2		586  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_LARGE_FILE_FLAG_2		596  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_PDU_DATA_FIELD_LENGTH_2		606  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_SEGMENTATION_CONTROL_2		616  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_SEGMENT_METADATA_FLAG_2		629  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_SOURCE_ENTITY_ID_2		641  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER_2		649  /**/
-#define ERR_UPER_ENCODE_PDUHEADER_DESTINATION_ENTITY_ID_2		657  /**/
-#define cfdpPDUHeader_REQUIRED_BYTES_FOR_ENCODING       26
-#define cfdpPDUHeader_REQUIRED_BITS_FOR_ENCODING        203
+#define ERR_UPER_ENCODE_PDUHEADER		1114  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_VERSION_2		1019  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_DIRECTION_2		1029  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_TRANSMISSION_MODE_2		1039  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_CRC_FLAG_2		1049  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_LARGE_FILE_FLAG_2		1059  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_SEGMENTATION_CONTROL_2		1069  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_SEGMENT_METADATA_FLAG_2		1079  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_SOURCE_ENTITY_ID_2		1089  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER_2		1099  /**/
+#define ERR_UPER_ENCODE_PDUHEADER_DESTINATION_ENTITY_ID_2		1109  /**/
+#define cfdpPDUHeader_REQUIRED_BYTES_FOR_ENCODING       24
+#define cfdpPDUHeader_REQUIRED_BITS_FOR_ENCODING        186
 
 flag cfdpPDUHeader_Encode(const cfdpPDUHeader* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_PDUHEADER		661  /**/
-#define ERR_UPER_DECODE_PDUHEADER_VERSION_2		547  /**/
-#define ERR_UPER_DECODE_PDUHEADER_PDU_TYPE_2		557  /**/
-#define ERR_UPER_DECODE_PDUHEADER_DIRECTION_2		567  /**/
-#define ERR_UPER_DECODE_PDUHEADER_TRANSMISSION_MODE_2		577  /**/
-#define ERR_UPER_DECODE_PDUHEADER_CRC_FLAG_2		587  /**/
-#define ERR_UPER_DECODE_PDUHEADER_LARGE_FILE_FLAG_2		597  /**/
-#define ERR_UPER_DECODE_PDUHEADER_PDU_DATA_FIELD_LENGTH_2		607  /**/
-#define ERR_UPER_DECODE_PDUHEADER_SEGMENTATION_CONTROL_2		617  /**/
-#define ERR_UPER_DECODE_PDUHEADER_SEGMENT_METADATA_FLAG_2		630  /**/
-#define ERR_UPER_DECODE_PDUHEADER_SOURCE_ENTITY_ID_2		642  /**/
-#define ERR_UPER_DECODE_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER_2		650  /**/
-#define ERR_UPER_DECODE_PDUHEADER_DESTINATION_ENTITY_ID_2		658  /**/
+#define ERR_UPER_DECODE_PDUHEADER		1115  /**/
+#define ERR_UPER_DECODE_PDUHEADER_VERSION_2		1020  /**/
+#define ERR_UPER_DECODE_PDUHEADER_DIRECTION_2		1030  /**/
+#define ERR_UPER_DECODE_PDUHEADER_TRANSMISSION_MODE_2		1040  /**/
+#define ERR_UPER_DECODE_PDUHEADER_CRC_FLAG_2		1050  /**/
+#define ERR_UPER_DECODE_PDUHEADER_LARGE_FILE_FLAG_2		1060  /**/
+#define ERR_UPER_DECODE_PDUHEADER_SEGMENTATION_CONTROL_2		1070  /**/
+#define ERR_UPER_DECODE_PDUHEADER_SEGMENT_METADATA_FLAG_2		1080  /**/
+#define ERR_UPER_DECODE_PDUHEADER_SOURCE_ENTITY_ID_2		1090  /**/
+#define ERR_UPER_DECODE_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER_2		1100  /**/
+#define ERR_UPER_DECODE_PDUHEADER_DESTINATION_ENTITY_ID_2		1110  /**/
 flag cfdpPDUHeader_Decode(cfdpPDUHeader* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_PDUHEADER		662  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_VERSION_2		548  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_PDU_TYPE_2		558  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_DIRECTION_2		568  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_TRANSMISSION_MODE_2		578  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_CRC_FLAG_2		588  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_LARGE_FILE_FLAG_2		598  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_PDU_DATA_FIELD_LENGTH_2		608  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_SEGMENTATION_CONTROL_2		618  /**/
-#define ERR_ACN_ENCODE_UPDATE_PDUHEADER_LENGTH_OF_ENTITY_IDS		622  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_LENGTH_OF_ENTITY_IDS_UNINITIALIZED		663  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_LENGTH_OF_ENTITY_IDS		620  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_SEGMENT_METADATA_FLAG_2		631  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER_UNINITIALIZED		664  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER		633  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_SOURCE_ENTITY_ID		638  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER		646  /**/
-#define ERR_ACN_ENCODE_PDUHEADER_DESTINATION_ENTITY_ID		654  /**/
-#define cfdpPDUHeader_REQUIRED_BYTES_FOR_ACN_ENCODING       25
-#define cfdpPDUHeader_REQUIRED_BITS_FOR_ACN_ENCODING        200
+#define ERR_ACN_ENCODE_PDUHEADER		1116  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_VERSION_2		1021  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_DIRECTION_2		1031  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_TRANSMISSION_MODE_2		1041  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_CRC_FLAG_2		1051  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_LARGE_FILE_FLAG_2		1061  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_SEGMENTATION_CONTROL_2		1071  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_SEGMENT_METADATA_FLAG_2		1081  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_SOURCE_ENTITY_ID_2		1091  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER_2		1101  /**/
+#define ERR_ACN_ENCODE_PDUHEADER_DESTINATION_ENTITY_ID_2		1111  /**/
+#define cfdpPDUHeader_REQUIRED_BYTES_FOR_ACN_ENCODING       24
+#define cfdpPDUHeader_REQUIRED_BITS_FOR_ACN_ENCODING        186
 
 flag cfdpPDUHeader_ACN_Encode(const cfdpPDUHeader* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_PDUHEADER		665  /**/
-#define ERR_ACN_DECODE_PDUHEADER_VERSION_2		549  /**/
-#define ERR_ACN_DECODE_PDUHEADER_PDU_TYPE_2		559  /**/
-#define ERR_ACN_DECODE_PDUHEADER_DIRECTION_2		569  /**/
-#define ERR_ACN_DECODE_PDUHEADER_TRANSMISSION_MODE_2		579  /**/
-#define ERR_ACN_DECODE_PDUHEADER_CRC_FLAG_2		589  /**/
-#define ERR_ACN_DECODE_PDUHEADER_LARGE_FILE_FLAG_2		599  /**/
-#define ERR_ACN_DECODE_PDUHEADER_PDU_DATA_FIELD_LENGTH_2		609  /**/
-#define ERR_ACN_DECODE_PDUHEADER_SEGMENTATION_CONTROL_2		619  /**/
-#define ERR_ACN_DECODE_PDUHEADER_LENGTH_OF_ENTITY_IDS		621  /**/
-#define ERR_ACN_DECODE_PDUHEADER_SEGMENT_METADATA_FLAG_2		632  /**/
-#define ERR_ACN_DECODE_PDUHEADER_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER		634  /**/
-#define ERR_ACN_DECODE_PDUHEADER_SOURCE_ENTITY_ID		639  /**/
-#define ERR_ACN_DECODE_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER		647  /**/
-#define ERR_ACN_DECODE_PDUHEADER_DESTINATION_ENTITY_ID		655  /**/
+#define ERR_ACN_DECODE_PDUHEADER		1117  /**/
+#define ERR_ACN_DECODE_PDUHEADER_VERSION_2		1022  /**/
+#define ERR_ACN_DECODE_PDUHEADER_DIRECTION_2		1032  /**/
+#define ERR_ACN_DECODE_PDUHEADER_TRANSMISSION_MODE_2		1042  /**/
+#define ERR_ACN_DECODE_PDUHEADER_CRC_FLAG_2		1052  /**/
+#define ERR_ACN_DECODE_PDUHEADER_LARGE_FILE_FLAG_2		1062  /**/
+#define ERR_ACN_DECODE_PDUHEADER_SEGMENTATION_CONTROL_2		1072  /**/
+#define ERR_ACN_DECODE_PDUHEADER_SEGMENT_METADATA_FLAG_2		1082  /**/
+#define ERR_ACN_DECODE_PDUHEADER_SOURCE_ENTITY_ID_2		1092  /**/
+#define ERR_ACN_DECODE_PDUHEADER_TRANSACTION_SEQUENCE_NUMBER_2		1102  /**/
+#define ERR_ACN_DECODE_PDUHEADER_DESTINATION_ENTITY_ID_2		1112  /**/
 flag cfdpPDUHeader_ACN_Decode(cfdpPDUHeader* pVal, BitStream* pBitStrm, int* pErrCode);
 /*-- cfdpCfdpPDU --------------------------------------------*/
 typedef struct {
     cfdpPDUHeader pdu_header;
-    cfdpFileDirectivePDU file_data_pdu;
+    cfdpPayload payload;
 
 } cfdpCfdpPDU;
 
 flag cfdpCfdpPDU_Equal(const cfdpCfdpPDU* pVal1, const cfdpCfdpPDU* pVal2);
 
-#define ERR_CFDPPDU		873  /**/
-#define ERR_CFDPPDU_PDU_HEADER		666  /**/
-#define ERR_CFDPPDU_FILE_DATA_PDU_2		870  /**/
+#define ERR_CFDPPDU		1465  /**/
+#define ERR_CFDPPDU_PDU_HEADER_2		1462  /**/
+#define ERR_CFDPPDU_PAYLOAD_2		1346  /**/
 flag cfdpCfdpPDU_IsConstraintValid(const cfdpCfdpPDU* pVal, int* pErrCode);
 
 #ifdef __cplusplus
 extern const cfdpCfdpPDU cfdpCfdpPDU_constant;
 #else
-#define cfdpCfdpPDU_constant {.pdu_header = cfdpPDUHeader_constant, .file_data_pdu = cfdpFileDirectivePDU_constant}
+#define cfdpCfdpPDU_constant {.pdu_header = cfdpPDUHeader_constant, .payload = cfdpPayload_constant}
 #endif
 
 void cfdpCfdpPDU_Initialize(cfdpCfdpPDU* pVal);
 
-#define ERR_UPER_ENCODE_CFDPPDU		874  /**/
-#define ERR_UPER_ENCODE_CFDPPDU_PDU_HEADER		667  /**/
-#define ERR_UPER_ENCODE_CFDPPDU_FILE_DATA_PDU_2		871  /**/
-#define cfdpCfdpPDU_REQUIRED_BYTES_FOR_ENCODING       96
-#define cfdpCfdpPDU_REQUIRED_BITS_FOR_ENCODING        766
+#define ERR_UPER_ENCODE_CFDPPDU		1466  /**/
+#define ERR_UPER_ENCODE_CFDPPDU_PDU_HEADER_2		1463  /**/
+#define ERR_UPER_ENCODE_CFDPPDU_PAYLOAD_2		1347  /**/
+#define cfdpCfdpPDU_REQUIRED_BYTES_FOR_ENCODING       285
+#define cfdpCfdpPDU_REQUIRED_BITS_FOR_ENCODING        2275
 
 flag cfdpCfdpPDU_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_CFDPPDU		875  /**/
-#define ERR_UPER_DECODE_CFDPPDU_PDU_HEADER		668  /**/
-#define ERR_UPER_DECODE_CFDPPDU_FILE_DATA_PDU_2		872  /**/
+#define ERR_UPER_DECODE_CFDPPDU		1467  /**/
+#define ERR_UPER_DECODE_CFDPPDU_PDU_HEADER_2		1464  /**/
+#define ERR_UPER_DECODE_CFDPPDU_PAYLOAD_2		1348  /**/
 flag cfdpCfdpPDU_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_CFDPPDU		876  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER		669  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_DIRECTIVE_CODE_UNINITIALIZED		877  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_DIRECTIVE_CODE		671  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU		868  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU		708  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU_CONDITION_CODE_2		681  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU_SPARE		683  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU_FILE_CHECKSUM_2		693  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU_FILE_SIZE_2		703  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU		748  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU_CONDITION_CODE_2		721  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU_END_SYSTEM_STATUS		723  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU_DELIVERY_CODE_2		733  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU_FILE_STATUS_2		743  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU		798  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_DIRECTIVE_CODE_OF_ACK_PDU_2		761  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE_2		771  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_CONDITION_CODE_2		781  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_SPARE		783  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_TRANSACTION_STATUS_2		793  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU		860  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_RESERVED1		803  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_CLOSURE_REQUESTED_2		813  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_RESERVED2		815  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_CHECKSUM_TYPE_2		825  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_FILE_SIZE_2		835  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE_UNINITIALIZED		878  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE		837  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_SOURCE_FILE_NAME		842  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE_UNINITIALIZED		879  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE		847  /**/
-#define ERR_ACN_ENCODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_DESTINATION_FILE_NAME		852  /**/
-#define cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING       97
-#define cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING        776
+#define ERR_ACN_ENCODE_CFDPPDU		1468  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER		1460  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_VERSION_2		1359  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_PDU_TYPE_UNINITIALIZED		1469  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_PDU_TYPE		1361  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_DIRECTION_2		1371  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_TRANSMISSION_MODE_2		1381  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_CRC_FLAG_2		1391  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_LARGE_FILE_FLAG_2		1401  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD		1344  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE		1323  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_DIRECTIVE_CODE_UNINITIALIZED		1405  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_DIRECTIVE_CODE		1118  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU		1315  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU		1155  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE_2		1128  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_SPARE		1130  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_CHECKSUM_2		1140  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_SIZE_2		1150  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU		1195  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE_2		1168  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_END_SYSTEM_STATUS		1170  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE_2		1180  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS_2		1190  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU		1245  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_CODE_OF_ACK_PDU_2		1208  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE_2		1218  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE_2		1228  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_SPARE		1230  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS_2		1240  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU		1307  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_RESERVED1		1250  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED_2		1260  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_RESERVED2		1262  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE_2		1272  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_FILE_SIZE_2		1282  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE_UNINITIALIZED		1406  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE		1284  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME		1289  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE_UNINITIALIZED		1407  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE		1294  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME		1299  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DATA		1336  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DATA_FILE_DATA_PDU		1331  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_PDU_DATA_FIELD_LENGTH_UNINITIALIZED		1470  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_PDU_DATA_FIELD_LENGTH		1403  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_SEGMENTATION_CONTROL_2		1416  /**/
+#define ERR_ACN_ENCODE_UPDATE_CFDPPDU_PDU_HEADER_LENGTH_OF_ENTITY_IDS		1420  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_LENGTH_OF_ENTITY_IDS_UNINITIALIZED		1471  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_LENGTH_OF_ENTITY_IDS		1418  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_SEGMENT_METADATA_FLAG_2		1429  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER_UNINITIALIZED		1472  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER		1431  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_SOURCE_ENTITY_ID		1436  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_TRANSACTION_SEQUENCE_NUMBER		1444  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_DESTINATION_ENTITY_ID		1452  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_2		1349  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_DIRECTIVE_CODE_UNINITIALIZED		1349  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE_UNINITIALIZED		1350  /**/
+#define ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE_UNINITIALIZED		1351  /**/
+#define cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING       284
+#define cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING        2272
 
 flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_CFDPPDU		880  /**/
-#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER		670  /**/
-#define ERR_ACN_DECODE_CFDPPDU_DIRECTIVE_CODE		672  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU		869  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU		709  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU_CONDITION_CODE_2		682  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU_SPARE		684  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU_FILE_CHECKSUM_2		694  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_EOF_PDU_FILE_SIZE_2		704  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU		749  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU_CONDITION_CODE_2		722  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU_END_SYSTEM_STATUS		724  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU_DELIVERY_CODE_2		734  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_FINISHED_PDU_FILE_STATUS_2		744  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU		799  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_DIRECTIVE_CODE_OF_ACK_PDU_2		762  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE_2		772  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_CONDITION_CODE_2		782  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_SPARE		784  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_ACK_PDU_TRANSACTION_STATUS_2		794  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU		861  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_RESERVED1		804  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_CLOSURE_REQUESTED_2		814  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_RESERVED2		816  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_CHECKSUM_TYPE_2		826  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_FILE_SIZE_2		836  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE		838  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_SOURCE_FILE_NAME		843  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE		848  /**/
-#define ERR_ACN_DECODE_CFDPPDU_FILE_DATA_PDU_METADATA_PDU_DESTINATION_FILE_NAME		853  /**/
+#define ERR_ACN_DECODE_CFDPPDU		1473  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER		1461  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_VERSION_2		1360  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_PDU_TYPE		1362  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_DIRECTION_2		1372  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_TRANSMISSION_MODE_2		1382  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_CRC_FLAG_2		1392  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_LARGE_FILE_FLAG_2		1402  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_PDU_DATA_FIELD_LENGTH		1404  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_SEGMENTATION_CONTROL_2		1417  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_LENGTH_OF_ENTITY_IDS		1419  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_SEGMENT_METADATA_FLAG_2		1430  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER		1432  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_SOURCE_ENTITY_ID		1437  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_TRANSACTION_SEQUENCE_NUMBER		1445  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_DESTINATION_ENTITY_ID		1453  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_2		1350  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD		1345  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE		1324  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_DIRECTIVE_CODE		1119  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU		1316  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU		1156  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE_2		1129  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_SPARE		1131  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_CHECKSUM_2		1141  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_SIZE_2		1151  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU		1196  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE_2		1169  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_END_SYSTEM_STATUS		1171  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE_2		1181  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS_2		1191  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU		1246  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_CODE_OF_ACK_PDU_2		1209  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE_2		1219  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE_2		1229  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_SPARE		1231  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS_2		1241  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU		1308  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_RESERVED1		1251  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED_2		1261  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_RESERVED2		1263  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE_2		1273  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_FILE_SIZE_2		1283  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME_SIZE		1285  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_SOURCE_FILE_NAME		1290  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME_SIZE		1295  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_DESTINATION_FILE_NAME		1300  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DATA		1337  /**/
+#define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DATA_FILE_DATA_PDU		1332  /**/
 flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCode);
-/*-- cfdpFileDataPDU --------------------------------------------*/
-typedef struct {
-    cfdpPDUHeader pdu_header;
-    cfdpSegmentOffset segment_offset;
-    cfdpFileData file_data;
-
-} cfdpFileDataPDU;
-
-flag cfdpFileDataPDU_Equal(const cfdpFileDataPDU* pVal1, const cfdpFileDataPDU* pVal2);
-
-#define ERR_FILEDATAPDU		904  /**/
-#define ERR_FILEDATAPDU_PDU_HEADER		881  /**/
-#define ERR_FILEDATAPDU_SEGMENT_OFFSET_2		891  /**/
-#define ERR_FILEDATAPDU_FILE_DATA_2		901  /**/
-flag cfdpFileDataPDU_IsConstraintValid(const cfdpFileDataPDU* pVal, int* pErrCode);
-
-#ifdef __cplusplus
-extern const cfdpFileDataPDU cfdpFileDataPDU_constant;
-#else
-#define cfdpFileDataPDU_constant {.pdu_header = cfdpPDUHeader_constant, .segment_offset = 0UL, .file_data = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}}
-#endif
-
-void cfdpFileDataPDU_Initialize(cfdpFileDataPDU* pVal);
-
-#define ERR_UPER_ENCODE_FILEDATAPDU		905  /**/
-#define ERR_UPER_ENCODE_FILEDATAPDU_PDU_HEADER		882  /**/
-#define ERR_UPER_ENCODE_FILEDATAPDU_SEGMENT_OFFSET_2		892  /**/
-#define ERR_UPER_ENCODE_FILEDATAPDU_FILE_DATA_2		902  /**/
-#define cfdpFileDataPDU_REQUIRED_BYTES_FOR_ENCODING       285
-#define cfdpFileDataPDU_REQUIRED_BITS_FOR_ENCODING        2275
-
-flag cfdpFileDataPDU_Encode(const cfdpFileDataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
-
-#define ERR_UPER_DECODE_FILEDATAPDU		906  /**/
-#define ERR_UPER_DECODE_FILEDATAPDU_PDU_HEADER		883  /**/
-#define ERR_UPER_DECODE_FILEDATAPDU_SEGMENT_OFFSET_2		893  /**/
-#define ERR_UPER_DECODE_FILEDATAPDU_FILE_DATA_2		903  /**/
-flag cfdpFileDataPDU_Decode(cfdpFileDataPDU* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef struct {
     int nCount;
     byte arr[32];
@@ -1816,7 +2031,7 @@ typedef struct {
 
 flag cfdpOptions_Equal(const cfdpOptions* pVal1, const cfdpOptions* pVal2);
 
-#define ERR_OPTIONS		909  /*(SIZE(0..32))*/
+#define ERR_OPTIONS		1474  /*(SIZE(0..32))*/
 flag cfdpOptions_IsConstraintValid(const cfdpOptions* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -1827,22 +2042,22 @@ extern const cfdpOptions cfdpOptions_constant;
 
 void cfdpOptions_Initialize(cfdpOptions* pVal);
 
-#define ERR_UPER_ENCODE_OPTIONS		910  /**/
+#define ERR_UPER_ENCODE_OPTIONS		1475  /**/
 #define cfdpOptions_REQUIRED_BYTES_FOR_ENCODING       33
 #define cfdpOptions_REQUIRED_BITS_FOR_ENCODING        262
 
 flag cfdpOptions_Encode(const cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_OPTIONS		911  /**/
+#define ERR_UPER_DECODE_OPTIONS		1476  /**/
 flag cfdpOptions_Decode(cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define ERR_ACN_ENCODE_OPTIONS		912  /**/
+#define ERR_ACN_ENCODE_OPTIONS		1477  /**/
 #define cfdpOptions_REQUIRED_BYTES_FOR_ACN_ENCODING       33
 #define cfdpOptions_REQUIRED_BITS_FOR_ACN_ENCODING        262
 
 flag cfdpOptions_ACN_Encode(const cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_OPTIONS		913  /**/
+#define ERR_ACN_DECODE_OPTIONS		1478  /**/
 flag cfdpOptions_ACN_Decode(cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode);
 
 
