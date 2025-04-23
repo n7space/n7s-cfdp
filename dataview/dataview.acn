@@ -95,26 +95,24 @@ MetadataPDU [] {
    destination-file-name                     [size destination-file-name-size]
 }
 
+FileDirectivePDU <DirectiveCode:directive-code> [] {
+   eof-pdu                                   [present-when directive-code==4],
+   finished-pdu                              [present-when directive-code==5],
+   ack-pdu                                   [present-when directive-code==6],
+   metadata-pdu                              [present-when directive-code==7]
+}
+
+CfdpPDU [] {
+   pdu-header                                [],
+   directive-code                            DirectiveCode [],
+   file-data-pdu                             <directive-code> []
+}
+
 FileDataPDU <PDUDataFieldLength: pdu-data-field-length> [] {
    pdu-header                                [],
    segment-offset                            [],
    file-data                                 [size pdu-data-field-length] -- add proper mapping function
 }
-
-PromptPDU [] {
-   pdu-header                                [],
-   directive-code                            NULL [pattern '09'H],
-   response-required                         [],
-   spare                                     NULL [pattern '0000000'B]
-}
-
-KeepAlivePDU [] {
-   pdu-header                                [],
-   directive-code                            NULL [pattern '0C'H],
-   progress                                  []
-}
-
-
 
 END
 

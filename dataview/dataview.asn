@@ -1,15 +1,7 @@
 CFDP-PROTOCOL DEFINITIONS ::=
 BEGIN
 
-DirectiveCode ::= ENUMERATED {
-   eof-pdu (4),
-   finished-pdu (5),
-   ack-pdu (6),
-   metadata-pdu (7),
-   nak-pdu (8),
-   prompt-pdu (9),
-   keep-alive-pdu (12)
-}
+DirectiveCode ::= INTEGER (0..255)
 
 DirectiveSubtypeCode ::= ENUMERATED {
    ack-others (0),
@@ -178,21 +170,23 @@ MetadataPDU ::= SEQUENCE {
    destination-file-name FileName
 }
 
+FileDirectivePDU ::= CHOICE {
+    eof-pdu EofPDU,
+    finished-pdu FinishedPDU,
+    ack-pdu AckPDU,
+    metadata-pdu MetadataPDU
+ } 
+
+CfdpPDU ::= SEQUENCE {
+   pdu-header PDUHeader,
+   file-data-pdu FileDirectivePDU
+}
+
 FileDataPDU ::= SEQUENCE {
    pdu-header PDUHeader,
    -- segment metada flags
    segment-offset SegmentOffset,
    file-data FileData
-}
-
-PromptPDU ::= SEQUENCE {
-   pdu-header PDUHeader,
-   response-required ResponseRequired
-}
-
-KeepAlivePDU ::= SEQUENCE {
-   pdu-header PDUHeader,
-   progress Progress
 }
 
 END
