@@ -2,7 +2,8 @@
 #include "filestore.h"
 #include "transaction.h"
 
-uint32_t transaction_get_file_size(struct transaction *transaction, const struct filestore_cfg *filestore)
+uint32_t transaction_get_file_size(struct transaction *transaction,
+				   const struct filestore_cfg *filestore)
 {
 	filestore->filestore_open(transaction->source_filename);
 	transaction->file_size =
@@ -12,18 +13,20 @@ uint32_t transaction_get_file_size(struct transaction *transaction, const struct
 	return transaction->file_size;
 }
 
-uint32_t transaction_get_file_checksum(struct transaction *transaction, const struct filestore_cfg *filestore)
+uint32_t transaction_get_file_checksum(struct transaction *transaction,
+				       const struct filestore_cfg *filestore)
 {
 	filestore->filestore_open(transaction->source_filename);
-	uint32_t checksum =
-	    filestore->filestore_calculate_checksum(transaction->source_filename);
+	uint32_t checksum = filestore->filestore_calculate_checksum(
+	    transaction->source_filename);
 	filestore->filestore_close(transaction->source_filename);
 
 	return checksum;
 }
 
 bool transaction_get_file_segment(struct transaction *transaction, char *data,
-				  uint32_t length, const struct filestore_cfg *filestore)
+				  uint32_t length,
+				  const struct filestore_cfg *filestore)
 {
 	if (transaction->file_position > transaction->file_size) {
 		return false;
@@ -31,7 +34,7 @@ bool transaction_get_file_segment(struct transaction *transaction, char *data,
 
 	filestore->filestore_open(transaction->source_filename);
 	filestore->filestore_seek(transaction->source_filename,
-		       transaction->file_position);
+				  transaction->file_position);
 	filestore->filestore_read(transaction->source_filename, data, length);
 	filestore->filestore_close(transaction->source_filename);
 

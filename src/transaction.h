@@ -16,10 +16,13 @@ struct transaction {
 	uint32_t file_position;
 };
 
-uint32_t transaction_get_file_size(struct transaction *transaction, const struct filestore_cfg *filestore);
-uint32_t transaction_get_file_checksum(struct transaction *transaction, const struct filestore_cfg *filestore);
+uint32_t transaction_get_file_size(struct transaction *transaction,
+				   const struct filestore_cfg *filestore);
+uint32_t transaction_get_file_checksum(struct transaction *transaction,
+				       const struct filestore_cfg *filestore);
 bool transaction_get_file_segment(struct transaction *transaction, char *data,
-				  uint32_t length, const struct filestore_cfg *filestore);
+				  uint32_t length,
+				  const struct filestore_cfg *filestore);
 bool transaction_is_file_send_complete(struct transaction *transaction);
 
 #endif

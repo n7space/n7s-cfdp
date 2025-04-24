@@ -127,67 +127,87 @@ void cfdp_core_report(struct cfdp_core *core,
 void cfdp_core_transaction_indication(struct cfdp_core *core,
 				      struct transaction_id transaction_id)
 {
-	printf("cfdp transaction indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf("cfdp transaction indication source_entity_id = %d seq_number = "
+	       "%d\n",
+	       transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_eof_sent_indication(struct cfdp_core *core,
 				   struct transaction_id transaction_id)
 {
-	printf("cfdp eof sent indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf(
+	    "cfdp eof sent indication source_entity_id = %d seq_number = %d\n",
+	    transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_finished_indication(struct cfdp_core *core,
 				   struct transaction_id transaction_id)
 {
-	printf("cfdp finished indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf(
+	    "cfdp finished indication source_entity_id = %d seq_number = %d\n",
+	    transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_report_indication(struct cfdp_core *core,
 				 struct transaction_id transaction_id)
 {
-	printf("cfdp report indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf("cfdp report indication source_entity_id = %d seq_number = %d\n",
+	       transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_eof_received_indication(struct cfdp_core *core,
 				       struct transaction_id transaction_id)
 {
-	printf("cfdp eof received indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf("cfdp eof received indication source_entity_id = %d seq_number "
+	       "= %d\n",
+	       transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_metadata_received_indication(
     struct cfdp_core *core, struct transaction_id transaction_id)
 {
-	printf("cfdp metadata received indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf("cfdp metadata received indication source_entity_id = %d "
+	       "seq_number = %d\n",
+	       transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_filesegment_received_indication(
     struct cfdp_core *core, struct transaction_id transaction_id)
 {
-	printf("cfdp filesegment received indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf("cfdp filesegment received indication source_entity_id = %d "
+	       "seq_number = %d\n",
+	       transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_abandoned_indication(struct cfdp_core *core,
 				    struct transaction_id transaction_id)
 {
-	printf("cfdp abandoned indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf(
+	    "cfdp abandoned indication source_entity_id = %d seq_number = %d\n",
+	    transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_suspended_indication(struct cfdp_core *core,
 				    struct transaction_id transaction_id)
 {
-	printf("cfdp suspended indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf(
+	    "cfdp suspended indication source_entity_id = %d seq_number = %d\n",
+	    transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_resumed_indication(struct cfdp_core *core,
 				  struct transaction_id transaction_id)
 {
-	printf("cfdp resumed indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf(
+	    "cfdp resumed indication source_entity_id = %d seq_number = %d\n",
+	    transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_fault_indication(struct cfdp_core *core,
 				struct transaction_id transaction_id)
 {
-	printf("cfdp fault indication source_entity_id = %d seq_number = %d\n", transaction_id.source_entity_id, transaction_id.seq_number);
+	printf("cfdp fault indication source_entity_id = %d seq_number = %d\n",
+	       transaction_id.source_entity_id, transaction_id.seq_number);
 }
 
 void cfdp_core_freeze(struct cfdp_core *core, uint32_t destination_entity_id)
@@ -206,62 +226,59 @@ static uint64_t bytes_to_ulong(const byte *data, int size)
 {
 	uint64_t result;
 	for (int i = 0; i < size && i < sizeof(uint64_t); i++) {
-        result <<= 8;
+		result <<= 8;
 		result |= data[i];
-    }
-    return result;
+	}
+	return result;
 }
 
-static struct event create_event_for_delivery(struct cfdp_core *core, const cfdpCfdpPDU *pdu)
+static struct event create_event_for_delivery(struct cfdp_core *core,
+					      const cfdpCfdpPDU *pdu)
 {
 	enum EventType type;
 
-	if(pdu->payload.kind == PayloadData_file_data_PRESENT)
-	{
+	if (pdu->payload.kind == PayloadData_file_data_PRESENT) {
 		type = E11_RECEIVED_FILEDATA;
 	} else {
-		switch(pdu->payload.u.file_directive.file_directive_pdu.kind)
-		{
-			case FileDirectivePDU_eof_pdu_PRESENT:
-				if(pdu->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code == cfdpConditionCode_no_error)
-				{
-					type = E12_RECEIVED_EOF_NO_ERROR;
-				}
-				else
-				{
-					type = E13_RECEIVED_EOF_CANCEL;
-				}
-				break;
-			case FileDirectivePDU_finished_pdu_PRESENT:
-				if(pdu->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code == cfdpConditionCode_no_error)
-				{
-					type = E16_RECEIVED_FINISHED_NO_ERROR;
-				}
-				else
-				{
-					type = E17_RECEIVED_FINISHED_CANCEL;
-				}
-				break;
-			case FileDirectivePDU_ack_pdu_PRESENT:
-				if(pdu->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu  == DIRECTIVE_CODE_EOF)
-				{
-					type = E14_RECEIVED_ACK_EOF;
-				}
-				else if(pdu->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu  == DIRECTIVE_CODE_FINISHED)
-				{
-					type = E18_RECEIVED_ACK_FINISHED;
-				}
-				else
-				{
-					// not implemented
-				}
-				break;
-			case FileDirectivePDU_metadata_pdu_PRESENT:
-				type = E10_RECEIVED_METADATA;
-				break;
-			default:
+		switch (pdu->payload.u.file_directive.file_directive_pdu.kind) {
+		case FileDirectivePDU_eof_pdu_PRESENT:
+			if (pdu->payload.u.file_directive.file_directive_pdu.u
+				.eof_pdu.condition_code ==
+			    cfdpConditionCode_no_error) {
+				type = E12_RECEIVED_EOF_NO_ERROR;
+			} else {
+				type = E13_RECEIVED_EOF_CANCEL;
+			}
+			break;
+		case FileDirectivePDU_finished_pdu_PRESENT:
+			if (pdu->payload.u.file_directive.file_directive_pdu.u
+				.finished_pdu.condition_code ==
+			    cfdpConditionCode_no_error) {
+				type = E16_RECEIVED_FINISHED_NO_ERROR;
+			} else {
+				type = E17_RECEIVED_FINISHED_CANCEL;
+			}
+			break;
+		case FileDirectivePDU_ack_pdu_PRESENT:
+			if (pdu->payload.u.file_directive.file_directive_pdu.u
+				.ack_pdu.directive_code_of_ack_pdu ==
+			    DIRECTIVE_CODE_EOF) {
+				type = E14_RECEIVED_ACK_EOF;
+			} else if (pdu->payload.u.file_directive
+				       .file_directive_pdu.u.ack_pdu
+				       .directive_code_of_ack_pdu ==
+				   DIRECTIVE_CODE_FINISHED) {
+				type = E18_RECEIVED_ACK_FINISHED;
+			} else {
 				// not implemented
-				break;
+			}
+			break;
+		case FileDirectivePDU_metadata_pdu_PRESENT:
+			type = E10_RECEIVED_METADATA;
+			break;
+		default:
+			// not implemented
+			break;
 		}
 	}
 
@@ -272,47 +289,64 @@ static struct event create_event_for_delivery(struct cfdp_core *core, const cfdp
 	return event;
 }
 
-static void deliver_pdu_to_sender_machine(struct cfdp_core *core, const cfdpCfdpPDU *pdu)
+static void deliver_pdu_to_sender_machine(struct cfdp_core *core,
+					  const cfdpCfdpPDU *pdu)
 {
 	struct event event = create_event_for_delivery(core, pdu);
 	sender_machine_update_state(&core->sender[0], &event);
 }
 
-static void deliver_pdu_to_receiver_machine(struct cfdp_core *core, const cfdpCfdpPDU *pdu)
+static void deliver_pdu_to_receiver_machine(struct cfdp_core *core,
+					    const cfdpCfdpPDU *pdu)
 {
 	struct event event = create_event_for_delivery(core, pdu);
 	receiver_machine_update_state(&core->receiver[0], &event);
 }
 
-static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core, const cfdpCfdpPDU *pdu)
+static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
+					       const cfdpCfdpPDU *pdu)
 {
-	if(pdu->pdu_header.direction == cfdpDirection_toward_sender)
-	{
-		printf("pdu in towards sender in unacknowledged mode not supported, pdu droped\n");
+	if (pdu->pdu_header.direction == cfdpDirection_toward_sender) {
+		printf("pdu in towards sender in unacknowledged mode not "
+		       "supported, pdu droped\n");
 		return;
 	}
 
-	if(!(pdu->payload.kind == PayloadData_file_directive_PRESENT && pdu->payload.u.file_directive.file_directive_pdu.kind == FileDirectivePDU_metadata_pdu_PRESENT) ||
-	   !(pdu->payload.kind == PayloadData_file_directive_PRESENT && pdu->payload.u.file_directive.file_directive_pdu.kind == FileDirectivePDU_eof_pdu_PRESENT) ||
-	   !(pdu->payload.kind == PayloadData_file_data_PRESENT))
-	{
+	if (!(pdu->payload.kind == PayloadData_file_directive_PRESENT &&
+	      pdu->payload.u.file_directive.file_directive_pdu.kind ==
+		  FileDirectivePDU_metadata_pdu_PRESENT) ||
+	    !(pdu->payload.kind == PayloadData_file_directive_PRESENT &&
+	      pdu->payload.u.file_directive.file_directive_pdu.kind ==
+		  FileDirectivePDU_eof_pdu_PRESENT) ||
+	    !(pdu->payload.kind == PayloadData_file_data_PRESENT)) {
 		printf("unsupported pdu, pdu droped\n");
 		return;
 	}
 
 	struct transaction transaction;
 	transaction.kernel = core;
-	transaction.source_entity_id = bytes_to_ulong(pdu->pdu_header.source_entity_id.arr, pdu->pdu_header.source_entity_id.nCount);
-	transaction.seq_number = bytes_to_ulong(pdu->pdu_header.transaction_sequence_number.arr, pdu->pdu_header.transaction_sequence_number.nCount);
-	transaction.destination_entity_id = bytes_to_ulong(pdu->pdu_header.destination_entity_id.arr, pdu->pdu_header.destination_entity_id.nCount);
+	transaction.source_entity_id =
+	    bytes_to_ulong(pdu->pdu_header.source_entity_id.arr,
+			   pdu->pdu_header.source_entity_id.nCount);
+	transaction.seq_number =
+	    bytes_to_ulong(pdu->pdu_header.transaction_sequence_number.arr,
+			   pdu->pdu_header.transaction_sequence_number.nCount);
+	transaction.destination_entity_id =
+	    bytes_to_ulong(pdu->pdu_header.destination_entity_id.arr,
+			   pdu->pdu_header.destination_entity_id.nCount);
 
-	if(pdu->payload.kind == PayloadData_file_directive_PRESENT && pdu->payload.u.file_directive.file_directive_pdu.kind == FileDirectivePDU_metadata_pdu_PRESENT)
-	{
-		strncpy(transaction.source_filename, pdu->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.source_file_name.arr,
+	if (pdu->payload.kind == PayloadData_file_directive_PRESENT &&
+	    pdu->payload.u.file_directive.file_directive_pdu.kind ==
+		FileDirectivePDU_metadata_pdu_PRESENT) {
+		strncpy(transaction.source_filename,
+			pdu->payload.u.file_directive.file_directive_pdu.u
+			    .metadata_pdu.source_file_name.arr,
 			MAX_FILE_NAME_SIZE);
 		transaction.source_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
 
-		strncpy(transaction.destination_filename, pdu->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.destination_file_name.arr,
+		strncpy(transaction.destination_filename,
+			pdu->payload.u.file_directive.file_directive_pdu.u
+			    .metadata_pdu.destination_file_name.arr,
 			MAX_FILE_NAME_SIZE);
 		transaction.destination_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
 	}
@@ -323,38 +357,41 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core, const cfd
 	deliver_pdu_to_receiver_machine(core, pdu);
 }
 
-void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf, long count)
+void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
+			    long count)
 {
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, count);
 
 	cfdpCfdpPDU pdu;
 	int error_code = 0;
-	if(!cfdpCfdpPDU_ACN_Decode(&pdu, &bit_stream, &error_code))
-	{
+	if (!cfdpCfdpPDU_ACN_Decode(&pdu, &bit_stream, &error_code)) {
 		printf("cannot decode CfdpPDU, error code = %d\n", error_code);
 		return;
 	}
 
-	if(pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged)
-	{
+	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {
 		printf("pdu in acknowledged mode not supported, pdu droped\n");
 		return;
 	}
 
 	struct transaction_id transaction_id;
-	transaction_id.source_entity_id = bytes_to_ulong(pdu.pdu_header.source_entity_id.arr, pdu.pdu_header.source_entity_id.nCount);
-	transaction_id.seq_number = bytes_to_ulong(pdu.pdu_header.transaction_sequence_number.arr, pdu.pdu_header.transaction_sequence_number.nCount);
+	transaction_id.source_entity_id =
+	    bytes_to_ulong(pdu.pdu_header.source_entity_id.arr,
+			   pdu.pdu_header.source_entity_id.nCount);
+	transaction_id.seq_number =
+	    bytes_to_ulong(pdu.pdu_header.transaction_sequence_number.arr,
+			   pdu.pdu_header.transaction_sequence_number.nCount);
 
 	if (cfdp_core_is_request_to_sender(core, transaction_id)) {
-		if(core->sender[0].state != COMPLETED){
+		if (core->sender[0].state != COMPLETED) {
 			deliver_pdu_to_sender_machine(core, &pdu);
 			return;
 		}
 	}
-	
+
 	if (cfdp_core_is_request_to_receiver(core, transaction_id)) {
-		if(core->sender[0].state != COMPLETED){
+		if (core->sender[0].state != COMPLETED) {
 			deliver_pdu_to_receiver_machine(core, &pdu);
 			return;
 		}
