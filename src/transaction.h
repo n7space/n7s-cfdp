@@ -6,9 +6,9 @@ struct filestore_cfg;
 
 struct transaction {
 	struct cfdp_core *kernel;
-	uint32_t source_entity_id;
-	uint32_t seq_number;
-	uint32_t destination_entity_id;
+	uint64_t source_entity_id;
+	uint64_t seq_number;
+	uint64_t destination_entity_id;
 	char source_filename[MAX_FILE_NAME_SIZE];
 	char destination_filename[MAX_FILE_NAME_SIZE];
 

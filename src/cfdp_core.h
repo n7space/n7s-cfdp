@@ -28,6 +28,8 @@ struct cfdp_core {
 	struct receiver_machine receiver[MAX_NUMBER_OF_RECEIVER_MACHINES];
 };
 
+// CFDP service requests
+
 struct transaction_id
 cfdp_core_put(struct cfdp_core *core, uint32_t destination_entity_id,
 	      char source_filename[MAX_FILE_NAME_SIZE],
@@ -45,7 +47,47 @@ void cfdp_core_resume(struct cfdp_core *core,
 void cfdp_core_report(struct cfdp_core *core,
 		      struct transaction_id transaction_id);
 
+// CFDP indications
+
 void cfdp_core_transaction_indication(struct cfdp_core *core,
 				      struct transaction_id transaction_id);
+
+void cfdp_core_eof_sent_indication(struct cfdp_core *core,
+				   struct transaction_id transaction_id);
+
+void cfdp_core_finished_indication(struct cfdp_core *core,
+				   struct transaction_id transaction_id);
+
+void cfdp_core_report_indication(struct cfdp_core *core,
+				 struct transaction_id transaction_id);
+
+void cfdp_core_eof_received_indication(struct cfdp_core *core,
+				       struct transaction_id transaction_id);
+
+void cfdp_core_metadata_received_indication(
+    struct cfdp_core *core, struct transaction_id transaction_id);
+
+void cfdp_core_filesegment_received_indication(
+    struct cfdp_core *core, struct transaction_id transaction_id);
+
+void cfdp_core_abandoned_indication(struct cfdp_core *core,
+				    struct transaction_id transaction_id);
+
+void cfdp_core_suspended_indication(struct cfdp_core *core,
+				    struct transaction_id transaction_id);
+
+void cfdp_core_resumed_indication(struct cfdp_core *core,
+				  struct transaction_id transaction_id);
+
+void cfdp_core_fault_indication(struct cfdp_core *core,
+				struct transaction_id transaction_id);
+
+// CFDP link state procedures
+
+void cfdp_core_freeze(struct cfdp_core *core, uint32_t destination_entity_id);
+
+void cfdp_core_thaw(struct cfdp_core *core, uint32_t destination_entity_id);
+
+void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf, long count);
 
 #endif
