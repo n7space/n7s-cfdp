@@ -21,7 +21,21 @@ cfdp_core_is_request_to_receiver(struct cfdp_core *core,
 		   core->receiver[0].transaction_id.seq_number;
 }
 
-static void cfdp_core_issue_request(struct cfdp_core *core,
+static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
+						 uint32_t destination_entity_id,
+						 enum EventType event_type)
+{
+	struct event event;
+
+	if (core->sender[0].transaction.destination_entity_id ==
+	    destination_entity_id) {
+		event.transaction = core->sender[0].transaction;
+		event.type = event_type;
+		sender_machine_update_state(&core->sender[0], &event);
+	}
+}
+
+void cfdp_core_issue_request(struct cfdp_core *core,
 				    struct transaction_id transaction_id,
 				    enum EventType event_type)
 {
@@ -34,23 +48,9 @@ static void cfdp_core_issue_request(struct cfdp_core *core,
 	} else if (cfdp_core_is_request_to_receiver(core, transaction_id)) {
 		event.transaction = core->receiver[0].transaction;
 		event.type = event_type;
-		receiver_machine_update_state(&core->receiver[0], &event);
+		receiver_machine_update_state(&core->receiver[0], &event, NULL);
 	} else {
 		// TODO handle transaction id not present
-	}
-}
-
-static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
-						 uint32_t destination_entity_id,
-						 enum EventType event_type)
-{
-	struct event event;
-
-	if (core->sender[0].transaction.destination_entity_id ==
-	    destination_entity_id) {
-		event.transaction = core->sender[0].transaction;
-		event.type = event_type;
-		sender_machine_update_state(&core->sender[0], &event);
 	}
 }
 
@@ -300,7 +300,7 @@ static void deliver_pdu_to_receiver_machine(struct cfdp_core *core,
 					    const cfdpCfdpPDU *pdu)
 {
 	struct event event = create_event_for_delivery(core, pdu);
-	receiver_machine_update_state(&core->receiver[0], &event);
+	receiver_machine_update_state(&core->receiver[0], &event, pdu);
 }
 
 static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
@@ -353,7 +353,7 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 
 	struct event event = {.transaction = transaction,
 			      .type = E0_ENTERED_STATE};
-	receiver_machine_update_state(&core->receiver[0], &event);
+	receiver_machine_update_state(&core->receiver[0], &event, pdu);
 	deliver_pdu_to_receiver_machine(core, pdu);
 }
 

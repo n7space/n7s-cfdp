@@ -23,7 +23,7 @@ ConditionCode ::= ENUMERATED {
    cancel-request-received (15)
 }
 
-FileChecksum ::= OCTET STRING (SIZE(4))
+FileChecksum ::= INTEGER (0..4294967295)
 
 FileSize ::= INTEGER (0..4294967295)
 

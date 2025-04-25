@@ -4,7 +4,7 @@ BEGIN
 DirectiveCode                                [encoding pos-int, size 8]
 DirectiveSubtypeCode                         [encoding pos-int, size 4]
 ConditionCode                                [encoding pos-int, size 4]
-FileChecksum                                 []
+FileChecksum                                 [encoding pos-int, size 32]
 FileSize                                     [encoding pos-int, size 32]
 AckTransactionStatus                         [encoding pos-int, size 2]
 

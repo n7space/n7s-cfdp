@@ -143,20 +143,18 @@ flag cfdpConditionCode_ACN_Encode(const cfdpConditionCode* pVal, BitStream* pBit
 
 #define ERR_ACN_DECODE_CONDITIONCODE		15  /**/
 flag cfdpConditionCode_ACN_Decode(cfdpConditionCode* pVal, BitStream* pBitStrm, int* pErrCode);
-typedef struct {
-    byte arr[4];
-} cfdpFileChecksum;
+typedef asn1SccUint cfdpFileChecksum;
 
 
 flag cfdpFileChecksum_Equal(const cfdpFileChecksum* pVal1, const cfdpFileChecksum* pVal2);
 
-#define ERR_FILECHECKSUM		16  /*(SIZE(4))*/
+#define ERR_FILECHECKSUM		16  /*(0..4294967295)*/
 flag cfdpFileChecksum_IsConstraintValid(const cfdpFileChecksum* pVal, int* pErrCode);
 
 #ifdef __cplusplus
 extern const cfdpFileChecksum cfdpFileChecksum_constant;
 #else
-#define cfdpFileChecksum_constant {.arr  = {[0 ... 4-1] = 0 }}
+#define cfdpFileChecksum_constant 0UL
 #endif
 
 void cfdpFileChecksum_Initialize(cfdpFileChecksum* pVal);
@@ -230,7 +228,7 @@ flag cfdpEofPDU_IsConstraintValid(const cfdpEofPDU* pVal, int* pErrCode);
 #ifdef __cplusplus
 extern const cfdpEofPDU cfdpEofPDU_constant;
 #else
-#define cfdpEofPDU_constant {.condition_code = ConditionCode_no_error, .file_checksum = {.arr  = {[0 ... 4-1] = 0 }}, .file_size = 0UL}
+#define cfdpEofPDU_constant {.condition_code = ConditionCode_no_error, .file_checksum = 0UL, .file_size = 0UL}
 #endif
 
 void cfdpEofPDU_Initialize(cfdpEofPDU* pVal);

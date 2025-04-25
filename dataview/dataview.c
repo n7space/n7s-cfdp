@@ -494,22 +494,21 @@ flag cfdpConditionCode_ACN_Decode(cfdpConditionCode* pVal, BitStream* pBitStrm, 
 
 flag cfdpFileChecksum_Equal(const cfdpFileChecksum* pVal1, const cfdpFileChecksum* pVal2)
 {
-	return memcmp(pVal1->arr, pVal2->arr, 4) ==0;
+	return (*(pVal1)) == (*(pVal2));
 
 }
 
 flag cfdpFileChecksum_IsConstraintValid(const cfdpFileChecksum* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-	(void)pVal;
-    ret = TRUE;
-    *pErrCode = 0;
+    ret = ((*(pVal)) <= 4294967295UL);
+    *pErrCode = ret ? 0 :  ERR_FILECHECKSUM;
 
 	return ret;
 }
 
 #ifdef __cplusplus
-const cfdpFileChecksum cfdpFileChecksum_constant = {.arr  = {[0 ... 4-1] = 0 }};
+const cfdpFileChecksum cfdpFileChecksum_constant = 0UL;
 #endif
 
 void cfdpFileChecksum_Initialize(cfdpFileChecksum* pVal)
@@ -528,7 +527,7 @@ flag cfdpFileChecksum_Encode(const cfdpFileChecksum* pVal, BitStream* pBitStrm, 
 	*pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileChecksum_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, 4);
+	    BitStream_EncodeConstraintPosWholeNumber(pBitStrm, (*(pVal)), 0, 4294967295LL);
     } /*COVERAGE_IGNORE*/
 
 
@@ -541,7 +540,8 @@ flag cfdpFileChecksum_Decode(cfdpFileChecksum* pVal, BitStream* pBitStrm, int* p
 	*pErrCode = 0;
 
 
-	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, 4);
+	ret = BitStream_DecodeConstraintPosWholeNumber(pBitStrm, pVal, 0, 4294967295LL);
+	*pErrCode = ret ? 0 : ERR_UPER_DECODE_FILECHECKSUM;
 
 	return ret  && cfdpFileChecksum_IsConstraintValid(pVal, pErrCode);
 }
@@ -553,7 +553,7 @@ flag cfdpFileChecksum_ACN_Encode(const cfdpFileChecksum* pVal, BitStream* pBitSt
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileChecksum_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, 4);
+	    Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (*(pVal)));
     } /*COVERAGE_IGNORE*/
 
 
@@ -566,7 +566,8 @@ flag cfdpFileChecksum_ACN_Decode(cfdpFileChecksum* pVal, BitStream* pBitStrm, in
 	*pErrCode = 0;
 
 
-	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, 4);
+	ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal);
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_FILECHECKSUM;
 
     return ret && cfdpFileChecksum_IsConstraintValid(pVal, pErrCode);
 }
@@ -660,7 +661,7 @@ flag cfdpEofPDU_Equal(const cfdpEofPDU* pVal1, const cfdpEofPDU* pVal2)
     ret = (pVal1->condition_code == pVal2->condition_code);
 
     if (ret) {
-        ret = cfdpFileChecksum_Equal((&(pVal1->file_checksum)), (&(pVal2->file_checksum)));
+        ret = (pVal1->file_checksum == pVal2->file_checksum);
 
         if (ret) {
             ret = (pVal1->file_size == pVal2->file_size);
@@ -688,7 +689,7 @@ flag cfdpEofPDU_IsConstraintValid(const cfdpEofPDU* pVal, int* pErrCode)
 }
 
 #ifdef __cplusplus
-const cfdpEofPDU cfdpEofPDU_constant = {.condition_code = ConditionCode_no_error, .file_checksum = {.arr  = {[0 ... 4-1] = 0 }}, .file_size = 0UL};
+const cfdpEofPDU cfdpEofPDU_constant = {.condition_code = ConditionCode_no_error, .file_checksum = 0UL, .file_size = 0UL};
 #endif
 
 void cfdpEofPDU_Initialize(cfdpEofPDU* pVal)

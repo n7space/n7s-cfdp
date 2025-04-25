@@ -11,6 +11,7 @@
 #include "sender_machine.h"
 #include "transaction_id.h"
 #include "transport.h"
+#include "event.h"
 
 struct cfdp_core {
 	uint32_t entity_id;
@@ -27,6 +28,10 @@ struct cfdp_core {
 	struct sender_machine sender[MAX_NUMBER_OF_SENDER_MACHINES];
 	struct receiver_machine receiver[MAX_NUMBER_OF_RECEIVER_MACHINES];
 };
+
+void cfdp_core_issue_request(struct cfdp_core *core,
+				    struct transaction_id transaction_id,
+				    enum EventType event_type);
 
 // CFDP service requests
 
