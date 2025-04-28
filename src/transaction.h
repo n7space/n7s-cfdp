@@ -25,13 +25,16 @@ uint32_t transaction_get_temp_file_checksum(struct transaction *transaction);
 void transaction_copy_temp_file_to_dest_file(struct transaction *transaction);
 void transaction_close_temp_file(struct transaction *transaction);
 
-void transaction_store_file_data(struct transaction *transaction);
+void transaction_open_file(struct transaction *transaction);
+void transaction_send_file_data(struct transaction *transaction);
+bool transaction_is_file_send_complete(struct transaction *transaction);
+void transaction_close_file(struct transaction *transaction);
 
 uint32_t transaction_get_file_size(struct transaction *transaction);
 uint32_t transaction_get_file_checksum(struct transaction *transaction);
 bool transaction_get_file_segment(struct transaction *transaction, char *data,
 				  uint32_t length);
 bool transaction_is_file_transfer_in_progress(struct transaction *transaction);
-bool transaction_is_file_send_complete(struct transaction *transaction);
+
 
 #endif

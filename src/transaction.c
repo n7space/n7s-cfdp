@@ -24,8 +24,26 @@ void transaction_close_temp_file(struct transaction *transaction){
 	transaction->filestore->filestore_close(TEMP_FILE_NAME);
 }
 
-void transaction_store_file_data(struct transaction *transaction){
+void transaction_open_file(struct transaction *transaction){
 
+}
+
+void transaction_send_file_data(struct transaction *transaction){
+
+}
+
+void transaction_close_file(struct transaction *transaction){
+
+}
+
+bool transaction_is_file_transfer_in_progress(struct transaction *transaction)
+{
+	return transaction->source_filename[0] != '\0' && transaction->destination_filename[0] != '\0';
+}
+
+bool transaction_is_file_send_complete(struct transaction *transaction)
+{
+	return transaction->file_position >= transaction->file_size;
 }
 
 uint32_t transaction_get_file_size(struct transaction *transaction)
@@ -64,14 +82,4 @@ bool transaction_get_file_segment(struct transaction *transaction, char *data,
 	transaction->file_position += length;
 
 	return true;
-}
-
-bool transaction_is_file_transfer_in_progress(struct transaction *transaction)
-{
-	return transaction->source_filename[0] != '\0' && transaction->destination_filename[0] != '\0';
-}
-
-bool transaction_is_file_send_complete(struct transaction *transaction)
-{
-	return transaction->file_position >= transaction->file_size;
 }

@@ -18,13 +18,8 @@ struct receiver_machine {
 
 	cfdpConditionCode condition_code;
 	cfdpDeliveryCode delivery_code;
-	cfdpFileStatus file_status;
-	bool is_frozen;
-	bool metadata_received;
-	bool is_suspended;
 	
 	uint32_t received_file_size;
-	bool is_file_open;
 
 	enum MachineState state;
 };

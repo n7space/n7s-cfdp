@@ -5,11 +5,8 @@
 #include "stdint.h"
 
 struct transport {
+	void (*transport_send_pdu)(const uint64_t destination_entity_id, const byte pdu[], const int size);
+	bool (*transport_is_ready)();
 };
-
-void transport_request(struct transport *transport, uint32_t ut_address,
-		       uint32_t *ut_sdu);
-void transport_indication(struct transport *transport, uint32_t ut_address,
-			  uint32_t *ut_sdu);
 
 #endif

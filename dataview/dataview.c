@@ -4239,87 +4239,6 @@ flag cfdpMessageType_ACN_Decode(cfdpMessageType* pVal, BitStream* pBitStrm, int*
 }
 
 
-flag cfdpProtocolVersion_Equal(const cfdpProtocolVersion* pVal1, const cfdpProtocolVersion* pVal2)
-{
-	return (*(pVal1)) == (*(pVal2));
-
-}
-
-flag cfdpProtocolVersion_IsConstraintValid(const cfdpProtocolVersion* pVal, int* pErrCode)
-{
-    flag ret = TRUE;
-    ret = ((*(pVal)) <= 7UL);
-    *pErrCode = ret ? 0 :  ERR_PROTOCOLVERSION;
-
-	return ret;
-}
-
-#ifdef __cplusplus
-const cfdpProtocolVersion cfdpProtocolVersion_constant = 0UL;
-#endif
-
-void cfdpProtocolVersion_Initialize(cfdpProtocolVersion* pVal)
-{
-	(void)pVal;
-
-
-	(*(pVal)) = (cfdpProtocolVersion)cfdpProtocolVersion_constant;
-}
-
-flag cfdpProtocolVersion_Encode(const cfdpProtocolVersion* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
-{
-    flag ret = TRUE;
-
-
-	*pErrCode = 0;
-	ret = bCheckConstraints ? cfdpProtocolVersion_IsConstraintValid(pVal, pErrCode) : TRUE ;
-	if (ret && *pErrCode == 0) {
-	    BitStream_EncodeConstraintPosWholeNumber(pBitStrm, (*(pVal)), 0, 7);
-    } /*COVERAGE_IGNORE*/
-
-
-    return ret;
-}
-
-flag cfdpProtocolVersion_Decode(cfdpProtocolVersion* pVal, BitStream* pBitStrm, int* pErrCode)
-{
-    flag ret = TRUE;
-	*pErrCode = 0;
-
-
-	ret = BitStream_DecodeConstraintPosWholeNumber(pBitStrm, pVal, 0, 7);
-	*pErrCode = ret ? 0 : ERR_UPER_DECODE_PROTOCOLVERSION;
-
-	return ret  && cfdpProtocolVersion_IsConstraintValid(pVal, pErrCode);
-}
-
-flag cfdpProtocolVersion_ACN_Encode(const cfdpProtocolVersion* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
-{
-    flag ret = TRUE;
-
-    *pErrCode = 0;
-	ret = bCheckConstraints ? cfdpProtocolVersion_IsConstraintValid(pVal, pErrCode) : TRUE ;
-	if (ret && *pErrCode == 0) {
-	    Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, (*(pVal)), 3);
-    } /*COVERAGE_IGNORE*/
-
-
-    return ret;
-}
-
-flag cfdpProtocolVersion_ACN_Decode(cfdpProtocolVersion* pVal, BitStream* pBitStrm, int* pErrCode)
-{
-    flag ret = TRUE;
-	*pErrCode = 0;
-
-
-	ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, pVal, 3);
-	*pErrCode = ret ? 0 : ERR_ACN_DECODE_PROTOCOLVERSION;
-
-    return ret && cfdpProtocolVersion_IsConstraintValid(pVal, pErrCode);
-}
-
-
 flag cfdpPDUType_Equal(const cfdpPDUType* pVal1, const cfdpPDUType* pVal2)
 {
 	return (*(pVal1)) == (*(pVal2));
@@ -5602,36 +5521,31 @@ flag cfdpPDUHeader_Equal(const cfdpPDUHeader* pVal1, const cfdpPDUHeader* pVal2)
 {
 	flag ret=TRUE;
 
-    ret = (pVal1->version == pVal2->version);
+    ret = (pVal1->direction == pVal2->direction);
 
     if (ret) {
-        ret = (pVal1->direction == pVal2->direction);
+        ret = (pVal1->transmission_mode == pVal2->transmission_mode);
 
         if (ret) {
-            ret = (pVal1->transmission_mode == pVal2->transmission_mode);
+            ret = (pVal1->crc_flag == pVal2->crc_flag);
 
             if (ret) {
-                ret = (pVal1->crc_flag == pVal2->crc_flag);
+                ret = (pVal1->large_file_flag == pVal2->large_file_flag);
 
                 if (ret) {
-                    ret = (pVal1->large_file_flag == pVal2->large_file_flag);
+                    ret = (pVal1->segmentation_control == pVal2->segmentation_control);
 
                     if (ret) {
-                        ret = (pVal1->segmentation_control == pVal2->segmentation_control);
+                        ret = (pVal1->segment_metadata_flag == pVal2->segment_metadata_flag);
 
                         if (ret) {
-                            ret = (pVal1->segment_metadata_flag == pVal2->segment_metadata_flag);
+                            ret = cfdpEntityId_Equal((&(pVal1->source_entity_id)), (&(pVal2->source_entity_id)));
 
                             if (ret) {
-                                ret = cfdpEntityId_Equal((&(pVal1->source_entity_id)), (&(pVal2->source_entity_id)));
+                                ret = cfdpTransactionSequenceNumber_Equal((&(pVal1->transaction_sequence_number)), (&(pVal2->transaction_sequence_number)));
 
                                 if (ret) {
-                                    ret = cfdpTransactionSequenceNumber_Equal((&(pVal1->transaction_sequence_number)), (&(pVal2->transaction_sequence_number)));
-
-                                    if (ret) {
-                                        ret = cfdpEntityId_Equal((&(pVal1->destination_entity_id)), (&(pVal2->destination_entity_id)));
-
-                                    }
+                                    ret = cfdpEntityId_Equal((&(pVal1->destination_entity_id)), (&(pVal2->destination_entity_id)));
 
                                 }
 
@@ -5656,26 +5570,23 @@ flag cfdpPDUHeader_Equal(const cfdpPDUHeader* pVal1, const cfdpPDUHeader* pVal2)
 flag cfdpPDUHeader_IsConstraintValid(const cfdpPDUHeader* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-    ret = cfdpProtocolVersion_IsConstraintValid((&(pVal->version)), pErrCode);
+    ret = cfdpDirection_IsConstraintValid((&(pVal->direction)), pErrCode);
     if (ret) {
-        ret = cfdpDirection_IsConstraintValid((&(pVal->direction)), pErrCode);
+        ret = cfdpTransmissionMode_IsConstraintValid((&(pVal->transmission_mode)), pErrCode);
         if (ret) {
-            ret = cfdpTransmissionMode_IsConstraintValid((&(pVal->transmission_mode)), pErrCode);
+            ret = cfdpCRCFlag_IsConstraintValid((&(pVal->crc_flag)), pErrCode);
             if (ret) {
-                ret = cfdpCRCFlag_IsConstraintValid((&(pVal->crc_flag)), pErrCode);
+                ret = cfdpLargeFileFlag_IsConstraintValid((&(pVal->large_file_flag)), pErrCode);
                 if (ret) {
-                    ret = cfdpLargeFileFlag_IsConstraintValid((&(pVal->large_file_flag)), pErrCode);
+                    ret = cfdpSegmentationControl_IsConstraintValid((&(pVal->segmentation_control)), pErrCode);
                     if (ret) {
-                        ret = cfdpSegmentationControl_IsConstraintValid((&(pVal->segmentation_control)), pErrCode);
+                        ret = cfdpSegmentMetadataFlag_IsConstraintValid((&(pVal->segment_metadata_flag)), pErrCode);
                         if (ret) {
-                            ret = cfdpSegmentMetadataFlag_IsConstraintValid((&(pVal->segment_metadata_flag)), pErrCode);
+                            ret = cfdpEntityId_IsConstraintValid((&(pVal->source_entity_id)), pErrCode);
                             if (ret) {
-                                ret = cfdpEntityId_IsConstraintValid((&(pVal->source_entity_id)), pErrCode);
+                                ret = cfdpTransactionSequenceNumber_IsConstraintValid((&(pVal->transaction_sequence_number)), pErrCode);
                                 if (ret) {
-                                    ret = cfdpTransactionSequenceNumber_IsConstraintValid((&(pVal->transaction_sequence_number)), pErrCode);
-                                    if (ret) {
-                                        ret = cfdpEntityId_IsConstraintValid((&(pVal->destination_entity_id)), pErrCode);
-                                    }   /*COVERAGE_IGNORE*/
+                                    ret = cfdpEntityId_IsConstraintValid((&(pVal->destination_entity_id)), pErrCode);
                                 }   /*COVERAGE_IGNORE*/
                             }   /*COVERAGE_IGNORE*/
                         }   /*COVERAGE_IGNORE*/
@@ -5689,7 +5600,7 @@ flag cfdpPDUHeader_IsConstraintValid(const cfdpPDUHeader* pVal, int* pErrCode)
 }
 
 #ifdef __cplusplus
-const cfdpPDUHeader cfdpPDUHeader_constant = {.version = 0UL, .direction = Direction_toward_receiver, .transmission_mode = TransmissionMode_acknowledged, .crc_flag = CRCFlag_crc_not_present, .large_file_flag = 0UL, .segmentation_control = SegmentationControl_record_boundries_not_preserved, .segment_metadata_flag = SegmentMetadataFlag_flag_present, .source_entity_id = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}, .transaction_sequence_number = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}, .destination_entity_id = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}};
+const cfdpPDUHeader cfdpPDUHeader_constant = {.direction = Direction_toward_receiver, .transmission_mode = TransmissionMode_acknowledged, .crc_flag = CRCFlag_crc_not_present, .large_file_flag = 0UL, .segmentation_control = SegmentationControl_record_boundries_not_preserved, .segment_metadata_flag = SegmentMetadataFlag_flag_present, .source_entity_id = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}, .transaction_sequence_number = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}, .destination_entity_id = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}};
 #endif
 
 void cfdpPDUHeader_Initialize(cfdpPDUHeader* pVal)
@@ -5708,36 +5619,32 @@ flag cfdpPDUHeader_Encode(const cfdpPDUHeader* pVal, BitStream* pBitStrm, int* p
 	*pErrCode = 0;
 	ret = bCheckConstraints ? cfdpPDUHeader_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    /*Encode version */
-	    ret = cfdpProtocolVersion_Encode((&(pVal->version)), pBitStrm, pErrCode, FALSE);
+	    /*Encode direction */
+	    ret = cfdpDirection_Encode((&(pVal->direction)), pBitStrm, pErrCode, FALSE);
 	    if (ret) {
-	        /*Encode direction */
-	        ret = cfdpDirection_Encode((&(pVal->direction)), pBitStrm, pErrCode, FALSE);
+	        /*Encode transmission_mode */
+	        ret = cfdpTransmissionMode_Encode((&(pVal->transmission_mode)), pBitStrm, pErrCode, FALSE);
 	        if (ret) {
-	            /*Encode transmission_mode */
-	            ret = cfdpTransmissionMode_Encode((&(pVal->transmission_mode)), pBitStrm, pErrCode, FALSE);
+	            /*Encode crc_flag */
+	            ret = cfdpCRCFlag_Encode((&(pVal->crc_flag)), pBitStrm, pErrCode, FALSE);
 	            if (ret) {
-	                /*Encode crc_flag */
-	                ret = cfdpCRCFlag_Encode((&(pVal->crc_flag)), pBitStrm, pErrCode, FALSE);
+	                /*Encode large_file_flag */
+	                ret = cfdpLargeFileFlag_Encode((&(pVal->large_file_flag)), pBitStrm, pErrCode, FALSE);
 	                if (ret) {
-	                    /*Encode large_file_flag */
-	                    ret = cfdpLargeFileFlag_Encode((&(pVal->large_file_flag)), pBitStrm, pErrCode, FALSE);
+	                    /*Encode segmentation_control */
+	                    ret = cfdpSegmentationControl_Encode((&(pVal->segmentation_control)), pBitStrm, pErrCode, FALSE);
 	                    if (ret) {
-	                        /*Encode segmentation_control */
-	                        ret = cfdpSegmentationControl_Encode((&(pVal->segmentation_control)), pBitStrm, pErrCode, FALSE);
+	                        /*Encode segment_metadata_flag */
+	                        ret = cfdpSegmentMetadataFlag_Encode((&(pVal->segment_metadata_flag)), pBitStrm, pErrCode, FALSE);
 	                        if (ret) {
-	                            /*Encode segment_metadata_flag */
-	                            ret = cfdpSegmentMetadataFlag_Encode((&(pVal->segment_metadata_flag)), pBitStrm, pErrCode, FALSE);
+	                            /*Encode source_entity_id */
+	                            ret = cfdpEntityId_Encode((&(pVal->source_entity_id)), pBitStrm, pErrCode, FALSE);
 	                            if (ret) {
-	                                /*Encode source_entity_id */
-	                                ret = cfdpEntityId_Encode((&(pVal->source_entity_id)), pBitStrm, pErrCode, FALSE);
+	                                /*Encode transaction_sequence_number */
+	                                ret = cfdpTransactionSequenceNumber_Encode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode, FALSE);
 	                                if (ret) {
-	                                    /*Encode transaction_sequence_number */
-	                                    ret = cfdpTransactionSequenceNumber_Encode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode, FALSE);
-	                                    if (ret) {
-	                                        /*Encode destination_entity_id */
-	                                        ret = cfdpEntityId_Encode((&(pVal->destination_entity_id)), pBitStrm, pErrCode, FALSE);
-	                                    }   /*COVERAGE_IGNORE*/
+	                                    /*Encode destination_entity_id */
+	                                    ret = cfdpEntityId_Encode((&(pVal->destination_entity_id)), pBitStrm, pErrCode, FALSE);
 	                                }   /*COVERAGE_IGNORE*/
 	                            }   /*COVERAGE_IGNORE*/
 	                        }   /*COVERAGE_IGNORE*/
@@ -5758,36 +5665,32 @@ flag cfdpPDUHeader_Decode(cfdpPDUHeader* pVal, BitStream* pBitStrm, int* pErrCod
 	*pErrCode = 0;
 
 
-	/*Decode version */
-	ret = cfdpProtocolVersion_Decode((&(pVal->version)), pBitStrm, pErrCode);
+	/*Decode direction */
+	ret = cfdpDirection_Decode((&(pVal->direction)), pBitStrm, pErrCode);
 	if (ret) {
-	    /*Decode direction */
-	    ret = cfdpDirection_Decode((&(pVal->direction)), pBitStrm, pErrCode);
+	    /*Decode transmission_mode */
+	    ret = cfdpTransmissionMode_Decode((&(pVal->transmission_mode)), pBitStrm, pErrCode);
 	    if (ret) {
-	        /*Decode transmission_mode */
-	        ret = cfdpTransmissionMode_Decode((&(pVal->transmission_mode)), pBitStrm, pErrCode);
+	        /*Decode crc_flag */
+	        ret = cfdpCRCFlag_Decode((&(pVal->crc_flag)), pBitStrm, pErrCode);
 	        if (ret) {
-	            /*Decode crc_flag */
-	            ret = cfdpCRCFlag_Decode((&(pVal->crc_flag)), pBitStrm, pErrCode);
+	            /*Decode large_file_flag */
+	            ret = cfdpLargeFileFlag_Decode((&(pVal->large_file_flag)), pBitStrm, pErrCode);
 	            if (ret) {
-	                /*Decode large_file_flag */
-	                ret = cfdpLargeFileFlag_Decode((&(pVal->large_file_flag)), pBitStrm, pErrCode);
+	                /*Decode segmentation_control */
+	                ret = cfdpSegmentationControl_Decode((&(pVal->segmentation_control)), pBitStrm, pErrCode);
 	                if (ret) {
-	                    /*Decode segmentation_control */
-	                    ret = cfdpSegmentationControl_Decode((&(pVal->segmentation_control)), pBitStrm, pErrCode);
+	                    /*Decode segment_metadata_flag */
+	                    ret = cfdpSegmentMetadataFlag_Decode((&(pVal->segment_metadata_flag)), pBitStrm, pErrCode);
 	                    if (ret) {
-	                        /*Decode segment_metadata_flag */
-	                        ret = cfdpSegmentMetadataFlag_Decode((&(pVal->segment_metadata_flag)), pBitStrm, pErrCode);
+	                        /*Decode source_entity_id */
+	                        ret = cfdpEntityId_Decode((&(pVal->source_entity_id)), pBitStrm, pErrCode);
 	                        if (ret) {
-	                            /*Decode source_entity_id */
-	                            ret = cfdpEntityId_Decode((&(pVal->source_entity_id)), pBitStrm, pErrCode);
+	                            /*Decode transaction_sequence_number */
+	                            ret = cfdpTransactionSequenceNumber_Decode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode);
 	                            if (ret) {
-	                                /*Decode transaction_sequence_number */
-	                                ret = cfdpTransactionSequenceNumber_Decode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode);
-	                                if (ret) {
-	                                    /*Decode destination_entity_id */
-	                                    ret = cfdpEntityId_Decode((&(pVal->destination_entity_id)), pBitStrm, pErrCode);
-	                                }   /*COVERAGE_IGNORE*/
+	                                /*Decode destination_entity_id */
+	                                ret = cfdpEntityId_Decode((&(pVal->destination_entity_id)), pBitStrm, pErrCode);
 	                            }   /*COVERAGE_IGNORE*/
 	                        }   /*COVERAGE_IGNORE*/
 	                    }   /*COVERAGE_IGNORE*/
@@ -5807,36 +5710,32 @@ flag cfdpPDUHeader_ACN_Encode(const cfdpPDUHeader* pVal, BitStream* pBitStrm, in
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpPDUHeader_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    /*Encode version */
-	    ret = cfdpProtocolVersion_ACN_Encode((&(pVal->version)), pBitStrm, pErrCode, FALSE);
+	    /*Encode direction */
+	    ret = cfdpDirection_ACN_Encode((&(pVal->direction)), pBitStrm, pErrCode, FALSE);
 	    if (ret) {
-	        /*Encode direction */
-	        ret = cfdpDirection_ACN_Encode((&(pVal->direction)), pBitStrm, pErrCode, FALSE);
+	        /*Encode transmission_mode */
+	        ret = cfdpTransmissionMode_ACN_Encode((&(pVal->transmission_mode)), pBitStrm, pErrCode, FALSE);
 	        if (ret) {
-	            /*Encode transmission_mode */
-	            ret = cfdpTransmissionMode_ACN_Encode((&(pVal->transmission_mode)), pBitStrm, pErrCode, FALSE);
+	            /*Encode crc_flag */
+	            ret = cfdpCRCFlag_ACN_Encode((&(pVal->crc_flag)), pBitStrm, pErrCode, FALSE);
 	            if (ret) {
-	                /*Encode crc_flag */
-	                ret = cfdpCRCFlag_ACN_Encode((&(pVal->crc_flag)), pBitStrm, pErrCode, FALSE);
+	                /*Encode large_file_flag */
+	                ret = cfdpLargeFileFlag_ACN_Encode((&(pVal->large_file_flag)), pBitStrm, pErrCode, FALSE);
 	                if (ret) {
-	                    /*Encode large_file_flag */
-	                    ret = cfdpLargeFileFlag_ACN_Encode((&(pVal->large_file_flag)), pBitStrm, pErrCode, FALSE);
+	                    /*Encode segmentation_control */
+	                    ret = cfdpSegmentationControl_ACN_Encode((&(pVal->segmentation_control)), pBitStrm, pErrCode, FALSE);
 	                    if (ret) {
-	                        /*Encode segmentation_control */
-	                        ret = cfdpSegmentationControl_ACN_Encode((&(pVal->segmentation_control)), pBitStrm, pErrCode, FALSE);
+	                        /*Encode segment_metadata_flag */
+	                        ret = cfdpSegmentMetadataFlag_ACN_Encode((&(pVal->segment_metadata_flag)), pBitStrm, pErrCode, FALSE);
 	                        if (ret) {
-	                            /*Encode segment_metadata_flag */
-	                            ret = cfdpSegmentMetadataFlag_ACN_Encode((&(pVal->segment_metadata_flag)), pBitStrm, pErrCode, FALSE);
+	                            /*Encode source_entity_id */
+	                            ret = cfdpEntityId_ACN_Encode((&(pVal->source_entity_id)), pBitStrm, pErrCode, FALSE);
 	                            if (ret) {
-	                                /*Encode source_entity_id */
-	                                ret = cfdpEntityId_ACN_Encode((&(pVal->source_entity_id)), pBitStrm, pErrCode, FALSE);
+	                                /*Encode transaction_sequence_number */
+	                                ret = cfdpTransactionSequenceNumber_ACN_Encode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode, FALSE);
 	                                if (ret) {
-	                                    /*Encode transaction_sequence_number */
-	                                    ret = cfdpTransactionSequenceNumber_ACN_Encode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode, FALSE);
-	                                    if (ret) {
-	                                        /*Encode destination_entity_id */
-	                                        ret = cfdpEntityId_ACN_Encode((&(pVal->destination_entity_id)), pBitStrm, pErrCode, FALSE);
-	                                    }   /*COVERAGE_IGNORE*/
+	                                    /*Encode destination_entity_id */
+	                                    ret = cfdpEntityId_ACN_Encode((&(pVal->destination_entity_id)), pBitStrm, pErrCode, FALSE);
 	                                }   /*COVERAGE_IGNORE*/
 	                            }   /*COVERAGE_IGNORE*/
 	                        }   /*COVERAGE_IGNORE*/
@@ -5857,36 +5756,32 @@ flag cfdpPDUHeader_ACN_Decode(cfdpPDUHeader* pVal, BitStream* pBitStrm, int* pEr
 	*pErrCode = 0;
 
 
-	/*Decode version */
-	ret = cfdpProtocolVersion_ACN_Decode((&(pVal->version)), pBitStrm, pErrCode);
+	/*Decode direction */
+	ret = cfdpDirection_ACN_Decode((&(pVal->direction)), pBitStrm, pErrCode);
 	if (ret) {
-	    /*Decode direction */
-	    ret = cfdpDirection_ACN_Decode((&(pVal->direction)), pBitStrm, pErrCode);
+	    /*Decode transmission_mode */
+	    ret = cfdpTransmissionMode_ACN_Decode((&(pVal->transmission_mode)), pBitStrm, pErrCode);
 	    if (ret) {
-	        /*Decode transmission_mode */
-	        ret = cfdpTransmissionMode_ACN_Decode((&(pVal->transmission_mode)), pBitStrm, pErrCode);
+	        /*Decode crc_flag */
+	        ret = cfdpCRCFlag_ACN_Decode((&(pVal->crc_flag)), pBitStrm, pErrCode);
 	        if (ret) {
-	            /*Decode crc_flag */
-	            ret = cfdpCRCFlag_ACN_Decode((&(pVal->crc_flag)), pBitStrm, pErrCode);
+	            /*Decode large_file_flag */
+	            ret = cfdpLargeFileFlag_ACN_Decode((&(pVal->large_file_flag)), pBitStrm, pErrCode);
 	            if (ret) {
-	                /*Decode large_file_flag */
-	                ret = cfdpLargeFileFlag_ACN_Decode((&(pVal->large_file_flag)), pBitStrm, pErrCode);
+	                /*Decode segmentation_control */
+	                ret = cfdpSegmentationControl_ACN_Decode((&(pVal->segmentation_control)), pBitStrm, pErrCode);
 	                if (ret) {
-	                    /*Decode segmentation_control */
-	                    ret = cfdpSegmentationControl_ACN_Decode((&(pVal->segmentation_control)), pBitStrm, pErrCode);
+	                    /*Decode segment_metadata_flag */
+	                    ret = cfdpSegmentMetadataFlag_ACN_Decode((&(pVal->segment_metadata_flag)), pBitStrm, pErrCode);
 	                    if (ret) {
-	                        /*Decode segment_metadata_flag */
-	                        ret = cfdpSegmentMetadataFlag_ACN_Decode((&(pVal->segment_metadata_flag)), pBitStrm, pErrCode);
+	                        /*Decode source_entity_id */
+	                        ret = cfdpEntityId_ACN_Decode((&(pVal->source_entity_id)), pBitStrm, pErrCode);
 	                        if (ret) {
-	                            /*Decode source_entity_id */
-	                            ret = cfdpEntityId_ACN_Decode((&(pVal->source_entity_id)), pBitStrm, pErrCode);
+	                            /*Decode transaction_sequence_number */
+	                            ret = cfdpTransactionSequenceNumber_ACN_Decode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode);
 	                            if (ret) {
-	                                /*Decode transaction_sequence_number */
-	                                ret = cfdpTransactionSequenceNumber_ACN_Decode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode);
-	                                if (ret) {
-	                                    /*Decode destination_entity_id */
-	                                    ret = cfdpEntityId_ACN_Decode((&(pVal->destination_entity_id)), pBitStrm, pErrCode);
-	                                }   /*COVERAGE_IGNORE*/
+	                                /*Decode destination_entity_id */
+	                                ret = cfdpEntityId_ACN_Decode((&(pVal->destination_entity_id)), pBitStrm, pErrCode);
 	                            }   /*COVERAGE_IGNORE*/
 	                        }   /*COVERAGE_IGNORE*/
 	                    }   /*COVERAGE_IGNORE*/
@@ -6021,8 +5916,11 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	ret = bCheckConstraints ? cfdpCfdpPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
 	    /*Encode pdu_header */
-	    /*Encode version */
-	    ret = cfdpProtocolVersion_ACN_Encode((&(pVal->pdu_header.version)), pBitStrm, pErrCode, FALSE);
+	    /*Encode CfdpPDU_pdu_header_version */
+	    {
+	    	static byte tmp[] = {0x00};
+	    	BitStream_AppendBits(pBitStrm, tmp, 3);
+	    }
 	    if (ret) {
 	        switch (pVal->payload.kind) {
 	            case PayloadData_file_directive_PRESENT:
@@ -6365,8 +6263,15 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size;
 
 	/*Decode pdu_header */
-	/*Decode version */
-	ret = cfdpProtocolVersion_ACN_Decode((&(pVal->pdu_header.version)), pBitStrm, pErrCode);
+	/*Decode CfdpPDU_pdu_header_version */
+	{
+		static byte tmp[] = {0x00};
+	    flag bDecodingPatternMatches;
+		ret = BitStream_ReadBitPattern(pBitStrm, tmp, 3, &bDecodingPatternMatches);
+	    ret = ret && bDecodingPatternMatches;
+	    *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_VERSION;
+	}
+
 	if (ret) {
 	    /*Decode CfdpPDU_pdu_header_pdu_type */
 	    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(CfdpPDU_pdu_header_pdu_type)), 1);

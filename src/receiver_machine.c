@@ -8,19 +8,15 @@
 void receiver_machine_init(struct receiver_machine *receiver_machine){
 	receiver_machine->condition_code = cfdpConditionCode_no_error;
 	receiver_machine->delivery_code = cfdpDeliveryCode_data_incomplete;
-	receiver_machine->file_status = cfdpFileStatus_unreported;
-	receiver_machine->is_frozen = false;
-	receiver_machine->metadata_received = false;
-	receiver_machine->is_suspended = false;
 	
 	receiver_machine->received_file_size = 0;
-	receiver_machine->is_file_open = false;
 
 	receiver_machine->state = WAIT_FOR_MD;
 }
 
 void receiver_machine_close(struct receiver_machine *receiver_machine){
 	receiver_machine->state = COMPLETED;
+	transaction_close_temp_file(&receiver_machine->transaction);
 }
 
 void receiver_machine_update_state(struct receiver_machine *receiver_machine,
@@ -175,6 +171,10 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			{
 				cfdp_core_report_indication(receiver_machine->core, receiver_machine->transaction_id);
 				break;
+			}
+			default:
+			{
+				printf("Event not support for state WAIT_FOR_EOF\n");
 			}
 		}
 	}

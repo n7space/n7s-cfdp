@@ -96,8 +96,6 @@ MessageType ::= ENUMERATED {
    remote-resume-response (57)
 }
 
-ProtocolVersion ::= INTEGER (0 .. 7)
-
 PDUType ::= INTEGER (0 .. 1)
 
 Direction ::= ENUMERATED {toward-receiver (0), toward-sender (1)}
@@ -125,7 +123,6 @@ TransactionSequenceNumber ::= OCTET STRING (SIZE(1..7))
 Options ::= OCTET STRING (SIZE(0..32))
 
 PDUHeader ::= SEQUENCE {
-   version ProtocolVersion,
    direction Direction,
    transmission-mode TransmissionMode,
    crc-flag CRCFlag,

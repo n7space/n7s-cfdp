@@ -21,8 +21,7 @@ Progress                                     [encoding pos-int, size 32]
 TransactionStatus                            [encoding pos-int, size 2]
 TypeFieldCode                                [encoding pos-int, size 8]
 MessageType                                  [encoding pos-int, size 8]
-    
-ProtocolVersion                              [encoding pos-int, size 3]
+
 PDUType                                      [encoding pos-int, size 1]
 Direction                                    [encoding pos-int, size 1]
 TransmissionMode                             [encoding pos-int, size 1]
@@ -95,7 +94,7 @@ FileDirectiveType [] {
 
 CfdpPDU [] {
    pdu-header                                [] {
-      version                                [],
+      version                                NULL [pattern '000'B],
       pdu-type                               PDUType [],
       direction                              [],
       transmission-mode                      [],
