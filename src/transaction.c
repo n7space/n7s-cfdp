@@ -17,23 +17,11 @@ uint32_t transaction_get_temp_file_checksum(struct transaction *transaction)
 }
 
 void transaction_copy_temp_file_to_dest_file(struct transaction *transaction){
-	
+	transaction->filestore->filestore_replace_file(transaction->destination_filename, TEMP_FILE_NAME);
 }
 
 void transaction_close_temp_file(struct transaction *transaction){
 	transaction->filestore->filestore_close(TEMP_FILE_NAME);
-}
-
-void transaction_open_file(struct transaction *transaction){
-
-}
-
-void transaction_send_file_data(struct transaction *transaction){
-
-}
-
-void transaction_close_file(struct transaction *transaction){
-
 }
 
 bool transaction_is_file_transfer_in_progress(struct transaction *transaction)
@@ -66,20 +54,23 @@ uint32_t transaction_get_file_checksum(struct transaction *transaction)
 	return checksum;
 }
 
-bool transaction_get_file_segment(struct transaction *transaction, char *data,
-				  uint32_t length)
+bool transaction_get_file_segment(struct transaction *transaction, char *out_data, uint32_t *out_length)
 {
-	if (transaction->file_position > transaction->file_size) {
+	if (transaction->file_position >= transaction->file_size) {
 		return false;
 	}
+
+	*out_length = transaction->file_size - transaction->file_position > FILE_SEGMENT_LEN ? 
+					   FILE_SEGMENT_LEN :
+					   transaction->file_size - transaction->file_position;
 
 	transaction->filestore->filestore_open(transaction->source_filename);
 	transaction->filestore->filestore_seek(transaction->source_filename,
 				  transaction->file_position);
-	transaction->filestore->filestore_read(transaction->source_filename, data, length);
+	transaction->filestore->filestore_read(transaction->source_filename, out_data, *out_length);
 	transaction->filestore->filestore_close(transaction->source_filename);
 
-	transaction->file_position += length;
+	transaction->file_position += *out_length;
 
 	return true;
 }

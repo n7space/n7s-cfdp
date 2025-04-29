@@ -32,7 +32,6 @@ void sender_machine_init(struct sender_machine *sender_machine){
 
 void sender_machine_close(struct sender_machine *sender_machine){
 	sender_machine->state = COMPLETED;
-	transaction_close_file(&sender_machine->transaction);
 }
 
 void sender_machine_send_metadata(struct sender_machine *sender_machine){
@@ -69,6 +68,49 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine){
 	pdu.payload.kind = PayloadData_file_directive_PRESENT;
 	pdu.payload.u.file_directive.file_directive_pdu.kind = FileDirectivePDU_metadata_pdu_PRESENT;
 	pdu.payload.u.file_directive.file_directive_pdu.u.metadata_pdu = metadata_pdu;
+
+	unsigned char buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
+	long size = cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING;
+	BitStream bit_stream;
+	BitStream_AttachBuffer(&bit_stream, buf, size);
+	int error_code;
+
+	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)){
+		printf(
+	    "cannot encode cfdp pdu error_code = %d\n",
+	    error_code);
+		return;
+	}
+
+	sender_machine->core->transport->transport_send_pdu(sender_machine->transaction.destination_entity_id, bit_stream.buf , bit_stream.currentByte + 1);
+}
+
+void sender_machine_send_file_data(struct sender_machine *sender_machine){
+	cfdpCfdpPDU pdu;
+	cfdpPDUHeader header;
+	cfdpFileDataPDU file_data_pdu;
+	byte data[FILE_SEGMENT_LEN];
+	uint32_t length;
+
+	header.direction = cfdpDirection_toward_receiver;
+	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
+	header.crc_flag = cfdpCRCFlag_crc_not_present;
+	header.large_file_flag = 0;
+	header.segmentation_control = cfdpSegmentationControl_record_boundries_not_preserved;
+	header.segment_metadata_flag = cfdpSegmentMetadataFlag_flag_not_present;
+	
+	ulong_to_bytes(sender_machine->transaction.source_entity_id, header.source_entity_id.arr, header.source_entity_id.nCount);
+	ulong_to_bytes(sender_machine->transaction.destination_entity_id, header.destination_entity_id.arr, header.destination_entity_id.nCount);
+	ulong_to_bytes(sender_machine->transaction.seq_number, header.transaction_sequence_number.arr, header.transaction_sequence_number.nCount);
+
+	file_data_pdu.segment_offset = sender_machine->transaction.file_position;
+	transaction_get_file_segment(&sender_machine->transaction, data, &length);
+	file_data_pdu.file_data.nCount = length;
+	strncpy(file_data_pdu.file_data.arr, data, length);
+
+	pdu.pdu_header = header;
+	pdu.payload.kind = PayloadData_file_data_PRESENT;
+	pdu.payload.u.file_data.file_data_pdu = file_data_pdu;
 
 	unsigned char buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
 	long size = cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING;
@@ -164,7 +206,6 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 		{
 			case E0_ENTERED_STATE:
 			{
-				transaction_open_file(&sender_machine->transaction);
 				cfdp_core_issue_request(sender_machine->core, sender_machine->transaction_id, E1_SEND_FILE_DATA);
 				break;
 			}
@@ -175,7 +216,7 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 
 				if(sender_machine->core->transport->transport_is_ready())
 				{
-					transaction_send_file_data(&sender_machine->transaction);
+					sender_machine_send_file_data(sender_machine);
 					if(transaction_is_file_send_complete(&sender_machine->transaction))
 					{
 						sender_machine_send_eof(sender_machine);
