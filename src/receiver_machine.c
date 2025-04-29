@@ -71,7 +71,7 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			}
 			case E27_INACTIVITY_TIMEOUT:
 			{
-				// TODO fault
+				cfdp_core_run_fault_handler(receiver_machine->core, receiver_machine->transaction_id, DEFAULT_FAULT_HANDLER_ACTIONS[cfdpConditionCode_inactivity_detected]);
 				break;
 			}
 			case E33_RECEIVED_CANCEL_REQUEST:
@@ -128,13 +128,13 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 				{
 					if(receiver_machine->received_file_size > pdu->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_size)
 					{
-						// TODO fault
+						cfdp_core_run_fault_handler(receiver_machine->core, receiver_machine->transaction_id, DEFAULT_FAULT_HANDLER_ACTIONS[cfdpConditionCode_file_size_error]);
 						break;
 					}
 
 					if(transaction_get_temp_file_checksum(&receiver_machine->transaction) != pdu->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_checksum)
 					{
-						// TODO fault
+						cfdp_core_run_fault_handler(receiver_machine->core, receiver_machine->transaction_id, DEFAULT_FAULT_HANDLER_ACTIONS[cfdpConditionCode_file_checksum_failure]);
 						break;
 					}
 
@@ -158,7 +158,7 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			}
 			case E27_INACTIVITY_TIMEOUT:
 			{
-				// TODO fault
+				cfdp_core_run_fault_handler(receiver_machine->core, receiver_machine->transaction_id, DEFAULT_FAULT_HANDLER_ACTIONS[cfdpConditionCode_inactivity_detected]);
 				break;
 			}
 			case E33_RECEIVED_CANCEL_REQUEST:

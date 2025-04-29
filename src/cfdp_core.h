@@ -96,4 +96,6 @@ void cfdp_core_thaw(struct cfdp_core *core, uint32_t destination_entity_id);
 void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 			    long count);
 
+void cfdp_core_run_fault_handler(struct cfdp_core *core, const struct transaction_id transaction_id, const enum FaultHandlerAction action);
+
 #endif

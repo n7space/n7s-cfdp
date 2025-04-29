@@ -95,6 +95,8 @@ typedef enum {
     ConditionCode_nak_limit_reached = 7,
     ConditionCode_inactivity_detected = 8,
     ConditionCode_invalid_file_structure = 9,
+    ConditionCode_check_limit_reached = 10,
+    ConditionCode_unsupported_checksum_type = 11,
     ConditionCode_suspend_request_received = 14,
     ConditionCode_cancel_request_received = 15
 } cfdpConditionCode;
@@ -110,12 +112,14 @@ typedef enum {
 #define cfdpConditionCode_nak_limit_reached ConditionCode_nak_limit_reached
 #define cfdpConditionCode_inactivity_detected ConditionCode_inactivity_detected
 #define cfdpConditionCode_invalid_file_structure ConditionCode_invalid_file_structure
+#define cfdpConditionCode_check_limit_reached ConditionCode_check_limit_reached
+#define cfdpConditionCode_unsupported_checksum_type ConditionCode_unsupported_checksum_type
 #define cfdpConditionCode_suspend_request_received ConditionCode_suspend_request_received
 #define cfdpConditionCode_cancel_request_received ConditionCode_cancel_request_received
 
 flag cfdpConditionCode_Equal(const cfdpConditionCode* pVal1, const cfdpConditionCode* pVal2);
 
-#define ERR_CONDITIONCODE		11  /*no-error | positive-ack-limit-reached | keep-alive-limit-reached | invalid-transmission-mode | filestore-rejection | file-checksum-failure | file-size-error | nak-limit-reached | inactivity-detected | invalid-file-structure | suspend-request-received | cancel-request-received*/
+#define ERR_CONDITIONCODE		11  /*no-error | positive-ack-limit-reached | keep-alive-limit-reached | invalid-transmission-mode | filestore-rejection | file-checksum-failure | file-size-error | nak-limit-reached | inactivity-detected | invalid-file-structure | check-limit-reached | unsupported-checksum-type | suspend-request-received | cancel-request-received*/
 flag cfdpConditionCode_IsConstraintValid(const cfdpConditionCode* pVal, int* pErrCode);
 
 #ifdef __cplusplus

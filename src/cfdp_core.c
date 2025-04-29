@@ -399,3 +399,31 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 
 	handle_pdu_to_new_receiver_machine(core, &pdu);
 }
+
+void cfdp_core_run_fault_handler(struct cfdp_core *core, const struct transaction_id transaction_id, const enum FaultHandlerAction action){
+	switch(action){
+		case FAULT_HANDLER_CANCEL:
+		{
+			cfdp_core_issue_request(core, transaction_id, E33_RECEIVED_CANCEL_REQUEST);
+			break;
+		}
+		case FAULT_HANDLER_SUSPEND:
+		{
+			cfdp_core_issue_request(core, transaction_id, E31_RECEIVED_SUSPEND_REQUEST);
+			break;
+		}
+		case FAULT_HANDLER_IGNORE:
+		{
+			break;
+		}
+		case FAULT_HANDLER_ABANDON:
+		{
+			cfdp_core_issue_request(core, transaction_id, E2_ABANDON_TRANSACTION);
+			break;
+		}
+		default:
+		{
+			printf("condition code not supportet in fault handler\n");
+		}
+	}
+}

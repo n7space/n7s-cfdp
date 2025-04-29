@@ -242,7 +242,7 @@ flag cfdpConditionCode_Equal(const cfdpConditionCode* pVal1, const cfdpCondition
 flag cfdpConditionCode_IsConstraintValid(const cfdpConditionCode* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-    ret = ((((((((((((((((((((((((*(pVal)) == ConditionCode_no_error)) || (((*(pVal)) == ConditionCode_positive_ack_limit_reached)))) || (((*(pVal)) == ConditionCode_keep_alive_limit_reached)))) || (((*(pVal)) == ConditionCode_invalid_transmission_mode)))) || (((*(pVal)) == ConditionCode_filestore_rejection)))) || (((*(pVal)) == ConditionCode_file_checksum_failure)))) || (((*(pVal)) == ConditionCode_file_size_error)))) || (((*(pVal)) == ConditionCode_nak_limit_reached)))) || (((*(pVal)) == ConditionCode_inactivity_detected)))) || (((*(pVal)) == ConditionCode_invalid_file_structure)))) || (((*(pVal)) == ConditionCode_suspend_request_received)))) || (((*(pVal)) == ConditionCode_cancel_request_received)));
+    ret = ((((((((((((((((((((((((((((*(pVal)) == ConditionCode_no_error)) || (((*(pVal)) == ConditionCode_positive_ack_limit_reached)))) || (((*(pVal)) == ConditionCode_keep_alive_limit_reached)))) || (((*(pVal)) == ConditionCode_invalid_transmission_mode)))) || (((*(pVal)) == ConditionCode_filestore_rejection)))) || (((*(pVal)) == ConditionCode_file_checksum_failure)))) || (((*(pVal)) == ConditionCode_file_size_error)))) || (((*(pVal)) == ConditionCode_nak_limit_reached)))) || (((*(pVal)) == ConditionCode_inactivity_detected)))) || (((*(pVal)) == ConditionCode_invalid_file_structure)))) || (((*(pVal)) == ConditionCode_check_limit_reached)))) || (((*(pVal)) == ConditionCode_unsupported_checksum_type)))) || (((*(pVal)) == ConditionCode_suspend_request_received)))) || (((*(pVal)) == ConditionCode_cancel_request_received)));
     *pErrCode = ret ? 0 :  ERR_CONDITIONCODE;
 
 	return ret;
@@ -271,40 +271,46 @@ flag cfdpConditionCode_Encode(const cfdpConditionCode* pVal, BitStream* pBitStrm
 	    switch((*(pVal)))
 	    {
 	        case ConditionCode_no_error:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 13);
 	        	break;
 	        case ConditionCode_positive_ack_limit_reached:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 13);
 	        	break;
 	        case ConditionCode_keep_alive_limit_reached:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 2, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 2, 0, 13);
 	        	break;
 	        case ConditionCode_invalid_transmission_mode:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 3, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 3, 0, 13);
 	        	break;
 	        case ConditionCode_filestore_rejection:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 4, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 4, 0, 13);
 	        	break;
 	        case ConditionCode_file_checksum_failure:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 5, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 5, 0, 13);
 	        	break;
 	        case ConditionCode_file_size_error:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 6, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 6, 0, 13);
 	        	break;
 	        case ConditionCode_nak_limit_reached:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 7, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 7, 0, 13);
 	        	break;
 	        case ConditionCode_inactivity_detected:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 8, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 8, 0, 13);
 	        	break;
 	        case ConditionCode_invalid_file_structure:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 9, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 9, 0, 13);
+	        	break;
+	        case ConditionCode_check_limit_reached:
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 10, 0, 13);
+	        	break;
+	        case ConditionCode_unsupported_checksum_type:
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 11, 0, 13);
 	        	break;
 	        case ConditionCode_suspend_request_received:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 10, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 12, 0, 13);
 	        	break;
 	        case ConditionCode_cancel_request_received:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 11, 0, 11);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 13, 0, 13);
 	        	break;
 	        default:                    /*COVERAGE_IGNORE*/
 	    	    *pErrCode = ERR_UPER_ENCODE_CONDITIONCODE; /*COVERAGE_IGNORE*/
@@ -324,7 +330,7 @@ flag cfdpConditionCode_Decode(cfdpConditionCode* pVal, BitStream* pBitStrm, int*
 
 	{
 	    asn1SccSint enumIndex;
-	    ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &enumIndex, 0, 11);
+	    ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &enumIndex, 0, 13);
 	    *pErrCode = ret ? 0 : ERR_UPER_DECODE_CONDITIONCODE;
 	    if (ret) {
 	        switch(enumIndex)
@@ -360,9 +366,15 @@ flag cfdpConditionCode_Decode(cfdpConditionCode* pVal, BitStream* pBitStrm, int*
 	                (*(pVal)) = ConditionCode_invalid_file_structure;
 	                break;
 	            case 10:
-	                (*(pVal)) = ConditionCode_suspend_request_received;
+	                (*(pVal)) = ConditionCode_check_limit_reached;
 	                break;
 	            case 11:
+	                (*(pVal)) = ConditionCode_unsupported_checksum_type;
+	                break;
+	            case 12:
+	                (*(pVal)) = ConditionCode_suspend_request_received;
+	                break;
+	            case 13:
 	                (*(pVal)) = ConditionCode_cancel_request_received;
 	                break;
 	            default:                        /*COVERAGE_IGNORE*/
@@ -416,11 +428,17 @@ flag cfdpConditionCode_ACN_Encode(const cfdpConditionCode* pVal, BitStream* pBit
 	        case ConditionCode_invalid_file_structure:
 	            intVal_pVal = 9UL;
 	            break;
-	        case ConditionCode_suspend_request_received:
+	        case ConditionCode_check_limit_reached:
 	            intVal_pVal = 10UL;
 	            break;
-	        case ConditionCode_cancel_request_received:
+	        case ConditionCode_unsupported_checksum_type:
 	            intVal_pVal = 11UL;
+	            break;
+	        case ConditionCode_suspend_request_received:
+	            intVal_pVal = 12UL;
+	            break;
+	        case ConditionCode_cancel_request_received:
+	            intVal_pVal = 13UL;
 	            break;
 	        default:                                    /*COVERAGE_IGNORE*/
 	            ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -477,9 +495,15 @@ flag cfdpConditionCode_ACN_Decode(cfdpConditionCode* pVal, BitStream* pBitStrm, 
 	            (*(pVal)) = ConditionCode_invalid_file_structure;
 	            break;
 	        case 10:
-	            (*(pVal)) = ConditionCode_suspend_request_received;
+	            (*(pVal)) = ConditionCode_check_limit_reached;
 	            break;
 	        case 11:
+	            (*(pVal)) = ConditionCode_unsupported_checksum_type;
+	            break;
+	        case 12:
+	            (*(pVal)) = ConditionCode_suspend_request_received;
+	            break;
+	        case 13:
 	            (*(pVal)) = ConditionCode_cancel_request_received;
 	            break;
 	    default:                                    /*COVERAGE_IGNORE*/

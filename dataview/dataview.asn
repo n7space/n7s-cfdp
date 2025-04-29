@@ -19,6 +19,8 @@ ConditionCode ::= ENUMERATED {
    nak-limit-reached (7),
    inactivity-detected (8),
    invalid-file-structure (9),
+   check-limit-reached (10),
+   unsupported-checksum-type (11),
    suspend-request-received (14),
    cancel-request-received (15)
 }

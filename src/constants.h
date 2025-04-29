@@ -15,6 +15,13 @@ enum MachineState {
 	COMPLETED
 };
 
+enum FaultHandlerAction {
+	FAULT_HANDLER_CANCEL,
+    FAULT_HANDLER_SUSPEND,
+    FAULT_HANDLER_IGNORE,
+    FAULT_HANDLER_ABANDON
+};
+
 #define DIRECTIVE_CODE_EOF 0x04
 #define DIRECTIVE_CODE_FINISHED 0x05
 
@@ -28,5 +35,7 @@ enum MachineState {
 #define ACK_TIMER_EXPIRATION_LIMIT 3
 #define NAK_TIMER_INTERVAL 5
 #define NAK_TIMER_EXPIRATION_LIMIT 5
+
+extern const enum FaultHandlerAction DEFAULT_FAULT_HANDLER_ACTIONS [16];
 
 #endif
