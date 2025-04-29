@@ -6,6 +6,10 @@
 
 void receiver_machine_init(struct receiver_machine *receiver_machine)
 {
+	receiver_machine->timer.core = receiver_machine->core;
+	receiver_machine->timer.transaction_id = receiver_machine->transaction_id;
+	receiver_machine->timer.timeout = INACTIVITY_TIMEOUT_IN_SECONDS;
+
 	receiver_machine->condition_code = cfdpConditionCode_no_error;
 	receiver_machine->delivery_code = cfdpDeliveryCode_data_incomplete;
 
@@ -23,12 +27,13 @@ void receiver_machine_close(struct receiver_machine *receiver_machine)
 void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 				   struct event *event, const cfdpCfdpPDU *pdu)
 {
-	// TODO inactivity timer
+	receiver_timer_restart(&receiver_machine->timer);
 
 	if (receiver_machine->state == WAIT_FOR_MD) {
 		switch (event->type) {
 		case E0_ENTERED_STATE: {
 			receiver_machine_init(receiver_machine);
+			receiver_timer_restart(&receiver_machine->timer);
 			break;
 		}
 		case E2_ABANDON_TRANSACTION: {
@@ -82,6 +87,7 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			    receiver_machine->transaction_id,
 			    DEFAULT_FAULT_HANDLER_ACTIONS
 				[cfdpConditionCode_inactivity_detected]);
+			receiver_timer_restart(&receiver_machine->timer);
 			break;
 		}
 		case E33_RECEIVED_CANCEL_REQUEST: {
@@ -205,6 +211,7 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			    receiver_machine->transaction_id,
 			    DEFAULT_FAULT_HANDLER_ACTIONS
 				[cfdpConditionCode_inactivity_detected]);
+			receiver_timer_restart(&receiver_machine->timer);
 			break;
 		}
 		case E33_RECEIVED_CANCEL_REQUEST: {

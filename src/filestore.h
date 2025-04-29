@@ -27,6 +27,4 @@ struct filestore_cfg {
 	uint32_t (*filestore_calculate_checksum)(const char *filepath);
 };
 
-// TODO checksum
-
 #endif

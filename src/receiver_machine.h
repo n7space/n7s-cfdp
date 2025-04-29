@@ -6,6 +6,7 @@
 
 #include "constants.h"
 #include "dataview.h"
+#include "receiver_timer.h"
 #include "transaction.h"
 #include "transaction_id.h"
 
@@ -15,6 +16,7 @@ struct receiver_machine {
 	struct cfdp_core *core;
 	struct transaction_id transaction_id;
 	struct transaction transaction;
+	struct receiver_timer timer;
 
 	cfdpConditionCode condition_code;
 	cfdpDeliveryCode delivery_code;
