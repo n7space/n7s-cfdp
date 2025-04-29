@@ -6,12 +6,12 @@
 #include "string.h"
 
 #include "constants.h"
+#include "event.h"
 #include "filestore.h"
 #include "receiver_machine.h"
 #include "sender_machine.h"
 #include "transaction_id.h"
 #include "transport.h"
-#include "event.h"
 
 struct cfdp_core {
 	uint32_t entity_id;
@@ -30,8 +30,8 @@ struct cfdp_core {
 };
 
 void cfdp_core_issue_request(struct cfdp_core *core,
-				    struct transaction_id transaction_id,
-				    enum EventType event_type);
+			     struct transaction_id transaction_id,
+			     enum EventType event_type);
 
 // CFDP service requests
 
@@ -96,6 +96,8 @@ void cfdp_core_thaw(struct cfdp_core *core, uint32_t destination_entity_id);
 void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 			    long count);
 
-void cfdp_core_run_fault_handler(struct cfdp_core *core, const struct transaction_id transaction_id, const enum FaultHandlerAction action);
+void cfdp_core_run_fault_handler(struct cfdp_core *core,
+				 const struct transaction_id transaction_id,
+				 const enum FaultHandlerAction action);
 
 #endif

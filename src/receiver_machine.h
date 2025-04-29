@@ -5,9 +5,9 @@
 #include "stdint.h"
 
 #include "constants.h"
+#include "dataview.h"
 #include "transaction.h"
 #include "transaction_id.h"
-#include "dataview.h"
 
 struct event;
 
@@ -18,7 +18,7 @@ struct receiver_machine {
 
 	cfdpConditionCode condition_code;
 	cfdpDeliveryCode delivery_code;
-	
+
 	uint32_t received_file_size;
 
 	enum MachineState state;

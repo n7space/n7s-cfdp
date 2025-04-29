@@ -17,9 +17,9 @@ enum MachineState {
 
 enum FaultHandlerAction {
 	FAULT_HANDLER_CANCEL,
-    FAULT_HANDLER_SUSPEND,
-    FAULT_HANDLER_IGNORE,
-    FAULT_HANDLER_ABANDON
+	FAULT_HANDLER_SUSPEND,
+	FAULT_HANDLER_IGNORE,
+	FAULT_HANDLER_ABANDON
 };
 
 #define DIRECTIVE_CODE_EOF 0x04
@@ -36,6 +36,6 @@ enum FaultHandlerAction {
 #define NAK_TIMER_INTERVAL 5
 #define NAK_TIMER_EXPIRATION_LIMIT 5
 
-extern const enum FaultHandlerAction DEFAULT_FAULT_HANDLER_ACTIONS [16];
+extern const enum FaultHandlerAction DEFAULT_FAULT_HANDLER_ACTIONS[16];
 
 #endif

@@ -7,7 +7,8 @@ struct filestore_cfg {
 
 	void (*filestore_create_file)(const char *filepath);
 	void (*filestore_delete_file)(const char *filepath);
-	void (*filestore_rename_file)(const char *old_file_name, const char *new_file_name);
+	void (*filestore_rename_file)(const char *old_file_name,
+				      const char *new_file_name);
 	void (*filestore_append_file)(const char *target_filepath,
 				      const char *source_filepath);
 	void (*filestore_replace_file)(const char *target_filepath,
@@ -18,8 +19,10 @@ struct filestore_cfg {
 	uint32_t (*filestore_get_file_size)(const char *filepath);
 	void (*filestore_seek)(const char *filepath, uint32_t offset);
 	uint32_t (*filestore_tell)(const char *filepath);
-	void (*filestore_read)(const char *filepath, char *data, uint32_t length);
-	void (*filestore_write)(const char *filepath, const char *data, const uint32_t length);
+	void (*filestore_read)(const char *filepath, char *data,
+			       uint32_t length);
+	void (*filestore_write)(const char *filepath, const char *data,
+				const uint32_t length);
 	void (*filestore_close)(const char *filepath);
 	uint32_t (*filestore_calculate_checksum)(const char *filepath);
 };

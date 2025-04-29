@@ -20,16 +20,17 @@ struct transaction {
 };
 
 void transaction_open_temp_file(struct transaction *transaction);
-void transaction_store_data_in_temp_file(struct transaction *transaction, const cfdpFileDataPDU *file_data);
+void transaction_store_data_in_temp_file(struct transaction *transaction,
+					 const cfdpFileDataPDU *file_data);
 uint32_t transaction_get_temp_file_checksum(struct transaction *transaction);
 void transaction_copy_temp_file_to_dest_file(struct transaction *transaction);
 void transaction_close_temp_file(struct transaction *transaction);
 
 uint32_t transaction_get_file_size(struct transaction *transaction);
 uint32_t transaction_get_file_checksum(struct transaction *transaction);
-bool transaction_get_file_segment(struct transaction *transaction, char *out_data, uint32_t *out_length);
+bool transaction_get_file_segment(struct transaction *transaction,
+				  char *out_data, uint32_t *out_length);
 bool transaction_is_file_transfer_in_progress(struct transaction *transaction);
 bool transaction_is_file_send_complete(struct transaction *transaction);
-
 
 #endif
