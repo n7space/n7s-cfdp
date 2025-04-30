@@ -123,7 +123,6 @@ void cfdp_core_report(struct cfdp_core *core,
 				E34_RECEIVED_REPORT_REQUEST);
 }
 
-// TODO implement indication mechanism
 void cfdp_core_transaction_indication(struct cfdp_core *core,
 				      struct transaction_id transaction_id)
 {

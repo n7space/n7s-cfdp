@@ -772,11 +772,61 @@ flag cfdpEofPDU_ACN_Encode(const cfdpEofPDU* pVal, BitStream* pBitStrm, int* pEr
 {
     flag ret = TRUE;
 
+	asn1SccUint intVal_pVal_condition_code;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpEofPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
 	    /*Encode condition_code */
-	    ret = cfdpConditionCode_ACN_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
+	    switch(pVal->condition_code) {
+	        case ConditionCode_no_error:
+	            intVal_pVal_condition_code = 0UL;
+	            break;
+	        case ConditionCode_positive_ack_limit_reached:
+	            intVal_pVal_condition_code = 1UL;
+	            break;
+	        case ConditionCode_keep_alive_limit_reached:
+	            intVal_pVal_condition_code = 2UL;
+	            break;
+	        case ConditionCode_invalid_transmission_mode:
+	            intVal_pVal_condition_code = 3UL;
+	            break;
+	        case ConditionCode_filestore_rejection:
+	            intVal_pVal_condition_code = 4UL;
+	            break;
+	        case ConditionCode_file_checksum_failure:
+	            intVal_pVal_condition_code = 5UL;
+	            break;
+	        case ConditionCode_file_size_error:
+	            intVal_pVal_condition_code = 6UL;
+	            break;
+	        case ConditionCode_nak_limit_reached:
+	            intVal_pVal_condition_code = 7UL;
+	            break;
+	        case ConditionCode_inactivity_detected:
+	            intVal_pVal_condition_code = 8UL;
+	            break;
+	        case ConditionCode_invalid_file_structure:
+	            intVal_pVal_condition_code = 9UL;
+	            break;
+	        case ConditionCode_check_limit_reached:
+	            intVal_pVal_condition_code = 10UL;
+	            break;
+	        case ConditionCode_unsupported_checksum_type:
+	            intVal_pVal_condition_code = 11UL;
+	            break;
+	        case ConditionCode_suspend_request_received:
+	            intVal_pVal_condition_code = 12UL;
+	            break;
+	        case ConditionCode_cancel_request_received:
+	            intVal_pVal_condition_code = 13UL;
+	            break;
+	        default:                                    /*COVERAGE_IGNORE*/
+	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	            *pErrCode = ERR_ACN_ENCODE_EOFPDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	    }
+	    if (ret) {
+	    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_condition_code, 4);
+	    }
 	    if (ret) {
 	        /*Encode EofPDU_spare */
 	        {
@@ -785,10 +835,10 @@ flag cfdpEofPDU_ACN_Encode(const cfdpEofPDU* pVal, BitStream* pBitStrm, int* pEr
 	        }
 	        if (ret) {
 	            /*Encode file_checksum */
-	            ret = cfdpFileChecksum_ACN_Encode((&(pVal->file_checksum)), pBitStrm, pErrCode, FALSE);
+	            Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->file_checksum);
 	            if (ret) {
 	                /*Encode file_size */
-	                ret = cfdpFileSize_ACN_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
+	                Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->file_size);
 	            }   /*COVERAGE_IGNORE*/
 	        }   /*COVERAGE_IGNORE*/
 	    }   /*COVERAGE_IGNORE*/
@@ -803,9 +853,60 @@ flag cfdpEofPDU_ACN_Decode(cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode)
     flag ret = TRUE;
 	*pErrCode = 0;
 
+	asn1SccUint intVal_pVal_condition_code;
 
 	/*Decode condition_code */
-	ret = cfdpConditionCode_ACN_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
+	ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_condition_code)), 4);
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_EOFPDU_CONDITION_CODE;
+	if (ret) {
+	    switch (intVal_pVal_condition_code) {
+	        case 0:
+	            pVal->condition_code = ConditionCode_no_error;
+	            break;
+	        case 1:
+	            pVal->condition_code = ConditionCode_positive_ack_limit_reached;
+	            break;
+	        case 2:
+	            pVal->condition_code = ConditionCode_keep_alive_limit_reached;
+	            break;
+	        case 3:
+	            pVal->condition_code = ConditionCode_invalid_transmission_mode;
+	            break;
+	        case 4:
+	            pVal->condition_code = ConditionCode_filestore_rejection;
+	            break;
+	        case 5:
+	            pVal->condition_code = ConditionCode_file_checksum_failure;
+	            break;
+	        case 6:
+	            pVal->condition_code = ConditionCode_file_size_error;
+	            break;
+	        case 7:
+	            pVal->condition_code = ConditionCode_nak_limit_reached;
+	            break;
+	        case 8:
+	            pVal->condition_code = ConditionCode_inactivity_detected;
+	            break;
+	        case 9:
+	            pVal->condition_code = ConditionCode_invalid_file_structure;
+	            break;
+	        case 10:
+	            pVal->condition_code = ConditionCode_check_limit_reached;
+	            break;
+	        case 11:
+	            pVal->condition_code = ConditionCode_unsupported_checksum_type;
+	            break;
+	        case 12:
+	            pVal->condition_code = ConditionCode_suspend_request_received;
+	            break;
+	        case 13:
+	            pVal->condition_code = ConditionCode_cancel_request_received;
+	            break;
+	    default:                                    /*COVERAGE_IGNORE*/
+	        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        *pErrCode = ERR_ACN_DECODE_EOFPDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	    }
+	} /*COVERAGE_IGNORE*/
 	if (ret) {
 	    /*Decode EofPDU_spare */
 	    {
@@ -818,10 +919,12 @@ flag cfdpEofPDU_ACN_Decode(cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode)
 
 	    if (ret) {
 	        /*Decode file_checksum */
-	        ret = cfdpFileChecksum_ACN_Decode((&(pVal->file_checksum)), pBitStrm, pErrCode);
+	        ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->file_checksum)));
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_EOFPDU_FILE_CHECKSUM;
 	        if (ret) {
 	            /*Decode file_size */
-	            ret = cfdpFileSize_ACN_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
+	            ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->file_size)));
+	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_EOFPDU_FILE_SIZE;
 	        }   /*COVERAGE_IGNORE*/
 	    }   /*COVERAGE_IGNORE*/
 	}   /*COVERAGE_IGNORE*/
@@ -1103,17 +1206,82 @@ flag cfdpAckPDU_ACN_Encode(const cfdpAckPDU* pVal, BitStream* pBitStrm, int* pEr
 {
     flag ret = TRUE;
 
+	asn1SccUint intVal_pVal_directive_subtype_code;
+	asn1SccUint intVal_pVal_condition_code;
+	asn1SccUint intVal_pVal_transaction_status;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpAckPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
 	    /*Encode directive_code_of_ack_pdu */
-	    ret = cfdpDirectiveCode_ACN_Encode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode, FALSE);
+	    Acn_Enc_Int_PositiveInteger_ConstSize_8(pBitStrm, pVal->directive_code_of_ack_pdu);
 	    if (ret) {
 	        /*Encode directive_subtype_code */
-	        ret = cfdpDirectiveSubtypeCode_ACN_Encode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode, FALSE);
+	        switch(pVal->directive_subtype_code) {
+	            case DirectiveSubtypeCode_ack_others:
+	                intVal_pVal_directive_subtype_code = 0UL;
+	                break;
+	            case DirectiveSubtypeCode_ack_finished:
+	                intVal_pVal_directive_subtype_code = 1UL;
+	                break;
+	            default:                                    /*COVERAGE_IGNORE*/
+	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                *pErrCode = ERR_ACN_ENCODE_ACKPDU_DIRECTIVE_SUBTYPE_CODE;                 /*COVERAGE_IGNORE*/
+	        }
+	        if (ret) {
+	        	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_directive_subtype_code, 4);
+	        }
 	        if (ret) {
 	            /*Encode condition_code */
-	            ret = cfdpConditionCode_ACN_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
+	            switch(pVal->condition_code) {
+	                case ConditionCode_no_error:
+	                    intVal_pVal_condition_code = 0UL;
+	                    break;
+	                case ConditionCode_positive_ack_limit_reached:
+	                    intVal_pVal_condition_code = 1UL;
+	                    break;
+	                case ConditionCode_keep_alive_limit_reached:
+	                    intVal_pVal_condition_code = 2UL;
+	                    break;
+	                case ConditionCode_invalid_transmission_mode:
+	                    intVal_pVal_condition_code = 3UL;
+	                    break;
+	                case ConditionCode_filestore_rejection:
+	                    intVal_pVal_condition_code = 4UL;
+	                    break;
+	                case ConditionCode_file_checksum_failure:
+	                    intVal_pVal_condition_code = 5UL;
+	                    break;
+	                case ConditionCode_file_size_error:
+	                    intVal_pVal_condition_code = 6UL;
+	                    break;
+	                case ConditionCode_nak_limit_reached:
+	                    intVal_pVal_condition_code = 7UL;
+	                    break;
+	                case ConditionCode_inactivity_detected:
+	                    intVal_pVal_condition_code = 8UL;
+	                    break;
+	                case ConditionCode_invalid_file_structure:
+	                    intVal_pVal_condition_code = 9UL;
+	                    break;
+	                case ConditionCode_check_limit_reached:
+	                    intVal_pVal_condition_code = 10UL;
+	                    break;
+	                case ConditionCode_unsupported_checksum_type:
+	                    intVal_pVal_condition_code = 11UL;
+	                    break;
+	                case ConditionCode_suspend_request_received:
+	                    intVal_pVal_condition_code = 12UL;
+	                    break;
+	                case ConditionCode_cancel_request_received:
+	                    intVal_pVal_condition_code = 13UL;
+	                    break;
+	                default:                                    /*COVERAGE_IGNORE*/
+	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                    *pErrCode = ERR_ACN_ENCODE_ACKPDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	            }
+	            if (ret) {
+	            	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_condition_code, 4);
+	            }
 	            if (ret) {
 	                /*Encode AckPDU_spare */
 	                {
@@ -1122,7 +1290,26 @@ flag cfdpAckPDU_ACN_Encode(const cfdpAckPDU* pVal, BitStream* pBitStrm, int* pEr
 	                }
 	                if (ret) {
 	                    /*Encode transaction_status */
-	                    ret = cfdpAckTransactionStatus_ACN_Encode((&(pVal->transaction_status)), pBitStrm, pErrCode, FALSE);
+	                    switch(pVal->transaction_status) {
+	                        case AckTransactionStatus_undefined:
+	                            intVal_pVal_transaction_status = 0UL;
+	                            break;
+	                        case AckTransactionStatus_active:
+	                            intVal_pVal_transaction_status = 1UL;
+	                            break;
+	                        case AckTransactionStatus_terminated:
+	                            intVal_pVal_transaction_status = 2UL;
+	                            break;
+	                        case AckTransactionStatus_unrecognized:
+	                            intVal_pVal_transaction_status = 3UL;
+	                            break;
+	                        default:                                    /*COVERAGE_IGNORE*/
+	                            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                            *pErrCode = ERR_ACN_ENCODE_ACKPDU_TRANSACTION_STATUS;                 /*COVERAGE_IGNORE*/
+	                    }
+	                    if (ret) {
+	                    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_transaction_status, 2);
+	                    }
 	                }   /*COVERAGE_IGNORE*/
 	            }   /*COVERAGE_IGNORE*/
 	        }   /*COVERAGE_IGNORE*/
@@ -1138,15 +1325,83 @@ flag cfdpAckPDU_ACN_Decode(cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode)
     flag ret = TRUE;
 	*pErrCode = 0;
 
+	asn1SccUint intVal_pVal_directive_subtype_code;
+	asn1SccUint intVal_pVal_condition_code;
+	asn1SccUint intVal_pVal_transaction_status;
 
 	/*Decode directive_code_of_ack_pdu */
-	ret = cfdpDirectiveCode_ACN_Decode((&(pVal->directive_code_of_ack_pdu)), pBitStrm, pErrCode);
+	ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(pVal->directive_code_of_ack_pdu)));
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_ACKPDU_DIRECTIVE_CODE_OF_ACK_PDU;
 	if (ret) {
 	    /*Decode directive_subtype_code */
-	    ret = cfdpDirectiveSubtypeCode_ACN_Decode((&(pVal->directive_subtype_code)), pBitStrm, pErrCode);
+	    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_directive_subtype_code)), 4);
+	    *pErrCode = ret ? 0 : ERR_ACN_DECODE_ACKPDU_DIRECTIVE_SUBTYPE_CODE;
+	    if (ret) {
+	        switch (intVal_pVal_directive_subtype_code) {
+	            case 0:
+	                pVal->directive_subtype_code = DirectiveSubtypeCode_ack_others;
+	                break;
+	            case 1:
+	                pVal->directive_subtype_code = DirectiveSubtypeCode_ack_finished;
+	                break;
+	        default:                                    /*COVERAGE_IGNORE*/
+	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	            *pErrCode = ERR_ACN_DECODE_ACKPDU_DIRECTIVE_SUBTYPE_CODE;                 /*COVERAGE_IGNORE*/
+	        }
+	    } /*COVERAGE_IGNORE*/
 	    if (ret) {
 	        /*Decode condition_code */
-	        ret = cfdpConditionCode_ACN_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
+	        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_condition_code)), 4);
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_ACKPDU_CONDITION_CODE;
+	        if (ret) {
+	            switch (intVal_pVal_condition_code) {
+	                case 0:
+	                    pVal->condition_code = ConditionCode_no_error;
+	                    break;
+	                case 1:
+	                    pVal->condition_code = ConditionCode_positive_ack_limit_reached;
+	                    break;
+	                case 2:
+	                    pVal->condition_code = ConditionCode_keep_alive_limit_reached;
+	                    break;
+	                case 3:
+	                    pVal->condition_code = ConditionCode_invalid_transmission_mode;
+	                    break;
+	                case 4:
+	                    pVal->condition_code = ConditionCode_filestore_rejection;
+	                    break;
+	                case 5:
+	                    pVal->condition_code = ConditionCode_file_checksum_failure;
+	                    break;
+	                case 6:
+	                    pVal->condition_code = ConditionCode_file_size_error;
+	                    break;
+	                case 7:
+	                    pVal->condition_code = ConditionCode_nak_limit_reached;
+	                    break;
+	                case 8:
+	                    pVal->condition_code = ConditionCode_inactivity_detected;
+	                    break;
+	                case 9:
+	                    pVal->condition_code = ConditionCode_invalid_file_structure;
+	                    break;
+	                case 10:
+	                    pVal->condition_code = ConditionCode_check_limit_reached;
+	                    break;
+	                case 11:
+	                    pVal->condition_code = ConditionCode_unsupported_checksum_type;
+	                    break;
+	                case 12:
+	                    pVal->condition_code = ConditionCode_suspend_request_received;
+	                    break;
+	                case 13:
+	                    pVal->condition_code = ConditionCode_cancel_request_received;
+	                    break;
+	            default:                                    /*COVERAGE_IGNORE*/
+	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                *pErrCode = ERR_ACN_DECODE_ACKPDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	            }
+	        } /*COVERAGE_IGNORE*/
 	        if (ret) {
 	            /*Decode AckPDU_spare */
 	            {
@@ -1159,7 +1414,27 @@ flag cfdpAckPDU_ACN_Decode(cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode)
 
 	            if (ret) {
 	                /*Decode transaction_status */
-	                ret = cfdpAckTransactionStatus_ACN_Decode((&(pVal->transaction_status)), pBitStrm, pErrCode);
+	                ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_transaction_status)), 2);
+	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_ACKPDU_TRANSACTION_STATUS;
+	                if (ret) {
+	                    switch (intVal_pVal_transaction_status) {
+	                        case 0:
+	                            pVal->transaction_status = AckTransactionStatus_undefined;
+	                            break;
+	                        case 1:
+	                            pVal->transaction_status = AckTransactionStatus_active;
+	                            break;
+	                        case 2:
+	                            pVal->transaction_status = AckTransactionStatus_terminated;
+	                            break;
+	                        case 3:
+	                            pVal->transaction_status = AckTransactionStatus_unrecognized;
+	                            break;
+	                    default:                                    /*COVERAGE_IGNORE*/
+	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                        *pErrCode = ERR_ACN_DECODE_ACKPDU_TRANSACTION_STATUS;                 /*COVERAGE_IGNORE*/
+	                    }
+	                } /*COVERAGE_IGNORE*/
 	            }   /*COVERAGE_IGNORE*/
 	        }   /*COVERAGE_IGNORE*/
 	    }   /*COVERAGE_IGNORE*/
@@ -1828,6 +2103,7 @@ flag cfdpMetadataPDU_ACN_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm
 	flag MetadataPDU_source_file_name_size_is_initialized=FALSE;
 	asn1SccUint MetadataPDU_destination_file_name_size;
 	flag MetadataPDU_destination_file_name_size_is_initialized=FALSE;
+	asn1SccUint intVal_pVal_closure_requested;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
@@ -1838,7 +2114,20 @@ flag cfdpMetadataPDU_ACN_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm
 	    }
 	    if (ret) {
 	        /*Encode closure_requested */
-	        ret = cfdpClosureRequested_ACN_Encode((&(pVal->closure_requested)), pBitStrm, pErrCode, FALSE);
+	        switch(pVal->closure_requested) {
+	            case ClosureRequested_requested:
+	                intVal_pVal_closure_requested = 0UL;
+	                break;
+	            case ClosureRequested_not_requested:
+	                intVal_pVal_closure_requested = 1UL;
+	                break;
+	            default:                                    /*COVERAGE_IGNORE*/
+	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                *pErrCode = ERR_ACN_ENCODE_METADATAPDU_CLOSURE_REQUESTED;                 /*COVERAGE_IGNORE*/
+	        }
+	        if (ret) {
+	        	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_closure_requested, 1);
+	        }
 	        if (ret) {
 	            /*Encode MetadataPDU_reserved2 */
 	            {
@@ -1847,10 +2136,10 @@ flag cfdpMetadataPDU_ACN_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm
 	            }
 	            if (ret) {
 	                /*Encode checksum_type */
-	                ret = cfdpChecksumType_ACN_Encode((&(pVal->checksum_type)), pBitStrm, pErrCode, FALSE);
+	                Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, pVal->checksum_type, 4);
 	                if (ret) {
 	                    /*Encode file_size */
-	                    ret = cfdpFileSize_ACN_Encode((&(pVal->file_size)), pBitStrm, pErrCode, FALSE);
+	                    Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->file_size);
 	                    if (ret) {
 	                        MetadataPDU_source_file_name_size_is_initialized = TRUE;
 	                        MetadataPDU_source_file_name_size = pVal->source_file_name.nCount;
@@ -1904,6 +2193,7 @@ flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int*
 
 	asn1SccUint MetadataPDU_source_file_name_size;
 	asn1SccUint MetadataPDU_destination_file_name_size;
+	asn1SccUint intVal_pVal_closure_requested;
 
 	/*Decode MetadataPDU_reserved1 */
 	{
@@ -1916,7 +2206,21 @@ flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int*
 
 	if (ret) {
 	    /*Decode closure_requested */
-	    ret = cfdpClosureRequested_ACN_Decode((&(pVal->closure_requested)), pBitStrm, pErrCode);
+	    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_closure_requested)), 1);
+	    *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_CLOSURE_REQUESTED;
+	    if (ret) {
+	        switch (intVal_pVal_closure_requested) {
+	            case 0:
+	                pVal->closure_requested = ClosureRequested_requested;
+	                break;
+	            case 1:
+	                pVal->closure_requested = ClosureRequested_not_requested;
+	                break;
+	        default:                                    /*COVERAGE_IGNORE*/
+	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	            *pErrCode = ERR_ACN_DECODE_METADATAPDU_CLOSURE_REQUESTED;                 /*COVERAGE_IGNORE*/
+	        }
+	    } /*COVERAGE_IGNORE*/
 	    if (ret) {
 	        /*Decode MetadataPDU_reserved2 */
 	        {
@@ -1929,10 +2233,12 @@ flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int*
 
 	        if (ret) {
 	            /*Decode checksum_type */
-	            ret = cfdpChecksumType_ACN_Decode((&(pVal->checksum_type)), pBitStrm, pErrCode);
+	            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(pVal->checksum_type)), 4);
+	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_CHECKSUM_TYPE;
 	            if (ret) {
 	                /*Decode file_size */
-	                ret = cfdpFileSize_ACN_Decode((&(pVal->file_size)), pBitStrm, pErrCode);
+	                ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->file_size)));
+	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_FILE_SIZE;
 	                if (ret) {
 	                    /*Decode MetadataPDU_source_file_name_size */
 	                    ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(MetadataPDU_source_file_name_size)));
@@ -2227,11 +2533,63 @@ flag cfdpFinishedPDU_ACN_Encode(const cfdpFinishedPDU* pVal, BitStream* pBitStrm
 {
     flag ret = TRUE;
 
+	asn1SccUint intVal_pVal_condition_code;
+	asn1SccUint intVal_pVal_delivery_code;
+	asn1SccUint intVal_pVal_file_status;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFinishedPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
 	    /*Encode condition_code */
-	    ret = cfdpConditionCode_ACN_Encode((&(pVal->condition_code)), pBitStrm, pErrCode, FALSE);
+	    switch(pVal->condition_code) {
+	        case ConditionCode_no_error:
+	            intVal_pVal_condition_code = 0UL;
+	            break;
+	        case ConditionCode_positive_ack_limit_reached:
+	            intVal_pVal_condition_code = 1UL;
+	            break;
+	        case ConditionCode_keep_alive_limit_reached:
+	            intVal_pVal_condition_code = 2UL;
+	            break;
+	        case ConditionCode_invalid_transmission_mode:
+	            intVal_pVal_condition_code = 3UL;
+	            break;
+	        case ConditionCode_filestore_rejection:
+	            intVal_pVal_condition_code = 4UL;
+	            break;
+	        case ConditionCode_file_checksum_failure:
+	            intVal_pVal_condition_code = 5UL;
+	            break;
+	        case ConditionCode_file_size_error:
+	            intVal_pVal_condition_code = 6UL;
+	            break;
+	        case ConditionCode_nak_limit_reached:
+	            intVal_pVal_condition_code = 7UL;
+	            break;
+	        case ConditionCode_inactivity_detected:
+	            intVal_pVal_condition_code = 8UL;
+	            break;
+	        case ConditionCode_invalid_file_structure:
+	            intVal_pVal_condition_code = 9UL;
+	            break;
+	        case ConditionCode_check_limit_reached:
+	            intVal_pVal_condition_code = 10UL;
+	            break;
+	        case ConditionCode_unsupported_checksum_type:
+	            intVal_pVal_condition_code = 11UL;
+	            break;
+	        case ConditionCode_suspend_request_received:
+	            intVal_pVal_condition_code = 12UL;
+	            break;
+	        case ConditionCode_cancel_request_received:
+	            intVal_pVal_condition_code = 13UL;
+	            break;
+	        default:                                    /*COVERAGE_IGNORE*/
+	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	            *pErrCode = ERR_ACN_ENCODE_FINISHEDPDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	    }
+	    if (ret) {
+	    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_condition_code, 4);
+	    }
 	    if (ret) {
 	        /*Encode FinishedPDU_end_system_status */
 	        {
@@ -2240,10 +2598,42 @@ flag cfdpFinishedPDU_ACN_Encode(const cfdpFinishedPDU* pVal, BitStream* pBitStrm
 	        }
 	        if (ret) {
 	            /*Encode delivery_code */
-	            ret = cfdpDeliveryCode_ACN_Encode((&(pVal->delivery_code)), pBitStrm, pErrCode, FALSE);
+	            switch(pVal->delivery_code) {
+	                case DeliveryCode_data_complete:
+	                    intVal_pVal_delivery_code = 0UL;
+	                    break;
+	                case DeliveryCode_data_incomplete:
+	                    intVal_pVal_delivery_code = 1UL;
+	                    break;
+	                default:                                    /*COVERAGE_IGNORE*/
+	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                    *pErrCode = ERR_ACN_ENCODE_FINISHEDPDU_DELIVERY_CODE;                 /*COVERAGE_IGNORE*/
+	            }
+	            if (ret) {
+	            	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_delivery_code, 1);
+	            }
 	            if (ret) {
 	                /*Encode file_status */
-	                ret = cfdpFileStatus_ACN_Encode((&(pVal->file_status)), pBitStrm, pErrCode, FALSE);
+	                switch(pVal->file_status) {
+	                    case FileStatus_discarted_deliberately:
+	                        intVal_pVal_file_status = 0UL;
+	                        break;
+	                    case FileStatus_discarted_file_rejection:
+	                        intVal_pVal_file_status = 1UL;
+	                        break;
+	                    case FileStatus_retained_successfully:
+	                        intVal_pVal_file_status = 2UL;
+	                        break;
+	                    case FileStatus_unreported:
+	                        intVal_pVal_file_status = 3UL;
+	                        break;
+	                    default:                                    /*COVERAGE_IGNORE*/
+	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                        *pErrCode = ERR_ACN_ENCODE_FINISHEDPDU_FILE_STATUS;                 /*COVERAGE_IGNORE*/
+	                }
+	                if (ret) {
+	                	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_status, 2);
+	                }
 	            }   /*COVERAGE_IGNORE*/
 	        }   /*COVERAGE_IGNORE*/
 	    }   /*COVERAGE_IGNORE*/
@@ -2258,9 +2648,62 @@ flag cfdpFinishedPDU_ACN_Decode(cfdpFinishedPDU* pVal, BitStream* pBitStrm, int*
     flag ret = TRUE;
 	*pErrCode = 0;
 
+	asn1SccUint intVal_pVal_condition_code;
+	asn1SccUint intVal_pVal_delivery_code;
+	asn1SccUint intVal_pVal_file_status;
 
 	/*Decode condition_code */
-	ret = cfdpConditionCode_ACN_Decode((&(pVal->condition_code)), pBitStrm, pErrCode);
+	ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_condition_code)), 4);
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_FINISHEDPDU_CONDITION_CODE;
+	if (ret) {
+	    switch (intVal_pVal_condition_code) {
+	        case 0:
+	            pVal->condition_code = ConditionCode_no_error;
+	            break;
+	        case 1:
+	            pVal->condition_code = ConditionCode_positive_ack_limit_reached;
+	            break;
+	        case 2:
+	            pVal->condition_code = ConditionCode_keep_alive_limit_reached;
+	            break;
+	        case 3:
+	            pVal->condition_code = ConditionCode_invalid_transmission_mode;
+	            break;
+	        case 4:
+	            pVal->condition_code = ConditionCode_filestore_rejection;
+	            break;
+	        case 5:
+	            pVal->condition_code = ConditionCode_file_checksum_failure;
+	            break;
+	        case 6:
+	            pVal->condition_code = ConditionCode_file_size_error;
+	            break;
+	        case 7:
+	            pVal->condition_code = ConditionCode_nak_limit_reached;
+	            break;
+	        case 8:
+	            pVal->condition_code = ConditionCode_inactivity_detected;
+	            break;
+	        case 9:
+	            pVal->condition_code = ConditionCode_invalid_file_structure;
+	            break;
+	        case 10:
+	            pVal->condition_code = ConditionCode_check_limit_reached;
+	            break;
+	        case 11:
+	            pVal->condition_code = ConditionCode_unsupported_checksum_type;
+	            break;
+	        case 12:
+	            pVal->condition_code = ConditionCode_suspend_request_received;
+	            break;
+	        case 13:
+	            pVal->condition_code = ConditionCode_cancel_request_received;
+	            break;
+	    default:                                    /*COVERAGE_IGNORE*/
+	        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        *pErrCode = ERR_ACN_DECODE_FINISHEDPDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	    }
+	} /*COVERAGE_IGNORE*/
 	if (ret) {
 	    /*Decode FinishedPDU_end_system_status */
 	    {
@@ -2273,10 +2716,44 @@ flag cfdpFinishedPDU_ACN_Decode(cfdpFinishedPDU* pVal, BitStream* pBitStrm, int*
 
 	    if (ret) {
 	        /*Decode delivery_code */
-	        ret = cfdpDeliveryCode_ACN_Decode((&(pVal->delivery_code)), pBitStrm, pErrCode);
+	        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_delivery_code)), 1);
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_FINISHEDPDU_DELIVERY_CODE;
+	        if (ret) {
+	            switch (intVal_pVal_delivery_code) {
+	                case 0:
+	                    pVal->delivery_code = DeliveryCode_data_complete;
+	                    break;
+	                case 1:
+	                    pVal->delivery_code = DeliveryCode_data_incomplete;
+	                    break;
+	            default:                                    /*COVERAGE_IGNORE*/
+	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                *pErrCode = ERR_ACN_DECODE_FINISHEDPDU_DELIVERY_CODE;                 /*COVERAGE_IGNORE*/
+	            }
+	        } /*COVERAGE_IGNORE*/
 	        if (ret) {
 	            /*Decode file_status */
-	            ret = cfdpFileStatus_ACN_Decode((&(pVal->file_status)), pBitStrm, pErrCode);
+	            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_status)), 2);
+	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_FINISHEDPDU_FILE_STATUS;
+	            if (ret) {
+	                switch (intVal_pVal_file_status) {
+	                    case 0:
+	                        pVal->file_status = FileStatus_discarted_deliberately;
+	                        break;
+	                    case 1:
+	                        pVal->file_status = FileStatus_discarted_file_rejection;
+	                        break;
+	                    case 2:
+	                        pVal->file_status = FileStatus_retained_successfully;
+	                        break;
+	                    case 3:
+	                        pVal->file_status = FileStatus_unreported;
+	                        break;
+	                default:                                    /*COVERAGE_IGNORE*/
+	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                    *pErrCode = ERR_ACN_DECODE_FINISHEDPDU_FILE_STATUS;                 /*COVERAGE_IGNORE*/
+	                }
+	            } /*COVERAGE_IGNORE*/
 	        }   /*COVERAGE_IGNORE*/
 	    }   /*COVERAGE_IGNORE*/
 	}   /*COVERAGE_IGNORE*/
@@ -2487,10 +2964,18 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 
 	asn1SccUint FileDirectiveType_directive_code;
 	flag FileDirectiveType_directive_code_is_initialized=FALSE;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_finished_pdu_delivery_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_finished_pdu_file_status;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_ack_pdu_directive_subtype_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_ack_pdu_transaction_status;
 	asn1SccUint FileDirectiveType_file_directive_pdu_metadata_pdu_source_file_name_size;
 	flag FileDirectiveType_file_directive_pdu_metadata_pdu_source_file_name_size_is_initialized=FALSE;
 	asn1SccUint FileDirectiveType_file_directive_pdu_metadata_pdu_destination_file_name_size;
 	flag FileDirectiveType_file_directive_pdu_metadata_pdu_destination_file_name_size_is_initialized=FALSE;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_metadata_pdu_closure_requested;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileDirectiveType_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
@@ -2530,7 +3015,56 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        {
 	        case FileDirectivePDU_eof_pdu_PRESENT:
 	        	/*Encode condition_code */
-	        	ret = cfdpConditionCode_ACN_Encode((&(pVal->file_directive_pdu.u.eof_pdu.condition_code)), pBitStrm, pErrCode, FALSE);
+	        	switch(pVal->file_directive_pdu.u.eof_pdu.condition_code) {
+	        	    case ConditionCode_no_error:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 0UL;
+	        	        break;
+	        	    case ConditionCode_positive_ack_limit_reached:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 1UL;
+	        	        break;
+	        	    case ConditionCode_keep_alive_limit_reached:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 2UL;
+	        	        break;
+	        	    case ConditionCode_invalid_transmission_mode:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 3UL;
+	        	        break;
+	        	    case ConditionCode_filestore_rejection:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 4UL;
+	        	        break;
+	        	    case ConditionCode_file_checksum_failure:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 5UL;
+	        	        break;
+	        	    case ConditionCode_file_size_error:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 6UL;
+	        	        break;
+	        	    case ConditionCode_nak_limit_reached:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 7UL;
+	        	        break;
+	        	    case ConditionCode_inactivity_detected:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 8UL;
+	        	        break;
+	        	    case ConditionCode_invalid_file_structure:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 9UL;
+	        	        break;
+	        	    case ConditionCode_check_limit_reached:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 10UL;
+	        	        break;
+	        	    case ConditionCode_unsupported_checksum_type:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 11UL;
+	        	        break;
+	        	    case ConditionCode_suspend_request_received:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 12UL;
+	        	        break;
+	        	    case ConditionCode_cancel_request_received:
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 13UL;
+	        	        break;
+	        	    default:                                    /*COVERAGE_IGNORE*/
+	        	        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        	        *pErrCode = ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	        	}
+	        	if (ret) {
+	        		Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code, 4);
+	        	}
 	        	if (ret) {
 	        	    /*Encode FileDirectiveType_file_directive_pdu_eof_pdu_spare */
 	        	    {
@@ -2539,17 +3073,66 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	    }
 	        	    if (ret) {
 	        	        /*Encode file_checksum */
-	        	        ret = cfdpFileChecksum_ACN_Encode((&(pVal->file_directive_pdu.u.eof_pdu.file_checksum)), pBitStrm, pErrCode, FALSE);
+	        	        Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->file_directive_pdu.u.eof_pdu.file_checksum);
 	        	        if (ret) {
 	        	            /*Encode file_size */
-	        	            ret = cfdpFileSize_ACN_Encode((&(pVal->file_directive_pdu.u.eof_pdu.file_size)), pBitStrm, pErrCode, FALSE);
+	        	            Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->file_directive_pdu.u.eof_pdu.file_size);
 	        	        }   /*COVERAGE_IGNORE*/
 	        	    }   /*COVERAGE_IGNORE*/
 	        	}   /*COVERAGE_IGNORE*/
 	        	break;
 	        case FileDirectivePDU_finished_pdu_PRESENT:
 	        	/*Encode condition_code */
-	        	ret = cfdpConditionCode_ACN_Encode((&(pVal->file_directive_pdu.u.finished_pdu.condition_code)), pBitStrm, pErrCode, FALSE);
+	        	switch(pVal->file_directive_pdu.u.finished_pdu.condition_code) {
+	        	    case ConditionCode_no_error:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 0UL;
+	        	        break;
+	        	    case ConditionCode_positive_ack_limit_reached:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 1UL;
+	        	        break;
+	        	    case ConditionCode_keep_alive_limit_reached:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 2UL;
+	        	        break;
+	        	    case ConditionCode_invalid_transmission_mode:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 3UL;
+	        	        break;
+	        	    case ConditionCode_filestore_rejection:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 4UL;
+	        	        break;
+	        	    case ConditionCode_file_checksum_failure:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 5UL;
+	        	        break;
+	        	    case ConditionCode_file_size_error:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 6UL;
+	        	        break;
+	        	    case ConditionCode_nak_limit_reached:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 7UL;
+	        	        break;
+	        	    case ConditionCode_inactivity_detected:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 8UL;
+	        	        break;
+	        	    case ConditionCode_invalid_file_structure:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 9UL;
+	        	        break;
+	        	    case ConditionCode_check_limit_reached:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 10UL;
+	        	        break;
+	        	    case ConditionCode_unsupported_checksum_type:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 11UL;
+	        	        break;
+	        	    case ConditionCode_suspend_request_received:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 12UL;
+	        	        break;
+	        	    case ConditionCode_cancel_request_received:
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 13UL;
+	        	        break;
+	        	    default:                                    /*COVERAGE_IGNORE*/
+	        	        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        	        *pErrCode = ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	        	}
+	        	if (ret) {
+	        		Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code, 4);
+	        	}
 	        	if (ret) {
 	        	    /*Encode FileDirectiveType_file_directive_pdu_finished_pdu_end_system_status */
 	        	    {
@@ -2558,23 +3141,117 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	    }
 	        	    if (ret) {
 	        	        /*Encode delivery_code */
-	        	        ret = cfdpDeliveryCode_ACN_Encode((&(pVal->file_directive_pdu.u.finished_pdu.delivery_code)), pBitStrm, pErrCode, FALSE);
+	        	        switch(pVal->file_directive_pdu.u.finished_pdu.delivery_code) {
+	        	            case DeliveryCode_data_complete:
+	        	                intVal_pVal_file_directive_pdu_u_finished_pdu_delivery_code = 0UL;
+	        	                break;
+	        	            case DeliveryCode_data_incomplete:
+	        	                intVal_pVal_file_directive_pdu_u_finished_pdu_delivery_code = 1UL;
+	        	                break;
+	        	            default:                                    /*COVERAGE_IGNORE*/
+	        	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        	                *pErrCode = ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE;                 /*COVERAGE_IGNORE*/
+	        	        }
+	        	        if (ret) {
+	        	        	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_directive_pdu_u_finished_pdu_delivery_code, 1);
+	        	        }
 	        	        if (ret) {
 	        	            /*Encode file_status */
-	        	            ret = cfdpFileStatus_ACN_Encode((&(pVal->file_directive_pdu.u.finished_pdu.file_status)), pBitStrm, pErrCode, FALSE);
+	        	            switch(pVal->file_directive_pdu.u.finished_pdu.file_status) {
+	        	                case FileStatus_discarted_deliberately:
+	        	                    intVal_pVal_file_directive_pdu_u_finished_pdu_file_status = 0UL;
+	        	                    break;
+	        	                case FileStatus_discarted_file_rejection:
+	        	                    intVal_pVal_file_directive_pdu_u_finished_pdu_file_status = 1UL;
+	        	                    break;
+	        	                case FileStatus_retained_successfully:
+	        	                    intVal_pVal_file_directive_pdu_u_finished_pdu_file_status = 2UL;
+	        	                    break;
+	        	                case FileStatus_unreported:
+	        	                    intVal_pVal_file_directive_pdu_u_finished_pdu_file_status = 3UL;
+	        	                    break;
+	        	                default:                                    /*COVERAGE_IGNORE*/
+	        	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        	                    *pErrCode = ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS;                 /*COVERAGE_IGNORE*/
+	        	            }
+	        	            if (ret) {
+	        	            	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_directive_pdu_u_finished_pdu_file_status, 2);
+	        	            }
 	        	        }   /*COVERAGE_IGNORE*/
 	        	    }   /*COVERAGE_IGNORE*/
 	        	}   /*COVERAGE_IGNORE*/
 	        	break;
 	        case FileDirectivePDU_ack_pdu_PRESENT:
 	        	/*Encode directive_code_of_ack_pdu */
-	        	ret = cfdpDirectiveCode_ACN_Encode((&(pVal->file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu)), pBitStrm, pErrCode, FALSE);
+	        	Acn_Enc_Int_PositiveInteger_ConstSize_8(pBitStrm, pVal->file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu);
 	        	if (ret) {
 	        	    /*Encode directive_subtype_code */
-	        	    ret = cfdpDirectiveSubtypeCode_ACN_Encode((&(pVal->file_directive_pdu.u.ack_pdu.directive_subtype_code)), pBitStrm, pErrCode, FALSE);
+	        	    switch(pVal->file_directive_pdu.u.ack_pdu.directive_subtype_code) {
+	        	        case DirectiveSubtypeCode_ack_others:
+	        	            intVal_pVal_file_directive_pdu_u_ack_pdu_directive_subtype_code = 0UL;
+	        	            break;
+	        	        case DirectiveSubtypeCode_ack_finished:
+	        	            intVal_pVal_file_directive_pdu_u_ack_pdu_directive_subtype_code = 1UL;
+	        	            break;
+	        	        default:                                    /*COVERAGE_IGNORE*/
+	        	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        	            *pErrCode = ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE;                 /*COVERAGE_IGNORE*/
+	        	    }
+	        	    if (ret) {
+	        	    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_directive_pdu_u_ack_pdu_directive_subtype_code, 4);
+	        	    }
 	        	    if (ret) {
 	        	        /*Encode condition_code */
-	        	        ret = cfdpConditionCode_ACN_Encode((&(pVal->file_directive_pdu.u.ack_pdu.condition_code)), pBitStrm, pErrCode, FALSE);
+	        	        switch(pVal->file_directive_pdu.u.ack_pdu.condition_code) {
+	        	            case ConditionCode_no_error:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 0UL;
+	        	                break;
+	        	            case ConditionCode_positive_ack_limit_reached:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 1UL;
+	        	                break;
+	        	            case ConditionCode_keep_alive_limit_reached:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 2UL;
+	        	                break;
+	        	            case ConditionCode_invalid_transmission_mode:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 3UL;
+	        	                break;
+	        	            case ConditionCode_filestore_rejection:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 4UL;
+	        	                break;
+	        	            case ConditionCode_file_checksum_failure:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 5UL;
+	        	                break;
+	        	            case ConditionCode_file_size_error:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 6UL;
+	        	                break;
+	        	            case ConditionCode_nak_limit_reached:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 7UL;
+	        	                break;
+	        	            case ConditionCode_inactivity_detected:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 8UL;
+	        	                break;
+	        	            case ConditionCode_invalid_file_structure:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 9UL;
+	        	                break;
+	        	            case ConditionCode_check_limit_reached:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 10UL;
+	        	                break;
+	        	            case ConditionCode_unsupported_checksum_type:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 11UL;
+	        	                break;
+	        	            case ConditionCode_suspend_request_received:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 12UL;
+	        	                break;
+	        	            case ConditionCode_cancel_request_received:
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 13UL;
+	        	                break;
+	        	            default:                                    /*COVERAGE_IGNORE*/
+	        	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        	                *pErrCode = ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	        	        }
+	        	        if (ret) {
+	        	        	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code, 4);
+	        	        }
 	        	        if (ret) {
 	        	            /*Encode FileDirectiveType_file_directive_pdu_ack_pdu_spare */
 	        	            {
@@ -2583,7 +3260,26 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	            }
 	        	            if (ret) {
 	        	                /*Encode transaction_status */
-	        	                ret = cfdpAckTransactionStatus_ACN_Encode((&(pVal->file_directive_pdu.u.ack_pdu.transaction_status)), pBitStrm, pErrCode, FALSE);
+	        	                switch(pVal->file_directive_pdu.u.ack_pdu.transaction_status) {
+	        	                    case AckTransactionStatus_undefined:
+	        	                        intVal_pVal_file_directive_pdu_u_ack_pdu_transaction_status = 0UL;
+	        	                        break;
+	        	                    case AckTransactionStatus_active:
+	        	                        intVal_pVal_file_directive_pdu_u_ack_pdu_transaction_status = 1UL;
+	        	                        break;
+	        	                    case AckTransactionStatus_terminated:
+	        	                        intVal_pVal_file_directive_pdu_u_ack_pdu_transaction_status = 2UL;
+	        	                        break;
+	        	                    case AckTransactionStatus_unrecognized:
+	        	                        intVal_pVal_file_directive_pdu_u_ack_pdu_transaction_status = 3UL;
+	        	                        break;
+	        	                    default:                                    /*COVERAGE_IGNORE*/
+	        	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        	                        *pErrCode = ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS;                 /*COVERAGE_IGNORE*/
+	        	                }
+	        	                if (ret) {
+	        	                	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_directive_pdu_u_ack_pdu_transaction_status, 2);
+	        	                }
 	        	            }   /*COVERAGE_IGNORE*/
 	        	        }   /*COVERAGE_IGNORE*/
 	        	    }   /*COVERAGE_IGNORE*/
@@ -2597,7 +3293,20 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	}
 	        	if (ret) {
 	        	    /*Encode closure_requested */
-	        	    ret = cfdpClosureRequested_ACN_Encode((&(pVal->file_directive_pdu.u.metadata_pdu.closure_requested)), pBitStrm, pErrCode, FALSE);
+	        	    switch(pVal->file_directive_pdu.u.metadata_pdu.closure_requested) {
+	        	        case ClosureRequested_requested:
+	        	            intVal_pVal_file_directive_pdu_u_metadata_pdu_closure_requested = 0UL;
+	        	            break;
+	        	        case ClosureRequested_not_requested:
+	        	            intVal_pVal_file_directive_pdu_u_metadata_pdu_closure_requested = 1UL;
+	        	            break;
+	        	        default:                                    /*COVERAGE_IGNORE*/
+	        	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        	            *pErrCode = ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED;                 /*COVERAGE_IGNORE*/
+	        	    }
+	        	    if (ret) {
+	        	    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_directive_pdu_u_metadata_pdu_closure_requested, 1);
+	        	    }
 	        	    if (ret) {
 	        	        /*Encode FileDirectiveType_file_directive_pdu_metadata_pdu_reserved2 */
 	        	        {
@@ -2606,10 +3315,10 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	        }
 	        	        if (ret) {
 	        	            /*Encode checksum_type */
-	        	            ret = cfdpChecksumType_ACN_Encode((&(pVal->file_directive_pdu.u.metadata_pdu.checksum_type)), pBitStrm, pErrCode, FALSE);
+	        	            Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, pVal->file_directive_pdu.u.metadata_pdu.checksum_type, 4);
 	        	            if (ret) {
 	        	                /*Encode file_size */
-	        	                ret = cfdpFileSize_ACN_Encode((&(pVal->file_directive_pdu.u.metadata_pdu.file_size)), pBitStrm, pErrCode, FALSE);
+	        	                Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->file_directive_pdu.u.metadata_pdu.file_size);
 	        	                if (ret) {
 	        	                    if (pVal->file_directive_pdu.kind == FileDirectivePDU_metadata_pdu_PRESENT) {
 	        	                        FileDirectiveType_file_directive_pdu_metadata_pdu_source_file_name_size_is_initialized = TRUE;
@@ -2672,8 +3381,16 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 	*pErrCode = 0;
 
 	asn1SccUint FileDirectiveType_directive_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_finished_pdu_delivery_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_finished_pdu_file_status;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_ack_pdu_directive_subtype_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_ack_pdu_transaction_status;
 	asn1SccUint FileDirectiveType_file_directive_pdu_metadata_pdu_source_file_name_size;
 	asn1SccUint FileDirectiveType_file_directive_pdu_metadata_pdu_destination_file_name_size;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_metadata_pdu_closure_requested;
 
 	/*Decode FileDirectiveType_directive_code */
 	ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(FileDirectiveType_directive_code)));
@@ -2684,7 +3401,57 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 	    if ((FileDirectiveType_directive_code == 4)) {
 	        pVal->file_directive_pdu.kind = FileDirectivePDU_eof_pdu_PRESENT;
 	        /*Decode condition_code */
-	        ret = cfdpConditionCode_ACN_Decode((&(pVal->file_directive_pdu.u.eof_pdu.condition_code)), pBitStrm, pErrCode);
+	        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code)), 4);
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE;
+	        if (ret) {
+	            switch (intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code) {
+	                case 0:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_no_error;
+	                    break;
+	                case 1:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_positive_ack_limit_reached;
+	                    break;
+	                case 2:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_keep_alive_limit_reached;
+	                    break;
+	                case 3:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_invalid_transmission_mode;
+	                    break;
+	                case 4:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_filestore_rejection;
+	                    break;
+	                case 5:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_file_checksum_failure;
+	                    break;
+	                case 6:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_file_size_error;
+	                    break;
+	                case 7:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_nak_limit_reached;
+	                    break;
+	                case 8:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_inactivity_detected;
+	                    break;
+	                case 9:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_invalid_file_structure;
+	                    break;
+	                case 10:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_check_limit_reached;
+	                    break;
+	                case 11:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_unsupported_checksum_type;
+	                    break;
+	                case 12:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_suspend_request_received;
+	                    break;
+	                case 13:
+	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_cancel_request_received;
+	                    break;
+	            default:                                    /*COVERAGE_IGNORE*/
+	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                *pErrCode = ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	            }
+	        } /*COVERAGE_IGNORE*/
 	        if (ret) {
 	            /*Decode FileDirectiveType_file_directive_pdu_eof_pdu_spare */
 	            {
@@ -2697,10 +3464,12 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 
 	            if (ret) {
 	                /*Decode file_checksum */
-	                ret = cfdpFileChecksum_ACN_Decode((&(pVal->file_directive_pdu.u.eof_pdu.file_checksum)), pBitStrm, pErrCode);
+	                ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->file_directive_pdu.u.eof_pdu.file_checksum)));
+	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_CHECKSUM;
 	                if (ret) {
 	                    /*Decode file_size */
-	                    ret = cfdpFileSize_ACN_Decode((&(pVal->file_directive_pdu.u.eof_pdu.file_size)), pBitStrm, pErrCode);
+	                    ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->file_directive_pdu.u.eof_pdu.file_size)));
+	                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_SIZE;
 	                }   /*COVERAGE_IGNORE*/
 	            }   /*COVERAGE_IGNORE*/
 	        }   /*COVERAGE_IGNORE*/
@@ -2708,7 +3477,57 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 	    else if ((FileDirectiveType_directive_code == 5)) {
 	        pVal->file_directive_pdu.kind = FileDirectivePDU_finished_pdu_PRESENT;
 	        /*Decode condition_code */
-	        ret = cfdpConditionCode_ACN_Decode((&(pVal->file_directive_pdu.u.finished_pdu.condition_code)), pBitStrm, pErrCode);
+	        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code)), 4);
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE;
+	        if (ret) {
+	            switch (intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code) {
+	                case 0:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_no_error;
+	                    break;
+	                case 1:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_positive_ack_limit_reached;
+	                    break;
+	                case 2:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_keep_alive_limit_reached;
+	                    break;
+	                case 3:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_invalid_transmission_mode;
+	                    break;
+	                case 4:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_filestore_rejection;
+	                    break;
+	                case 5:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_file_checksum_failure;
+	                    break;
+	                case 6:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_file_size_error;
+	                    break;
+	                case 7:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_nak_limit_reached;
+	                    break;
+	                case 8:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_inactivity_detected;
+	                    break;
+	                case 9:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_invalid_file_structure;
+	                    break;
+	                case 10:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_check_limit_reached;
+	                    break;
+	                case 11:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_unsupported_checksum_type;
+	                    break;
+	                case 12:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_suspend_request_received;
+	                    break;
+	                case 13:
+	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_cancel_request_received;
+	                    break;
+	            default:                                    /*COVERAGE_IGNORE*/
+	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                *pErrCode = ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	            }
+	        } /*COVERAGE_IGNORE*/
 	        if (ret) {
 	            /*Decode FileDirectiveType_file_directive_pdu_finished_pdu_end_system_status */
 	            {
@@ -2721,10 +3540,44 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 
 	            if (ret) {
 	                /*Decode delivery_code */
-	                ret = cfdpDeliveryCode_ACN_Decode((&(pVal->file_directive_pdu.u.finished_pdu.delivery_code)), pBitStrm, pErrCode);
+	                ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_directive_pdu_u_finished_pdu_delivery_code)), 1);
+	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE;
+	                if (ret) {
+	                    switch (intVal_pVal_file_directive_pdu_u_finished_pdu_delivery_code) {
+	                        case 0:
+	                            pVal->file_directive_pdu.u.finished_pdu.delivery_code = DeliveryCode_data_complete;
+	                            break;
+	                        case 1:
+	                            pVal->file_directive_pdu.u.finished_pdu.delivery_code = DeliveryCode_data_incomplete;
+	                            break;
+	                    default:                                    /*COVERAGE_IGNORE*/
+	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                        *pErrCode = ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE;                 /*COVERAGE_IGNORE*/
+	                    }
+	                } /*COVERAGE_IGNORE*/
 	                if (ret) {
 	                    /*Decode file_status */
-	                    ret = cfdpFileStatus_ACN_Decode((&(pVal->file_directive_pdu.u.finished_pdu.file_status)), pBitStrm, pErrCode);
+	                    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_directive_pdu_u_finished_pdu_file_status)), 2);
+	                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS;
+	                    if (ret) {
+	                        switch (intVal_pVal_file_directive_pdu_u_finished_pdu_file_status) {
+	                            case 0:
+	                                pVal->file_directive_pdu.u.finished_pdu.file_status = FileStatus_discarted_deliberately;
+	                                break;
+	                            case 1:
+	                                pVal->file_directive_pdu.u.finished_pdu.file_status = FileStatus_discarted_file_rejection;
+	                                break;
+	                            case 2:
+	                                pVal->file_directive_pdu.u.finished_pdu.file_status = FileStatus_retained_successfully;
+	                                break;
+	                            case 3:
+	                                pVal->file_directive_pdu.u.finished_pdu.file_status = FileStatus_unreported;
+	                                break;
+	                        default:                                    /*COVERAGE_IGNORE*/
+	                            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                            *pErrCode = ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS;                 /*COVERAGE_IGNORE*/
+	                        }
+	                    } /*COVERAGE_IGNORE*/
 	                }   /*COVERAGE_IGNORE*/
 	            }   /*COVERAGE_IGNORE*/
 	        }   /*COVERAGE_IGNORE*/
@@ -2732,13 +3585,78 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 	    else if ((FileDirectiveType_directive_code == 6)) {
 	        pVal->file_directive_pdu.kind = FileDirectivePDU_ack_pdu_PRESENT;
 	        /*Decode directive_code_of_ack_pdu */
-	        ret = cfdpDirectiveCode_ACN_Decode((&(pVal->file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu)), pBitStrm, pErrCode);
+	        ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(pVal->file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu)));
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_CODE_OF_ACK_PDU;
 	        if (ret) {
 	            /*Decode directive_subtype_code */
-	            ret = cfdpDirectiveSubtypeCode_ACN_Decode((&(pVal->file_directive_pdu.u.ack_pdu.directive_subtype_code)), pBitStrm, pErrCode);
+	            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_directive_pdu_u_ack_pdu_directive_subtype_code)), 4);
+	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE;
+	            if (ret) {
+	                switch (intVal_pVal_file_directive_pdu_u_ack_pdu_directive_subtype_code) {
+	                    case 0:
+	                        pVal->file_directive_pdu.u.ack_pdu.directive_subtype_code = DirectiveSubtypeCode_ack_others;
+	                        break;
+	                    case 1:
+	                        pVal->file_directive_pdu.u.ack_pdu.directive_subtype_code = DirectiveSubtypeCode_ack_finished;
+	                        break;
+	                default:                                    /*COVERAGE_IGNORE*/
+	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                    *pErrCode = ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE;                 /*COVERAGE_IGNORE*/
+	                }
+	            } /*COVERAGE_IGNORE*/
 	            if (ret) {
 	                /*Decode condition_code */
-	                ret = cfdpConditionCode_ACN_Decode((&(pVal->file_directive_pdu.u.ack_pdu.condition_code)), pBitStrm, pErrCode);
+	                ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code)), 4);
+	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE;
+	                if (ret) {
+	                    switch (intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code) {
+	                        case 0:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_no_error;
+	                            break;
+	                        case 1:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_positive_ack_limit_reached;
+	                            break;
+	                        case 2:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_keep_alive_limit_reached;
+	                            break;
+	                        case 3:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_invalid_transmission_mode;
+	                            break;
+	                        case 4:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_filestore_rejection;
+	                            break;
+	                        case 5:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_file_checksum_failure;
+	                            break;
+	                        case 6:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_file_size_error;
+	                            break;
+	                        case 7:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_nak_limit_reached;
+	                            break;
+	                        case 8:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_inactivity_detected;
+	                            break;
+	                        case 9:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_invalid_file_structure;
+	                            break;
+	                        case 10:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_check_limit_reached;
+	                            break;
+	                        case 11:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_unsupported_checksum_type;
+	                            break;
+	                        case 12:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_suspend_request_received;
+	                            break;
+	                        case 13:
+	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_cancel_request_received;
+	                            break;
+	                    default:                                    /*COVERAGE_IGNORE*/
+	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                        *pErrCode = ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	                    }
+	                } /*COVERAGE_IGNORE*/
 	                if (ret) {
 	                    /*Decode FileDirectiveType_file_directive_pdu_ack_pdu_spare */
 	                    {
@@ -2751,7 +3669,27 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 
 	                    if (ret) {
 	                        /*Decode transaction_status */
-	                        ret = cfdpAckTransactionStatus_ACN_Decode((&(pVal->file_directive_pdu.u.ack_pdu.transaction_status)), pBitStrm, pErrCode);
+	                        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_directive_pdu_u_ack_pdu_transaction_status)), 2);
+	                        *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS;
+	                        if (ret) {
+	                            switch (intVal_pVal_file_directive_pdu_u_ack_pdu_transaction_status) {
+	                                case 0:
+	                                    pVal->file_directive_pdu.u.ack_pdu.transaction_status = AckTransactionStatus_undefined;
+	                                    break;
+	                                case 1:
+	                                    pVal->file_directive_pdu.u.ack_pdu.transaction_status = AckTransactionStatus_active;
+	                                    break;
+	                                case 2:
+	                                    pVal->file_directive_pdu.u.ack_pdu.transaction_status = AckTransactionStatus_terminated;
+	                                    break;
+	                                case 3:
+	                                    pVal->file_directive_pdu.u.ack_pdu.transaction_status = AckTransactionStatus_unrecognized;
+	                                    break;
+	                            default:                                    /*COVERAGE_IGNORE*/
+	                                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                *pErrCode = ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS;                 /*COVERAGE_IGNORE*/
+	                            }
+	                        } /*COVERAGE_IGNORE*/
 	                    }   /*COVERAGE_IGNORE*/
 	                }   /*COVERAGE_IGNORE*/
 	            }   /*COVERAGE_IGNORE*/
@@ -2770,7 +3708,21 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 
 	        if (ret) {
 	            /*Decode closure_requested */
-	            ret = cfdpClosureRequested_ACN_Decode((&(pVal->file_directive_pdu.u.metadata_pdu.closure_requested)), pBitStrm, pErrCode);
+	            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_directive_pdu_u_metadata_pdu_closure_requested)), 1);
+	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED;
+	            if (ret) {
+	                switch (intVal_pVal_file_directive_pdu_u_metadata_pdu_closure_requested) {
+	                    case 0:
+	                        pVal->file_directive_pdu.u.metadata_pdu.closure_requested = ClosureRequested_requested;
+	                        break;
+	                    case 1:
+	                        pVal->file_directive_pdu.u.metadata_pdu.closure_requested = ClosureRequested_not_requested;
+	                        break;
+	                default:                                    /*COVERAGE_IGNORE*/
+	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                    *pErrCode = ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED;                 /*COVERAGE_IGNORE*/
+	                }
+	            } /*COVERAGE_IGNORE*/
 	            if (ret) {
 	                /*Decode FileDirectiveType_file_directive_pdu_metadata_pdu_reserved2 */
 	                {
@@ -2783,10 +3735,12 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 
 	                if (ret) {
 	                    /*Decode checksum_type */
-	                    ret = cfdpChecksumType_ACN_Decode((&(pVal->file_directive_pdu.u.metadata_pdu.checksum_type)), pBitStrm, pErrCode);
+	                    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(pVal->file_directive_pdu.u.metadata_pdu.checksum_type)), 4);
+	                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE;
 	                    if (ret) {
 	                        /*Decode file_size */
-	                        ret = cfdpFileSize_ACN_Decode((&(pVal->file_directive_pdu.u.metadata_pdu.file_size)), pBitStrm, pErrCode);
+	                        ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->file_directive_pdu.u.metadata_pdu.file_size)));
+	                        *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_FILE_SIZE;
 	                        if (ret) {
 	                            /*Decode FileDirectiveType_file_directive_pdu_metadata_pdu_source_file_name_size */
 	                            ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(FileDirectiveType_file_directive_pdu_metadata_pdu_source_file_name_size)));
@@ -3082,7 +4036,7 @@ flag cfdpFileDataPDU_ACN_Encode(const cfdpFileDataPDU* pVal, BitStream* pBitStrm
 	ret = bCheckConstraints ? cfdpFileDataPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
 	    /*Encode segment_offset */
-	    ret = cfdpSegmentOffset_ACN_Encode((&(pVal->segment_offset)), pBitStrm, pErrCode, FALSE);
+	    Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->segment_offset);
 	    if (ret) {
 	        /*Encode file_data */
 	        ret = cfdpFileData_ACN_Encode((&(pVal->file_data)), pBitStrm, pErrCode, FALSE);
@@ -3100,7 +4054,8 @@ flag cfdpFileDataPDU_ACN_Decode(cfdpFileDataPDU* pVal, BitStream* pBitStrm, int*
 
 
 	/*Decode segment_offset */
-	ret = cfdpSegmentOffset_ACN_Decode((&(pVal->segment_offset)), pBitStrm, pErrCode);
+	ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->segment_offset)));
+	*pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDATAPDU_SEGMENT_OFFSET;
 	if (ret) {
 	    /*Decode file_data */
 	    ret = cfdpFileData_ACN_Decode((&(pVal->file_data)), pBitStrm, pErrCode);
@@ -5928,14 +6883,35 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	flag CfdpPDU_pdu_header_length_of_entity_ids_is_initialized=FALSE;
 	asn1SccUint CfdpPDU_pdu_header_length_of_transaction_sequence_number;
 	flag CfdpPDU_pdu_header_length_of_transaction_sequence_number_is_initialized=FALSE;
+	asn1SccUint intVal_pVal_pdu_header_direction;
+	asn1SccUint intVal_pVal_pdu_header_transmission_mode;
+	asn1SccUint intVal_pVal_pdu_header_crc_flag;
 	asn1SccUint CfdpPDU_payload_file_directive_directive_code;
 	flag CfdpPDU_payload_file_directive_directive_code_is_initialized=FALSE;
+	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code;
+	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code;
+	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code;
+	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_finished_pdu_file_status;
+	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code;
+	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code;
+	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status;
 	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size;
 	flag CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size_is_initialized=FALSE;
 	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size;
 	flag CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size_is_initialized=FALSE;
+	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested;
 	static byte arr[cfdpPayloadData_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	BitStream bitStrm;
+	asn1SccUint intVal_pVal_pdu_header_segmentation_control;
+	asn1SccUint intVal_pVal_pdu_header_segment_metadata_flag;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_file_status;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpCfdpPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
@@ -5970,16 +6946,55 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	        }   /*COVERAGE_IGNORE*/
 	        if (ret) {
 	            /*Encode direction */
-	            ret = cfdpDirection_ACN_Encode((&(pVal->pdu_header.direction)), pBitStrm, pErrCode, FALSE);
+	            switch(pVal->pdu_header.direction) {
+	                case Direction_toward_receiver:
+	                    intVal_pVal_pdu_header_direction = 0UL;
+	                    break;
+	                case Direction_toward_sender:
+	                    intVal_pVal_pdu_header_direction = 1UL;
+	                    break;
+	                default:                                    /*COVERAGE_IGNORE*/
+	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                    *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_DIRECTION;                 /*COVERAGE_IGNORE*/
+	            }
+	            if (ret) {
+	            	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_pdu_header_direction, 1);
+	            }
 	            if (ret) {
 	                /*Encode transmission_mode */
-	                ret = cfdpTransmissionMode_ACN_Encode((&(pVal->pdu_header.transmission_mode)), pBitStrm, pErrCode, FALSE);
+	                switch(pVal->pdu_header.transmission_mode) {
+	                    case TransmissionMode_acknowledged:
+	                        intVal_pVal_pdu_header_transmission_mode = 0UL;
+	                        break;
+	                    case TransmissionMode_unacknowledged:
+	                        intVal_pVal_pdu_header_transmission_mode = 1UL;
+	                        break;
+	                    default:                                    /*COVERAGE_IGNORE*/
+	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                        *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_TRANSMISSION_MODE;                 /*COVERAGE_IGNORE*/
+	                }
+	                if (ret) {
+	                	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_pdu_header_transmission_mode, 1);
+	                }
 	                if (ret) {
 	                    /*Encode crc_flag */
-	                    ret = cfdpCRCFlag_ACN_Encode((&(pVal->pdu_header.crc_flag)), pBitStrm, pErrCode, FALSE);
+	                    switch(pVal->pdu_header.crc_flag) {
+	                        case CRCFlag_crc_not_present:
+	                            intVal_pVal_pdu_header_crc_flag = 0UL;
+	                            break;
+	                        case CRCFlag_crc_present:
+	                            intVal_pVal_pdu_header_crc_flag = 1UL;
+	                            break;
+	                        default:                                    /*COVERAGE_IGNORE*/
+	                            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                            *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_CRC_FLAG;                 /*COVERAGE_IGNORE*/
+	                    }
+	                    if (ret) {
+	                    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_pdu_header_crc_flag, 1);
+	                    }
 	                    if (ret) {
 	                        /*Encode large_file_flag */
-	                        ret = cfdpLargeFileFlag_ACN_Encode((&(pVal->pdu_header.large_file_flag)), pBitStrm, pErrCode, FALSE);
+	                        Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, pVal->pdu_header.large_file_flag, 1);
 	                        if (ret) {
 	                            {
 	                                /*first encode containing type to a temporary bitstream. That's the only way to learn in advance the size of the encoding octet string*/
@@ -6027,7 +7042,56 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    {
 	                                	    case FileDirectivePDU_eof_pdu_PRESENT:
 	                                	    	/*Encode condition_code */
-	                                	    	ret = cfdpConditionCode_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code)), pBitStrm, pErrCode, FALSE);
+	                                	    	switch(pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code) {
+	                                	    	    case ConditionCode_no_error:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 0UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_positive_ack_limit_reached:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 1UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_keep_alive_limit_reached:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 2UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_invalid_transmission_mode:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 3UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_filestore_rejection:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 4UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_file_checksum_failure:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 5UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_file_size_error:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 6UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_nak_limit_reached:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 7UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_inactivity_detected:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 8UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_invalid_file_structure:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 9UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_check_limit_reached:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 10UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_unsupported_checksum_type:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 11UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_suspend_request_received:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 12UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_cancel_request_received:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 13UL;
+	                                	    	        break;
+	                                	    	    default:                                    /*COVERAGE_IGNORE*/
+	                                	    	        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                	    	        *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	                                	    	}
+	                                	    	if (ret) {
+	                                	    		Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code, 4);
+	                                	    	}
 	                                	    	if (ret) {
 	                                	    	    /*Encode CfdpPDU_payload_file_directive_file_directive_pdu_eof_pdu_spare */
 	                                	    	    {
@@ -6036,17 +7100,66 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	    }
 	                                	    	    if (ret) {
 	                                	    	        /*Encode file_checksum */
-	                                	    	        ret = cfdpFileChecksum_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_checksum)), pBitStrm, pErrCode, FALSE);
+	                                	    	        Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_checksum);
 	                                	    	        if (ret) {
 	                                	    	            /*Encode file_size */
-	                                	    	            ret = cfdpFileSize_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_size)), pBitStrm, pErrCode, FALSE);
+	                                	    	            Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_size);
 	                                	    	        }   /*COVERAGE_IGNORE*/
 	                                	    	    }   /*COVERAGE_IGNORE*/
 	                                	    	}   /*COVERAGE_IGNORE*/
 	                                	    	break;
 	                                	    case FileDirectivePDU_finished_pdu_PRESENT:
 	                                	    	/*Encode condition_code */
-	                                	    	ret = cfdpConditionCode_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code)), pBitStrm, pErrCode, FALSE);
+	                                	    	switch(pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code) {
+	                                	    	    case ConditionCode_no_error:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 0UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_positive_ack_limit_reached:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 1UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_keep_alive_limit_reached:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 2UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_invalid_transmission_mode:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 3UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_filestore_rejection:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 4UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_file_checksum_failure:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 5UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_file_size_error:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 6UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_nak_limit_reached:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 7UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_inactivity_detected:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 8UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_invalid_file_structure:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 9UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_check_limit_reached:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 10UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_unsupported_checksum_type:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 11UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_suspend_request_received:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 12UL;
+	                                	    	        break;
+	                                	    	    case ConditionCode_cancel_request_received:
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 13UL;
+	                                	    	        break;
+	                                	    	    default:                                    /*COVERAGE_IGNORE*/
+	                                	    	        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                	    	        *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	                                	    	}
+	                                	    	if (ret) {
+	                                	    		Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code, 4);
+	                                	    	}
 	                                	    	if (ret) {
 	                                	    	    /*Encode CfdpPDU_payload_file_directive_file_directive_pdu_finished_pdu_end_system_status */
 	                                	    	    {
@@ -6055,23 +7168,117 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	    }
 	                                	    	    if (ret) {
 	                                	    	        /*Encode delivery_code */
-	                                	    	        ret = cfdpDeliveryCode_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.delivery_code)), pBitStrm, pErrCode, FALSE);
+	                                	    	        switch(pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.delivery_code) {
+	                                	    	            case DeliveryCode_data_complete:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code = 0UL;
+	                                	    	                break;
+	                                	    	            case DeliveryCode_data_incomplete:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code = 1UL;
+	                                	    	                break;
+	                                	    	            default:                                    /*COVERAGE_IGNORE*/
+	                                	    	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                	    	                *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE;                 /*COVERAGE_IGNORE*/
+	                                	    	        }
+	                                	    	        if (ret) {
+	                                	    	        	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code, 1);
+	                                	    	        }
 	                                	    	        if (ret) {
 	                                	    	            /*Encode file_status */
-	                                	    	            ret = cfdpFileStatus_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.file_status)), pBitStrm, pErrCode, FALSE);
+	                                	    	            switch(pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.file_status) {
+	                                	    	                case FileStatus_discarted_deliberately:
+	                                	    	                    intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_file_status = 0UL;
+	                                	    	                    break;
+	                                	    	                case FileStatus_discarted_file_rejection:
+	                                	    	                    intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_file_status = 1UL;
+	                                	    	                    break;
+	                                	    	                case FileStatus_retained_successfully:
+	                                	    	                    intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_file_status = 2UL;
+	                                	    	                    break;
+	                                	    	                case FileStatus_unreported:
+	                                	    	                    intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_file_status = 3UL;
+	                                	    	                    break;
+	                                	    	                default:                                    /*COVERAGE_IGNORE*/
+	                                	    	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                	    	                    *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS;                 /*COVERAGE_IGNORE*/
+	                                	    	            }
+	                                	    	            if (ret) {
+	                                	    	            	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_file_status, 2);
+	                                	    	            }
 	                                	    	        }   /*COVERAGE_IGNORE*/
 	                                	    	    }   /*COVERAGE_IGNORE*/
 	                                	    	}   /*COVERAGE_IGNORE*/
 	                                	    	break;
 	                                	    case FileDirectivePDU_ack_pdu_PRESENT:
 	                                	    	/*Encode directive_code_of_ack_pdu */
-	                                	    	ret = cfdpDirectiveCode_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu)), pBitStrm, pErrCode, FALSE);
+	                                	    	Acn_Enc_Int_PositiveInteger_ConstSize_8(pBitStrm, pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu);
 	                                	    	if (ret) {
 	                                	    	    /*Encode directive_subtype_code */
-	                                	    	    ret = cfdpDirectiveSubtypeCode_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_subtype_code)), pBitStrm, pErrCode, FALSE);
+	                                	    	    switch(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_subtype_code) {
+	                                	    	        case DirectiveSubtypeCode_ack_others:
+	                                	    	            intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code = 0UL;
+	                                	    	            break;
+	                                	    	        case DirectiveSubtypeCode_ack_finished:
+	                                	    	            intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code = 1UL;
+	                                	    	            break;
+	                                	    	        default:                                    /*COVERAGE_IGNORE*/
+	                                	    	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                	    	            *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE;                 /*COVERAGE_IGNORE*/
+	                                	    	    }
+	                                	    	    if (ret) {
+	                                	    	    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code, 4);
+	                                	    	    }
 	                                	    	    if (ret) {
 	                                	    	        /*Encode condition_code */
-	                                	    	        ret = cfdpConditionCode_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code)), pBitStrm, pErrCode, FALSE);
+	                                	    	        switch(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code) {
+	                                	    	            case ConditionCode_no_error:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 0UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_positive_ack_limit_reached:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 1UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_keep_alive_limit_reached:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 2UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_invalid_transmission_mode:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 3UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_filestore_rejection:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 4UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_file_checksum_failure:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 5UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_file_size_error:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 6UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_nak_limit_reached:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 7UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_inactivity_detected:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 8UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_invalid_file_structure:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 9UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_check_limit_reached:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 10UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_unsupported_checksum_type:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 11UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_suspend_request_received:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 12UL;
+	                                	    	                break;
+	                                	    	            case ConditionCode_cancel_request_received:
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 13UL;
+	                                	    	                break;
+	                                	    	            default:                                    /*COVERAGE_IGNORE*/
+	                                	    	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                	    	                *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	                                	    	        }
+	                                	    	        if (ret) {
+	                                	    	        	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code, 4);
+	                                	    	        }
 	                                	    	        if (ret) {
 	                                	    	            /*Encode CfdpPDU_payload_file_directive_file_directive_pdu_ack_pdu_spare */
 	                                	    	            {
@@ -6080,7 +7287,26 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	            }
 	                                	    	            if (ret) {
 	                                	    	                /*Encode transaction_status */
-	                                	    	                ret = cfdpAckTransactionStatus_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.transaction_status)), pBitStrm, pErrCode, FALSE);
+	                                	    	                switch(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.transaction_status) {
+	                                	    	                    case AckTransactionStatus_undefined:
+	                                	    	                        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status = 0UL;
+	                                	    	                        break;
+	                                	    	                    case AckTransactionStatus_active:
+	                                	    	                        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status = 1UL;
+	                                	    	                        break;
+	                                	    	                    case AckTransactionStatus_terminated:
+	                                	    	                        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status = 2UL;
+	                                	    	                        break;
+	                                	    	                    case AckTransactionStatus_unrecognized:
+	                                	    	                        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status = 3UL;
+	                                	    	                        break;
+	                                	    	                    default:                                    /*COVERAGE_IGNORE*/
+	                                	    	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                	    	                        *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS;                 /*COVERAGE_IGNORE*/
+	                                	    	                }
+	                                	    	                if (ret) {
+	                                	    	                	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status, 2);
+	                                	    	                }
 	                                	    	            }   /*COVERAGE_IGNORE*/
 	                                	    	        }   /*COVERAGE_IGNORE*/
 	                                	    	    }   /*COVERAGE_IGNORE*/
@@ -6094,7 +7320,20 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	}
 	                                	    	if (ret) {
 	                                	    	    /*Encode closure_requested */
-	                                	    	    ret = cfdpClosureRequested_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.closure_requested)), pBitStrm, pErrCode, FALSE);
+	                                	    	    switch(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.closure_requested) {
+	                                	    	        case ClosureRequested_requested:
+	                                	    	            intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested = 0UL;
+	                                	    	            break;
+	                                	    	        case ClosureRequested_not_requested:
+	                                	    	            intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested = 1UL;
+	                                	    	            break;
+	                                	    	        default:                                    /*COVERAGE_IGNORE*/
+	                                	    	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                	    	            *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED;                 /*COVERAGE_IGNORE*/
+	                                	    	    }
+	                                	    	    if (ret) {
+	                                	    	    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested, 1);
+	                                	    	    }
 	                                	    	    if (ret) {
 	                                	    	        /*Encode CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_reserved2 */
 	                                	    	        {
@@ -6103,10 +7342,10 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	        }
 	                                	    	        if (ret) {
 	                                	    	            /*Encode checksum_type */
-	                                	    	            ret = cfdpChecksumType_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type)), pBitStrm, pErrCode, FALSE);
+	                                	    	            Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type, 4);
 	                                	    	            if (ret) {
 	                                	    	                /*Encode file_size */
-	                                	    	                ret = cfdpFileSize_ACN_Encode((&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.file_size)), pBitStrm, pErrCode, FALSE);
+	                                	    	                Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.file_size);
 	                                	    	                if (ret) {
 	                                	    	                    if (pVal->payload.u.file_directive.file_directive_pdu.kind == FileDirectivePDU_metadata_pdu_PRESENT && pVal->payload.kind == PayloadData_file_directive_PRESENT) {
 	                                	    	                        CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size_is_initialized = TRUE;
@@ -6186,7 +7425,20 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                            }   /*COVERAGE_IGNORE*/
 	                            if (ret) {
 	                                /*Encode segmentation_control */
-	                                ret = cfdpSegmentationControl_ACN_Encode((&(pVal->pdu_header.segmentation_control)), pBitStrm, pErrCode, FALSE);
+	                                switch(pVal->pdu_header.segmentation_control) {
+	                                    case SegmentationControl_record_boundries_not_preserved:
+	                                        intVal_pVal_pdu_header_segmentation_control = 0UL;
+	                                        break;
+	                                    case SegmentationControl_record_boundries_preserved:
+	                                        intVal_pVal_pdu_header_segmentation_control = 1UL;
+	                                        break;
+	                                    default:                                    /*COVERAGE_IGNORE*/
+	                                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                        *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_SEGMENTATION_CONTROL;                 /*COVERAGE_IGNORE*/
+	                                }
+	                                if (ret) {
+	                                	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_pdu_header_segmentation_control, 1);
+	                                }
 	                                if (ret) {
 	                                    {
 	                                        asn1SccUint CfdpPDU_pdu_header_length_of_entity_ids00;
@@ -6227,7 +7479,20 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                    }   /*COVERAGE_IGNORE*/
 	                                    if (ret) {
 	                                        /*Encode segment_metadata_flag */
-	                                        ret = cfdpSegmentMetadataFlag_ACN_Encode((&(pVal->pdu_header.segment_metadata_flag)), pBitStrm, pErrCode, FALSE);
+	                                        switch(pVal->pdu_header.segment_metadata_flag) {
+	                                            case SegmentMetadataFlag_flag_present:
+	                                                intVal_pVal_pdu_header_segment_metadata_flag = 0UL;
+	                                                break;
+	                                            case SegmentMetadataFlag_flag_not_present:
+	                                                intVal_pVal_pdu_header_segment_metadata_flag = 1UL;
+	                                                break;
+	                                            default:                                    /*COVERAGE_IGNORE*/
+	                                                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                                *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_SEGMENT_METADATA_FLAG;                 /*COVERAGE_IGNORE*/
+	                                        }
+	                                        if (ret) {
+	                                        	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_pdu_header_segment_metadata_flag, 1);
+	                                        }
 	                                        if (ret) {
 	                                            CfdpPDU_pdu_header_length_of_transaction_sequence_number_is_initialized = TRUE;
 	                                            CfdpPDU_pdu_header_length_of_transaction_sequence_number = pVal->pdu_header.transaction_sequence_number.nCount;
@@ -6282,9 +7547,22 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	asn1SccUint CfdpPDU_pdu_header_pdu_data_field_length;
 	asn1SccUint CfdpPDU_pdu_header_length_of_entity_ids;
 	asn1SccUint CfdpPDU_pdu_header_length_of_transaction_sequence_number;
+	asn1SccUint intVal_pVal_pdu_header_direction;
+	asn1SccUint intVal_pVal_pdu_header_transmission_mode;
+	asn1SccUint intVal_pVal_pdu_header_crc_flag;
+	asn1SccUint intVal_pVal_pdu_header_segmentation_control;
+	asn1SccUint intVal_pVal_pdu_header_segment_metadata_flag;
 	asn1SccUint CfdpPDU_payload_file_directive_directive_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_file_status;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status;
 	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size;
 	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested;
 
 	/*Decode pdu_header */
 	/*Decode CfdpPDU_pdu_header_version */
@@ -6302,30 +7580,101 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	    *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_PDU_TYPE;
 	    if (ret) {
 	        /*Decode direction */
-	        ret = cfdpDirection_ACN_Decode((&(pVal->pdu_header.direction)), pBitStrm, pErrCode);
+	        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_pdu_header_direction)), 1);
+	        *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_DIRECTION;
+	        if (ret) {
+	            switch (intVal_pVal_pdu_header_direction) {
+	                case 0:
+	                    pVal->pdu_header.direction = Direction_toward_receiver;
+	                    break;
+	                case 1:
+	                    pVal->pdu_header.direction = Direction_toward_sender;
+	                    break;
+	            default:                                    /*COVERAGE_IGNORE*/
+	                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                *pErrCode = ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_DIRECTION;                 /*COVERAGE_IGNORE*/
+	            }
+	        } /*COVERAGE_IGNORE*/
 	        if (ret) {
 	            /*Decode transmission_mode */
-	            ret = cfdpTransmissionMode_ACN_Decode((&(pVal->pdu_header.transmission_mode)), pBitStrm, pErrCode);
+	            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_pdu_header_transmission_mode)), 1);
+	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_TRANSMISSION_MODE;
+	            if (ret) {
+	                switch (intVal_pVal_pdu_header_transmission_mode) {
+	                    case 0:
+	                        pVal->pdu_header.transmission_mode = TransmissionMode_acknowledged;
+	                        break;
+	                    case 1:
+	                        pVal->pdu_header.transmission_mode = TransmissionMode_unacknowledged;
+	                        break;
+	                default:                                    /*COVERAGE_IGNORE*/
+	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                    *pErrCode = ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_TRANSMISSION_MODE;                 /*COVERAGE_IGNORE*/
+	                }
+	            } /*COVERAGE_IGNORE*/
 	            if (ret) {
 	                /*Decode crc_flag */
-	                ret = cfdpCRCFlag_ACN_Decode((&(pVal->pdu_header.crc_flag)), pBitStrm, pErrCode);
+	                ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_pdu_header_crc_flag)), 1);
+	                *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_CRC_FLAG;
+	                if (ret) {
+	                    switch (intVal_pVal_pdu_header_crc_flag) {
+	                        case 0:
+	                            pVal->pdu_header.crc_flag = CRCFlag_crc_not_present;
+	                            break;
+	                        case 1:
+	                            pVal->pdu_header.crc_flag = CRCFlag_crc_present;
+	                            break;
+	                    default:                                    /*COVERAGE_IGNORE*/
+	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                        *pErrCode = ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_CRC_FLAG;                 /*COVERAGE_IGNORE*/
+	                    }
+	                } /*COVERAGE_IGNORE*/
 	                if (ret) {
 	                    /*Decode large_file_flag */
-	                    ret = cfdpLargeFileFlag_ACN_Decode((&(pVal->pdu_header.large_file_flag)), pBitStrm, pErrCode);
+	                    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(pVal->pdu_header.large_file_flag)), 1);
+	                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_LARGE_FILE_FLAG;
 	                    if (ret) {
 	                        /*Decode CfdpPDU_pdu_header_pdu_data_field_length */
 	                        ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_16(pBitStrm, (&(CfdpPDU_pdu_header_pdu_data_field_length)));
 	                        *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_PDU_DATA_FIELD_LENGTH;
 	                        if (ret) {
 	                            /*Decode segmentation_control */
-	                            ret = cfdpSegmentationControl_ACN_Decode((&(pVal->pdu_header.segmentation_control)), pBitStrm, pErrCode);
+	                            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_pdu_header_segmentation_control)), 1);
+	                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_SEGMENTATION_CONTROL;
+	                            if (ret) {
+	                                switch (intVal_pVal_pdu_header_segmentation_control) {
+	                                    case 0:
+	                                        pVal->pdu_header.segmentation_control = SegmentationControl_record_boundries_not_preserved;
+	                                        break;
+	                                    case 1:
+	                                        pVal->pdu_header.segmentation_control = SegmentationControl_record_boundries_preserved;
+	                                        break;
+	                                default:                                    /*COVERAGE_IGNORE*/
+	                                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                    *pErrCode = ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_SEGMENTATION_CONTROL;                 /*COVERAGE_IGNORE*/
+	                                }
+	                            } /*COVERAGE_IGNORE*/
 	                            if (ret) {
 	                                /*Decode CfdpPDU_pdu_header_length_of_entity_ids */
 	                                ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(CfdpPDU_pdu_header_length_of_entity_ids)), 3);
 	                                *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_LENGTH_OF_ENTITY_IDS;
 	                                if (ret) {
 	                                    /*Decode segment_metadata_flag */
-	                                    ret = cfdpSegmentMetadataFlag_ACN_Decode((&(pVal->pdu_header.segment_metadata_flag)), pBitStrm, pErrCode);
+	                                    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_pdu_header_segment_metadata_flag)), 1);
+	                                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_SEGMENT_METADATA_FLAG;
+	                                    if (ret) {
+	                                        switch (intVal_pVal_pdu_header_segment_metadata_flag) {
+	                                            case 0:
+	                                                pVal->pdu_header.segment_metadata_flag = SegmentMetadataFlag_flag_present;
+	                                                break;
+	                                            case 1:
+	                                                pVal->pdu_header.segment_metadata_flag = SegmentMetadataFlag_flag_not_present;
+	                                                break;
+	                                        default:                                    /*COVERAGE_IGNORE*/
+	                                            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                            *pErrCode = ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_SEGMENT_METADATA_FLAG;                 /*COVERAGE_IGNORE*/
+	                                        }
+	                                    } /*COVERAGE_IGNORE*/
 	                                    if (ret) {
 	                                        /*Decode CfdpPDU_pdu_header_length_of_transaction_sequence_number */
 	                                        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(CfdpPDU_pdu_header_length_of_transaction_sequence_number)), 3);
@@ -6395,7 +7744,57 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	                        if ((CfdpPDU_payload_file_directive_directive_code == 4)) {
 	                            pVal->payload.u.file_directive.file_directive_pdu.kind = FileDirectivePDU_eof_pdu_PRESENT;
 	                            /*Decode condition_code */
-	                            ret = cfdpConditionCode_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code)), pBitStrm, pErrCode);
+	                            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code)), 4);
+	                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE;
+	                            if (ret) {
+	                                switch (intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code) {
+	                                    case 0:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_no_error;
+	                                        break;
+	                                    case 1:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_positive_ack_limit_reached;
+	                                        break;
+	                                    case 2:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_keep_alive_limit_reached;
+	                                        break;
+	                                    case 3:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_invalid_transmission_mode;
+	                                        break;
+	                                    case 4:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_filestore_rejection;
+	                                        break;
+	                                    case 5:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_file_checksum_failure;
+	                                        break;
+	                                    case 6:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_file_size_error;
+	                                        break;
+	                                    case 7:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_nak_limit_reached;
+	                                        break;
+	                                    case 8:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_inactivity_detected;
+	                                        break;
+	                                    case 9:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_invalid_file_structure;
+	                                        break;
+	                                    case 10:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_check_limit_reached;
+	                                        break;
+	                                    case 11:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_unsupported_checksum_type;
+	                                        break;
+	                                    case 12:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_suspend_request_received;
+	                                        break;
+	                                    case 13:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_cancel_request_received;
+	                                        break;
+	                                default:                                    /*COVERAGE_IGNORE*/
+	                                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                    *pErrCode = ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	                                }
+	                            } /*COVERAGE_IGNORE*/
 	                            if (ret) {
 	                                /*Decode CfdpPDU_payload_file_directive_file_directive_pdu_eof_pdu_spare */
 	                                {
@@ -6408,10 +7807,12 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 
 	                                if (ret) {
 	                                    /*Decode file_checksum */
-	                                    ret = cfdpFileChecksum_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_checksum)), pBitStrm, pErrCode);
+	                                    ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_checksum)));
+	                                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_CHECKSUM;
 	                                    if (ret) {
 	                                        /*Decode file_size */
-	                                        ret = cfdpFileSize_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_size)), pBitStrm, pErrCode);
+	                                        ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.file_size)));
+	                                        *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_EOF_PDU_FILE_SIZE;
 	                                    }   /*COVERAGE_IGNORE*/
 	                                }   /*COVERAGE_IGNORE*/
 	                            }   /*COVERAGE_IGNORE*/
@@ -6419,7 +7820,57 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	                        else if ((CfdpPDU_payload_file_directive_directive_code == 5)) {
 	                            pVal->payload.u.file_directive.file_directive_pdu.kind = FileDirectivePDU_finished_pdu_PRESENT;
 	                            /*Decode condition_code */
-	                            ret = cfdpConditionCode_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code)), pBitStrm, pErrCode);
+	                            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code)), 4);
+	                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE;
+	                            if (ret) {
+	                                switch (intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code) {
+	                                    case 0:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_no_error;
+	                                        break;
+	                                    case 1:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_positive_ack_limit_reached;
+	                                        break;
+	                                    case 2:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_keep_alive_limit_reached;
+	                                        break;
+	                                    case 3:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_invalid_transmission_mode;
+	                                        break;
+	                                    case 4:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_filestore_rejection;
+	                                        break;
+	                                    case 5:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_file_checksum_failure;
+	                                        break;
+	                                    case 6:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_file_size_error;
+	                                        break;
+	                                    case 7:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_nak_limit_reached;
+	                                        break;
+	                                    case 8:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_inactivity_detected;
+	                                        break;
+	                                    case 9:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_invalid_file_structure;
+	                                        break;
+	                                    case 10:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_check_limit_reached;
+	                                        break;
+	                                    case 11:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_unsupported_checksum_type;
+	                                        break;
+	                                    case 12:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_suspend_request_received;
+	                                        break;
+	                                    case 13:
+	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_cancel_request_received;
+	                                        break;
+	                                default:                                    /*COVERAGE_IGNORE*/
+	                                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                    *pErrCode = ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	                                }
+	                            } /*COVERAGE_IGNORE*/
 	                            if (ret) {
 	                                /*Decode CfdpPDU_payload_file_directive_file_directive_pdu_finished_pdu_end_system_status */
 	                                {
@@ -6432,10 +7883,44 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 
 	                                if (ret) {
 	                                    /*Decode delivery_code */
-	                                    ret = cfdpDeliveryCode_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.delivery_code)), pBitStrm, pErrCode);
+	                                    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code)), 1);
+	                                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE;
+	                                    if (ret) {
+	                                        switch (intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code) {
+	                                            case 0:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.delivery_code = DeliveryCode_data_complete;
+	                                                break;
+	                                            case 1:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.delivery_code = DeliveryCode_data_incomplete;
+	                                                break;
+	                                        default:                                    /*COVERAGE_IGNORE*/
+	                                            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                            *pErrCode = ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_DELIVERY_CODE;                 /*COVERAGE_IGNORE*/
+	                                        }
+	                                    } /*COVERAGE_IGNORE*/
 	                                    if (ret) {
 	                                        /*Decode file_status */
-	                                        ret = cfdpFileStatus_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.file_status)), pBitStrm, pErrCode);
+	                                        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_file_status)), 2);
+	                                        *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS;
+	                                        if (ret) {
+	                                            switch (intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_file_status) {
+	                                                case 0:
+	                                                    pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.file_status = FileStatus_discarted_deliberately;
+	                                                    break;
+	                                                case 1:
+	                                                    pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.file_status = FileStatus_discarted_file_rejection;
+	                                                    break;
+	                                                case 2:
+	                                                    pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.file_status = FileStatus_retained_successfully;
+	                                                    break;
+	                                                case 3:
+	                                                    pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.file_status = FileStatus_unreported;
+	                                                    break;
+	                                            default:                                    /*COVERAGE_IGNORE*/
+	                                                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                                *pErrCode = ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_FINISHED_PDU_FILE_STATUS;                 /*COVERAGE_IGNORE*/
+	                                            }
+	                                        } /*COVERAGE_IGNORE*/
 	                                    }   /*COVERAGE_IGNORE*/
 	                                }   /*COVERAGE_IGNORE*/
 	                            }   /*COVERAGE_IGNORE*/
@@ -6443,13 +7928,78 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	                        else if ((CfdpPDU_payload_file_directive_directive_code == 6)) {
 	                            pVal->payload.u.file_directive.file_directive_pdu.kind = FileDirectivePDU_ack_pdu_PRESENT;
 	                            /*Decode directive_code_of_ack_pdu */
-	                            ret = cfdpDirectiveCode_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu)), pBitStrm, pErrCode);
+	                            ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_code_of_ack_pdu)));
+	                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_CODE_OF_ACK_PDU;
 	                            if (ret) {
 	                                /*Decode directive_subtype_code */
-	                                ret = cfdpDirectiveSubtypeCode_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_subtype_code)), pBitStrm, pErrCode);
+	                                ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code)), 4);
+	                                *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE;
+	                                if (ret) {
+	                                    switch (intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code) {
+	                                        case 0:
+	                                            pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_subtype_code = DirectiveSubtypeCode_ack_others;
+	                                            break;
+	                                        case 1:
+	                                            pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.directive_subtype_code = DirectiveSubtypeCode_ack_finished;
+	                                            break;
+	                                    default:                                    /*COVERAGE_IGNORE*/
+	                                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                        *pErrCode = ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_DIRECTIVE_SUBTYPE_CODE;                 /*COVERAGE_IGNORE*/
+	                                    }
+	                                } /*COVERAGE_IGNORE*/
 	                                if (ret) {
 	                                    /*Decode condition_code */
-	                                    ret = cfdpConditionCode_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code)), pBitStrm, pErrCode);
+	                                    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code)), 4);
+	                                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE;
+	                                    if (ret) {
+	                                        switch (intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code) {
+	                                            case 0:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_no_error;
+	                                                break;
+	                                            case 1:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_positive_ack_limit_reached;
+	                                                break;
+	                                            case 2:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_keep_alive_limit_reached;
+	                                                break;
+	                                            case 3:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_invalid_transmission_mode;
+	                                                break;
+	                                            case 4:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_filestore_rejection;
+	                                                break;
+	                                            case 5:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_file_checksum_failure;
+	                                                break;
+	                                            case 6:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_file_size_error;
+	                                                break;
+	                                            case 7:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_nak_limit_reached;
+	                                                break;
+	                                            case 8:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_inactivity_detected;
+	                                                break;
+	                                            case 9:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_invalid_file_structure;
+	                                                break;
+	                                            case 10:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_check_limit_reached;
+	                                                break;
+	                                            case 11:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_unsupported_checksum_type;
+	                                                break;
+	                                            case 12:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_suspend_request_received;
+	                                                break;
+	                                            case 13:
+	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_cancel_request_received;
+	                                                break;
+	                                        default:                                    /*COVERAGE_IGNORE*/
+	                                            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                            *pErrCode = ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_CONDITION_CODE;                 /*COVERAGE_IGNORE*/
+	                                        }
+	                                    } /*COVERAGE_IGNORE*/
 	                                    if (ret) {
 	                                        /*Decode CfdpPDU_payload_file_directive_file_directive_pdu_ack_pdu_spare */
 	                                        {
@@ -6462,7 +8012,27 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 
 	                                        if (ret) {
 	                                            /*Decode transaction_status */
-	                                            ret = cfdpAckTransactionStatus_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.transaction_status)), pBitStrm, pErrCode);
+	                                            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status)), 2);
+	                                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS;
+	                                            if (ret) {
+	                                                switch (intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status) {
+	                                                    case 0:
+	                                                        pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.transaction_status = AckTransactionStatus_undefined;
+	                                                        break;
+	                                                    case 1:
+	                                                        pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.transaction_status = AckTransactionStatus_active;
+	                                                        break;
+	                                                    case 2:
+	                                                        pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.transaction_status = AckTransactionStatus_terminated;
+	                                                        break;
+	                                                    case 3:
+	                                                        pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.transaction_status = AckTransactionStatus_unrecognized;
+	                                                        break;
+	                                                default:                                    /*COVERAGE_IGNORE*/
+	                                                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                                    *pErrCode = ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_ACK_PDU_TRANSACTION_STATUS;                 /*COVERAGE_IGNORE*/
+	                                                }
+	                                            } /*COVERAGE_IGNORE*/
 	                                        }   /*COVERAGE_IGNORE*/
 	                                    }   /*COVERAGE_IGNORE*/
 	                                }   /*COVERAGE_IGNORE*/
@@ -6481,7 +8051,21 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 
 	                            if (ret) {
 	                                /*Decode closure_requested */
-	                                ret = cfdpClosureRequested_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.closure_requested)), pBitStrm, pErrCode);
+	                                ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested)), 1);
+	                                *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED;
+	                                if (ret) {
+	                                    switch (intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested) {
+	                                        case 0:
+	                                            pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.closure_requested = ClosureRequested_requested;
+	                                            break;
+	                                        case 1:
+	                                            pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.closure_requested = ClosureRequested_not_requested;
+	                                            break;
+	                                    default:                                    /*COVERAGE_IGNORE*/
+	                                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                        *pErrCode = ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CLOSURE_REQUESTED;                 /*COVERAGE_IGNORE*/
+	                                    }
+	                                } /*COVERAGE_IGNORE*/
 	                                if (ret) {
 	                                    /*Decode CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_reserved2 */
 	                                    {
@@ -6494,10 +8078,12 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 
 	                                    if (ret) {
 	                                        /*Decode checksum_type */
-	                                        ret = cfdpChecksumType_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type)), pBitStrm, pErrCode);
+	                                        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type)), 4);
+	                                        *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE;
 	                                        if (ret) {
 	                                            /*Decode file_size */
-	                                            ret = cfdpFileSize_ACN_Decode((&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.file_size)), pBitStrm, pErrCode);
+	                                            ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.file_size)));
+	                                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_FILE_SIZE;
 	                                            if (ret) {
 	                                                /*Decode CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size */
 	                                                ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size)));

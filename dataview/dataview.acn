@@ -38,33 +38,33 @@ TransactionSequenceNumber                    []
 PDUHeader []
 
 EofPDU [] {
-   condition-code                            [],
+   condition-code                            [encoding pos-int, size 4],
    spare                                     NULL [pattern '0000'B],
-   file-checksum                             [],
-   file-size                                 []
+   file-checksum                             [encoding pos-int, size 32],
+   file-size                                 [encoding pos-int, size 32]
 }
 
 FinishedPDU [] {
-   condition-code                            [],
+   condition-code                            [encoding pos-int, size 4],
    end-system-status                         NULL [pattern '1'B],
-   delivery-code                             [],
-   file-status                               []
+   delivery-code                             [encoding pos-int, size 1],
+   file-status                               [encoding pos-int, size 2]
 }
 
 AckPDU [] {
-   directive-code-of-ack-pdu                 [],
-   directive-subtype-code                    [],
-   condition-code                            [],
+   directive-code-of-ack-pdu                 [encoding pos-int, size 8],
+   directive-subtype-code                    [encoding pos-int, size 4],
+   condition-code                            [encoding pos-int, size 4],
    spare                                     NULL [pattern '00'B],
-   transaction-status                        []
+   transaction-status                        [encoding pos-int, size 2]
 }
 
 MetadataPDU [] {
    reserved1                                 NULL [pattern '0'B],
-   closure-requested                         [],
+   closure-requested                         [encoding pos-int, size 1],
    reserved2                                 NULL [pattern '00'B],
-   checksum-type                             [],
-   file-size                                 [],
+   checksum-type                             [encoding pos-int, size 4],
+   file-size                                 [encoding pos-int, size 32],
    source-file-name-size                     FileNameSize [encoding pos-int, size 8],
    source-file-name                          [size source-file-name-size],
    destination-file-name-size                FileNameSize [encoding pos-int, size 8],
@@ -72,7 +72,7 @@ MetadataPDU [] {
 }
 
 FileDataPDU [] {
-   segment-offset                            [],
+   segment-offset                            [encoding pos-int, size 32],
    file-data                                 []
 }
 
@@ -88,23 +88,23 @@ FileDataType [] {
 }
 
 FileDirectiveType [] {
-   directive-code                            DirectiveCode [],
+   directive-code                            DirectiveCode [encoding pos-int, size 8],
    file-directive-pdu                        <directive-code> []
 }
 
 CfdpPDU [] {
    pdu-header                                [] {
       version                                NULL [pattern '000'B],
-      pdu-type                               PDUType [],
-      direction                              [],
-      transmission-mode                      [],
-      crc-flag                               [],
-      large-file-flag                        [],
-      pdu-data-field-length                  PDUDataFieldLength [],
-      segmentation-control                   [],
-      length-of-entity-ids                   LengthOfEntityIds [], -- TODO add proper mapping function, 0 means 1 octet string
-      segment-metadata-flag                  [],
-      length-of-transaction-sequence-number  LengthOfTransactionSequenceNumber [], -- TODO add proper mapping function, 0 means 1 octet string
+      pdu-type                               PDUType [encoding pos-int, size 1],
+      direction                              [encoding pos-int, size 1],
+      transmission-mode                      [encoding pos-int, size 1],
+      crc-flag                               [encoding pos-int, size 1],
+      large-file-flag                        [encoding pos-int, size 1],
+      pdu-data-field-length                  PDUDataFieldLength [encoding pos-int, size 16],
+      segmentation-control                   [encoding pos-int, size 1],
+      length-of-entity-ids                   LengthOfEntityIds [encoding pos-int, size 3], -- TODO add proper mapping function, 0 means 1 octet string
+      segment-metadata-flag                  [encoding pos-int, size 1],
+      length-of-transaction-sequence-number  LengthOfTransactionSequenceNumber [encoding pos-int, size 3], -- TODO add proper mapping function, 0 means 1 octet string
       source-entity-id                       [size length-of-entity-ids],
       transaction-sequence-number            [size length-of-transaction-sequence-number],
       destination-entity-id                  [size length-of-entity-ids]

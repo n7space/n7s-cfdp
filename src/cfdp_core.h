@@ -17,12 +17,6 @@ struct cfdp_core {
 	uint32_t entity_id;
 	struct filestore *filestore;
 	struct transport *transport;
-	bool eof_sent_indication_required;
-	bool eof_received_indication_required;
-	bool filesegment_received_indication_required;
-	bool transaction_finished_indication_required;
-	bool suspended_indication_required;
-	bool resumed_indication_required;
 
 	uint32_t transaction_sequence_number;
 	struct sender_machine sender[MAX_NUMBER_OF_SENDER_MACHINES];
