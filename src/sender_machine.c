@@ -97,8 +97,7 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 		return;
 	}
 
-	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->transaction.destination_entity_id, bit_stream.buf,
+	sender_machine->core->transport->transport_send_pdu(bit_stream.buf,
 	    bit_stream.currentByte + 1);
 }
 
@@ -150,8 +149,7 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		return;
 	}
 
-	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->transaction.destination_entity_id, bit_stream.buf,
+	sender_machine->core->transport->transport_send_pdu(bit_stream.buf,
 	    bit_stream.currentByte + 1);
 }
 
@@ -202,8 +200,7 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 		return;
 	}
 
-	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->transaction.destination_entity_id, bit_stream.buf,
+	sender_machine->core->transport->transport_send_pdu(bit_stream.buf,
 	    bit_stream.currentByte + 1);
 }
 

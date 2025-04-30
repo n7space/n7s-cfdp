@@ -6,6 +6,7 @@ ASN1_POLICY_FLAGS ?= -typePrefix cfdp -renamePolicy 3 -equal -fp AUTO -c -ig -uP
 
 SOURCES := $(wildcard src/*.c)
 DATAVIEW_SOURCES := $(wildcard dataview/*.c)
+TEST_SOURCES := $(wildcard test/*.c)
 
 all:
 	echo "Build run"
@@ -19,7 +20,9 @@ build-asn:
 
 test: 
 	echo "Tests run"
-	build/main
+	mkdir -p build
+	gcc -Isrc -Idataview -Itest -o build/test $(filter-out src/main.c, $(SOURCES)) $(TEST_SOURCES) $(DATAVIEW_SOURCES)
+	./build/test
 
 clean:
 	rm -rf build/*

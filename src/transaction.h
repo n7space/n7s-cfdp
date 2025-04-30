@@ -19,12 +19,10 @@ struct transaction {
 	uint32_t file_position;
 };
 
-void transaction_open_temp_file(struct transaction *transaction);
 void transaction_store_data_in_temp_file(struct transaction *transaction,
 					 const cfdpFileDataPDU *file_data);
 uint32_t transaction_get_temp_file_checksum(struct transaction *transaction);
 void transaction_copy_temp_file_to_dest_file(struct transaction *transaction);
-void transaction_close_temp_file(struct transaction *transaction);
 
 uint32_t transaction_get_file_size(struct transaction *transaction);
 uint32_t transaction_get_file_checksum(struct transaction *transaction);

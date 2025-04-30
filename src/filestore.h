@@ -15,16 +15,14 @@ struct filestore_cfg {
 				       const char *source_filepath);
 	void (*filestore_list_directory)(const char *dirpath);
 
-	void (*filestore_open)(const char *filepath);
-	uint32_t (*filestore_get_file_size)(const char *filepath);
-	void (*filestore_seek)(const char *filepath, uint32_t offset);
-	uint32_t (*filestore_tell)(const char *filepath);
-	void (*filestore_read)(const char *filepath, char *data,
-			       uint32_t length);
-	void (*filestore_write)(const char *filepath, const char *data,
+	uint64_t (*filestore_get_file_size)(const char *filepath);
+	void (*filestore_read)(const char *filepath, uint32_t offset, char *data,
+			       const uint32_t length);
+	void (*filestore_write)(const char *filepath, uint32_t offset, const char *data,
 				const uint32_t length);
-	void (*filestore_close)(const char *filepath);
 	uint32_t (*filestore_calculate_checksum)(const char *filepath);
+
+	void* file_ptr;
 };
 
 #endif

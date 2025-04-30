@@ -21,7 +21,6 @@ void receiver_machine_init(struct receiver_machine *receiver_machine)
 void receiver_machine_close(struct receiver_machine *receiver_machine)
 {
 	receiver_machine->state = COMPLETED;
-	transaction_close_temp_file(&receiver_machine->transaction);
 }
 
 void receiver_machine_update_state(struct receiver_machine *receiver_machine,
@@ -54,11 +53,6 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			cfdp_core_metadata_received_indication(
 			    receiver_machine->core,
 			    receiver_machine->transaction_id);
-			if (transaction_is_file_transfer_in_progress(
-				&receiver_machine->transaction)) {
-				transaction_open_temp_file(
-				    &receiver_machine->transaction);
-			}
 			receiver_machine->state = WAIT_FOR_EOF;
 			break;
 		}
@@ -182,8 +176,6 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 				receiver_machine->delivery_code =
 				    DeliveryCode_data_complete;
 				transaction_copy_temp_file_to_dest_file(
-				    &receiver_machine->transaction);
-				transaction_close_temp_file(
 				    &receiver_machine->transaction);
 			}
 

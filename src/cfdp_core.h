@@ -15,7 +15,7 @@
 
 struct cfdp_core {
 	uint32_t entity_id;
-	struct filestore *filestore;
+	struct filestore_cfg *filestore;
 	struct transport *transport;
 
 	uint32_t transaction_sequence_number;
