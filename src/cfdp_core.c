@@ -2,6 +2,15 @@
 #include "event.h"
 #include <stdio.h>
 
+void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore, struct transport *transport){
+	core->sender[0].core = core;
+	core->receiver[0].core = core;
+	core->entity_id = 6;
+    core->filestore = filestore;
+    core->transport = transport;
+    core->transaction_sequence_number = 0;
+}
+
 static bool cfdp_core_is_request_to_sender(struct cfdp_core *core,
 					   struct transaction_id transaction_id)
 {
@@ -63,6 +72,7 @@ cfdp_core_put(struct cfdp_core *core, uint32_t destination_entity_id,
 
 	struct transaction transaction = {
 	    .kernel = core,
+		.filestore = core->filestore,
 	    .source_entity_id = core->entity_id,
 	    .seq_number = core->transaction_sequence_number,
 	    .destination_entity_id = destination_entity_id,
@@ -324,6 +334,7 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 
 	struct transaction transaction;
 	transaction.kernel = core;
+	transaction.filestore = core->filestore;
 	transaction.source_entity_id =
 	    bytes_to_ulong(pdu->pdu_header.source_entity_id.arr,
 			   pdu->pdu_header.source_entity_id.nCount);
@@ -426,4 +437,8 @@ void cfdp_core_run_fault_handler(struct cfdp_core *core,
 		printf("condition code not supportet in fault handler\n");
 	}
 	}
+}
+
+bool cfdp_core_is_done(struct cfdp_core *core){
+	return core->sender[0].state == COMPLETED;
 }

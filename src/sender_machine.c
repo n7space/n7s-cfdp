@@ -6,24 +6,25 @@
 #include <stdio.h>
 #include <string.h>
 
-static void ulong_to_bytes(uint64_t data, byte *result, int size)
+static void ulong_to_bytes(uint64_t data, byte *result, int *size)
 {
-	size = 0;
+	*size = 0;
 	uint64_t eval_data = data;
 
 	while (eval_data != 0) {
-		size++;
+		(*size)++;
 		eval_data >>= 8;
 	}
 
-	for (size_t i = 0; i < size; i++) {
-		result[size - 1 - i] = (uint8_t)(data & 0xFF);
+	for (size_t i = 0; i < *size; i++) {
+		result[*size - 1 - i] = (uint8_t)(data & 0xFF);
 		data >>= 8;
 	}
 }
 
-void sender_machine_init(struct sender_machine *sender_machine)
+void sender_machine_init(struct sender_machine *sender_machine, struct transaction transaction)
 {
+	sender_machine->transaction = transaction;
 	sender_machine->condition_code = cfdpConditionCode_no_error;
 	sender_machine->is_frozen = false;
 	sender_machine->is_suspended = false;
@@ -52,13 +53,13 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 
 	ulong_to_bytes(sender_machine->transaction.source_entity_id,
 		       header.source_entity_id.arr,
-		       header.source_entity_id.nCount);
+		       &header.source_entity_id.nCount);
 	ulong_to_bytes(sender_machine->transaction.destination_entity_id,
 		       header.destination_entity_id.arr,
-		       header.destination_entity_id.nCount);
+		       &header.destination_entity_id.nCount);
 	ulong_to_bytes(sender_machine->transaction.seq_number,
 		       header.transaction_sequence_number.arr,
-		       header.transaction_sequence_number.nCount);
+		       &header.transaction_sequence_number.nCount);
 
 	metadata_pdu.closure_requested = ClosureRequested_requested;
 	metadata_pdu.checksum_type = 0;
@@ -119,13 +120,13 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 
 	ulong_to_bytes(sender_machine->transaction.source_entity_id,
 		       header.source_entity_id.arr,
-		       header.source_entity_id.nCount);
+		       &header.source_entity_id.nCount);
 	ulong_to_bytes(sender_machine->transaction.destination_entity_id,
 		       header.destination_entity_id.arr,
-		       header.destination_entity_id.nCount);
+		       &header.destination_entity_id.nCount);
 	ulong_to_bytes(sender_machine->transaction.seq_number,
 		       header.transaction_sequence_number.arr,
-		       header.transaction_sequence_number.nCount);
+		       &header.transaction_sequence_number.nCount);
 
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
@@ -139,7 +140,7 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	pdu.payload.u.file_data.file_data_pdu = file_data_pdu;
 
 	unsigned char buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
-	long size = cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING;
+	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, size);
 	int error_code;
@@ -169,13 +170,13 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 
 	ulong_to_bytes(sender_machine->transaction.source_entity_id,
 		       header.source_entity_id.arr,
-		       header.source_entity_id.nCount);
+		       &header.source_entity_id.nCount);
 	ulong_to_bytes(sender_machine->transaction.destination_entity_id,
 		       header.destination_entity_id.arr,
-		       header.destination_entity_id.nCount);
+		       &header.destination_entity_id.nCount);
 	ulong_to_bytes(sender_machine->transaction.seq_number,
 		       header.transaction_sequence_number.arr,
-		       header.transaction_sequence_number.nCount);
+		       &header.transaction_sequence_number.nCount);
 
 	eof_pdu.condition_code = sender_machine->condition_code;
 	eof_pdu.file_checksum =
@@ -210,7 +211,7 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 	if (sender_machine->state == SEND_METADATA) {
 		switch (event->type) {
 		case E0_ENTERED_STATE: {
-			sender_machine_init(sender_machine);
+			sender_machine_init(sender_machine, event->transaction);
 			break;
 		}
 		case E30_RECEIVED_PUT_REQUEST: {
@@ -240,7 +241,7 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			printf("Event not support for state SEND_METADATA\n");
 		}
 		}
-	} else if (sender_machine->state == WAIT_FOR_EOF) {
+	} else if (sender_machine->state == SEND_FILE) {
 		switch (event->type) {
 		case E0_ENTERED_STATE: {
 			cfdp_core_issue_request(sender_machine->core,

@@ -4,7 +4,7 @@
 uint64_t test_filestore_get_file_size(const char *filepath) {
     FILE *file = fopen(filepath, "rb");
     if (file == NULL) {
-        printf("Error: Could not open file");
+        printf("Error: Could not open file1\n");
         return 0;
     }
 
@@ -18,7 +18,7 @@ void test_filestore_read_file(const char *filepath, uint32_t offset, char *data,
     FILE *file = fopen(filepath, "rb");
     if (file == NULL)
     {
-        printf("Error: Could not open file");
+        printf("Error: Could not open file2\n");
         return;
     }
 
@@ -37,7 +37,7 @@ void test_filestore_write_to_file(const char *filepath, uint32_t offset, const c
     FILE *file = fopen(filepath, "wb");
     if (file == NULL)
     {
-        printf("Error: Could not open file");
+        printf("Error: Could not open file3\n");
         return;
     }
 

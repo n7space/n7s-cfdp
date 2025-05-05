@@ -11,7 +11,7 @@ udp_transport = UdpTransport(routing={"*": [("127.0.0.1", 5111)]})
 udp_transport.bind("127.0.0.1", 5222)
 
 cfdp_entity = cfdp.CfdpEntity(
-    entity_id=13, filestore=NativeFileStore("files/remote"), transport=udp_transport
+    entity_id=13, filestore=NativeFileStore("../test/files/remote"), transport=udp_transport
 )
 
 input("Running. Press <Enter> to stop...\n")

@@ -21,8 +21,10 @@ build-asn:
 test: 
 	echo "Tests run"
 	mkdir -p build
-	gcc -Isrc -Idataview -Itest -o build/test $(filter-out src/main.c, $(SOURCES)) $(TEST_SOURCES) $(DATAVIEW_SOURCES)
-	./build/test
+	gcc -g -pthread -Isrc -Idataview -Itest -o build/cfdp_test $(filter-out src/main.c, $(SOURCES)) $(TEST_SOURCES) $(DATAVIEW_SOURCES)
+	chmod +x test/python_cfdp_receiver.py
+	python3 test/python_cfdp_receiver.py &
+	pushd build; ./cfdp_test; popd
 
 clean:
 	rm -rf build/*

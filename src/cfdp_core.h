@@ -23,6 +23,8 @@ struct cfdp_core {
 	struct receiver_machine receiver[MAX_NUMBER_OF_RECEIVER_MACHINES];
 };
 
+void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore, struct transport *transport);
+
 void cfdp_core_issue_request(struct cfdp_core *core,
 			     struct transaction_id transaction_id,
 			     enum EventType event_type);
@@ -93,5 +95,7 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 void cfdp_core_run_fault_handler(struct cfdp_core *core,
 				 const struct transaction_id transaction_id,
 				 const enum FaultHandlerAction action);
+
+bool cfdp_core_is_done(struct cfdp_core *core);
 
 #endif
