@@ -44,7 +44,7 @@ ChecksumType ::= INTEGER (0..15)
 
 FileNameSize ::= INTEGER (0..32)
 
-FileName ::= OCTET STRING (SIZE(0..32))
+FileName ::= OCTET STRING (SIZE(0..64))
 
 FileStatus ::= ENUMERATED {
    discarted-deliberately (0),
@@ -128,9 +128,6 @@ PDUHeader ::= SEQUENCE {
    direction Direction,
    transmission-mode TransmissionMode,
    crc-flag CRCFlag,
-   large-file-flag LargeFileFlag,
-   segmentation-control SegmentationControl,
-   segment-metadata-flag SegmentMetadataFlag,
    source-entity-id EntityId,
    transaction-sequence-number TransactionSequenceNumber,
    destination-entity-id EntityId

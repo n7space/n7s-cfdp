@@ -6,8 +6,10 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 #define PORT 5111
+#define RECEIVER_PORT 5222
 #define BUFFER_SIZE 1024
 const char IP_ADDRESS[] = "127.0.0.1";
 
@@ -25,7 +27,7 @@ void *test_transport_receiver_thread(void *arg) {
             buffer[n] = '\0';
             printf("[Thread] Received: %s\n", buffer);
         } else {
-            perror("recvfrom failed");
+            perror("recvfrom failed\n");
             continue;
         }
 
@@ -42,7 +44,7 @@ void test_transport_init_and_bind(struct cfdp_core *core)
 
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd < 0) {
-        perror("socket creation failed");
+        perror("socket creation failed\n");
         exit(EXIT_FAILURE);
     }
 
@@ -52,22 +54,38 @@ void test_transport_init_and_bind(struct cfdp_core *core)
     server_addr.sin_port = htons(PORT);
 
     if (bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-        perror("bind failed");
+        perror("bind failed\n");
         close(sockfd);
         exit(EXIT_FAILURE);
     }
 
     pthread_t thread_id;
     if (pthread_create(&thread_id, NULL, test_transport_receiver_thread, (void *)core) != 0) {
-        perror("pthread_create failed");
+        perror("pthread_create failed\n");
         close(sockfd);
         exit(EXIT_FAILURE);
     }
 }
 
+void test_transport_close()
+{
+    close(sockfd);
+}
+
 void test_transport_send_pdu(const byte pdu[], const int size)
 {
-    send(sockfd, pdu, size, 0);
+    struct sockaddr_in receiver_addr;
+    memset(&receiver_addr, 0, sizeof(receiver_addr));
+    receiver_addr.sin_family = AF_INET;
+    receiver_addr.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+    receiver_addr.sin_port = htons(RECEIVER_PORT);
+
+    int bytes_sent = sendto(sockfd, pdu, size, 0, (struct sockaddr *)&receiver_addr, sizeof(receiver_addr));
+    if(bytes_sent == -1){
+        int errsv = errno;
+        printf("socket send error %d\n", errsv);
+    }
+    printf("socket bytes sent %d\n", bytes_sent);
 }
 
 bool test_transport_is_ready()

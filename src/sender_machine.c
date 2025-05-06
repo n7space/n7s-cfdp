@@ -46,10 +46,6 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	header.direction = cfdpDirection_toward_receiver;
 	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
 	header.crc_flag = cfdpCRCFlag_crc_not_present;
-	header.large_file_flag = 0;
-	header.segmentation_control =
-	    cfdpSegmentationControl_record_boundries_not_preserved;
-	header.segment_metadata_flag = cfdpSegmentMetadataFlag_flag_not_present;
 
 	ulong_to_bytes(sender_machine->transaction.source_entity_id,
 		       header.source_entity_id.arr,
@@ -89,6 +85,7 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 
 	unsigned char buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
 	long size = cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING;
+	memset(buf, 0x0, (size_t)size);
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, size);
 	int error_code;
@@ -99,7 +96,7 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	}
 
 	sender_machine->core->transport->transport_send_pdu(bit_stream.buf,
-	    bit_stream.currentByte + 1);
+	    bit_stream.currentByte);
 }
 
 void sender_machine_send_file_data(struct sender_machine *sender_machine)
@@ -113,10 +110,6 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	header.direction = cfdpDirection_toward_receiver;
 	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
 	header.crc_flag = cfdpCRCFlag_crc_not_present;
-	header.large_file_flag = 0;
-	header.segmentation_control =
-	    cfdpSegmentationControl_record_boundries_not_preserved;
-	header.segment_metadata_flag = cfdpSegmentMetadataFlag_flag_not_present;
 
 	ulong_to_bytes(sender_machine->transaction.source_entity_id,
 		       header.source_entity_id.arr,
@@ -141,6 +134,7 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 
 	unsigned char buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
 	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
+	memset(buf, 0x0, (size_t)size);
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, size);
 	int error_code;
@@ -150,8 +144,15 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		return;
 	}
 
-	sender_machine->core->transport->transport_send_pdu(bit_stream.buf,
-	    bit_stream.currentByte + 1);
+	// manual bitstream modification to remove file-data determinant
+	int determinant_index = bit_stream.currentByte - length;
+	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
+	memset(modified_buf, 0x0, (size_t)size);
+	memcpy(modified_buf, buf, determinant_index - 1);
+	memcpy(modified_buf + determinant_index - 1, buf + determinant_index, length);
+
+	sender_machine->core->transport->transport_send_pdu(modified_buf,
+	    bit_stream.currentByte - 1);
 }
 
 void sender_machine_send_eof(struct sender_machine *sender_machine)
@@ -163,10 +164,6 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	header.direction = cfdpDirection_toward_receiver;
 	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
 	header.crc_flag = cfdpCRCFlag_crc_not_present;
-	header.large_file_flag = 0;
-	header.segmentation_control =
-	    cfdpSegmentationControl_record_boundries_not_preserved;
-	header.segment_metadata_flag = cfdpSegmentMetadataFlag_flag_not_present;
 
 	ulong_to_bytes(sender_machine->transaction.source_entity_id,
 		       header.source_entity_id.arr,
@@ -192,6 +189,7 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 
 	unsigned char buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
 	long size = cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING;
+	memset(buf, 0x0, (size_t)size);
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, size);
 	int error_code;
@@ -202,7 +200,7 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	}
 
 	sender_machine->core->transport->transport_send_pdu(bit_stream.buf,
-	    bit_stream.currentByte + 1);
+	    bit_stream.currentByte);
 }
 
 void sender_machine_update_state(struct sender_machine *sender_machine,

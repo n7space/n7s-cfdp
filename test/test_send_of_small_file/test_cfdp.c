@@ -34,14 +34,16 @@ int main(int argc, char *argv[]) {
     cfdp_core_init(&cfd_entity_sender, &filestore, &transport);
     test_transport_init_and_bind(&cfd_entity_sender);
 
-    cfdp_core_put(&cfd_entity_sender, 13, "../test/files/local/small.txt", "received_small.txt");
+    cfdp_core_put(&cfd_entity_sender, 13, "../test/test_send_of_small_file/files/local/small.txt", "received_small.txt");
 
     while(!cfdp_core_is_done(&cfd_entity_sender)){
         usleep(1000 * 100);
     }
 
-    if(!file_exists("test/files/remote/received_small.txt"))
+    if(!file_exists("test/test_send_of_small_file/files/remote/received_small.txt"))
         return -1;
+
+    test_transport_close();
 
     return 0;
 }
