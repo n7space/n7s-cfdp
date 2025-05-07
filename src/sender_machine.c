@@ -22,10 +22,12 @@ static void ulong_to_bytes(uint64_t data, byte *result, int *size)
 	}
 }
 
-void sender_machine_init(struct sender_machine *sender_machine, struct transaction transaction)
+void sender_machine_init(struct sender_machine *sender_machine,
+			 struct transaction transaction)
 {
 	sender_machine->transaction = transaction;
-	sender_machine->transaction_id.source_entity_id = transaction.source_entity_id;
+	sender_machine->transaction_id.source_entity_id =
+	    transaction.source_entity_id;
 	sender_machine->transaction_id.seq_number = transaction.seq_number;
 	sender_machine->condition_code = cfdpConditionCode_no_error;
 	sender_machine->is_frozen = false;
@@ -97,8 +99,8 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 		return;
 	}
 
-	sender_machine->core->transport->transport_send_pdu(bit_stream.buf,
-	    bit_stream.currentByte);
+	sender_machine->core->transport->transport_send_pdu(
+	    bit_stream.buf, bit_stream.currentByte);
 }
 
 void sender_machine_send_file_data(struct sender_machine *sender_machine)
@@ -151,10 +153,11 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
 	memset(modified_buf, 0x0, (size_t)size);
 	memcpy(modified_buf, buf, determinant_index - 1);
-	memcpy(modified_buf + determinant_index - 1, buf + determinant_index, length);
+	memcpy(modified_buf + determinant_index - 1, buf + determinant_index,
+	       length);
 
-	sender_machine->core->transport->transport_send_pdu(modified_buf,
-	    bit_stream.currentByte - 1);
+	sender_machine->core->transport->transport_send_pdu(
+	    modified_buf, bit_stream.currentByte - 1);
 }
 
 void sender_machine_send_eof(struct sender_machine *sender_machine)
@@ -201,8 +204,8 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 		return;
 	}
 
-	sender_machine->core->transport->transport_send_pdu(bit_stream.buf,
-	    bit_stream.currentByte);
+	sender_machine->core->transport->transport_send_pdu(
+	    bit_stream.buf, bit_stream.currentByte);
 }
 
 void sender_machine_update_state(struct sender_machine *sender_machine,

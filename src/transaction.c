@@ -6,8 +6,8 @@ void transaction_store_data_in_temp_file(struct transaction *transaction,
 					 const cfdpFileDataPDU *file_data_pdu)
 {
 	transaction->filestore->filestore_write(
-	    TEMP_FILE_NAME, file_data_pdu->segment_offset, file_data_pdu->file_data.arr,
-	    file_data_pdu->file_data.nCount);
+	    TEMP_FILE_NAME, file_data_pdu->segment_offset,
+	    file_data_pdu->file_data.arr, file_data_pdu->file_data.nCount);
 }
 
 uint32_t transaction_get_temp_file_checksum(struct transaction *transaction)
@@ -63,7 +63,8 @@ bool transaction_get_file_segment(struct transaction *transaction,
 			  ? FILE_SEGMENT_LEN
 			  : transaction->file_size - transaction->file_position;
 
-	transaction->filestore->filestore_read(transaction->source_filename, transaction->file_position,
+	transaction->filestore->filestore_read(transaction->source_filename,
+					       transaction->file_position,
 					       out_data, *out_length);
 
 	transaction->file_position += *out_length;

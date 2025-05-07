@@ -22,7 +22,8 @@ struct sender_machine {
 	enum MachineState state;
 };
 
-void sender_machine_init(struct sender_machine *sender_machine, struct transaction transaction);
+void sender_machine_init(struct sender_machine *sender_machine,
+			 struct transaction transaction);
 void sender_machine_close(struct sender_machine *sender_machine);
 
 void sender_machine_update_state(struct sender_machine *sender_machine,

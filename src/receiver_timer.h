@@ -9,8 +9,9 @@ struct receiver_timer {
 	struct cfdp_core *core;
 	struct transaction_id transaction_id;
 	int timeout;
-	
-    void (*timer_restart)(const int timeout, void expired(struct receiver_timer *));
+
+	void (*timer_restart)(const int timeout,
+			      void expired(struct receiver_timer *));
 	void (*timer_stop)();
 };
 

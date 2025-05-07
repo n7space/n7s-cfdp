@@ -23,7 +23,8 @@ struct cfdp_core {
 	struct receiver_machine receiver[MAX_NUMBER_OF_RECEIVER_MACHINES];
 };
 
-void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore, struct transport *transport);
+void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
+		    struct transport *transport);
 
 void cfdp_core_issue_request(struct cfdp_core *core,
 			     struct transaction_id transaction_id,
