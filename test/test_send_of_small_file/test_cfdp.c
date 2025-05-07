@@ -15,6 +15,40 @@ bool file_exists(const char *fname)
     return false;
 }
 
+int compare_files(const char *file1, const char *file2) {
+    FILE *fp1 = fopen(file1, "rb");
+    FILE *fp2 = fopen(file2, "rb");
+
+    if (!fp1 || !fp2) {
+        if (fp1) fclose(fp1);
+        if (fp2) fclose(fp2);
+        return -1;
+    }
+
+    int result = 0;
+    int ch1, ch2;
+
+    while (1) {
+        ch1 = fgetc(fp1);
+        ch2 = fgetc(fp2);
+
+        if (ch1 != ch2) {
+            result = 1;
+            break;
+        }
+
+        if (ch1 == EOF || ch2 == EOF)
+            break;
+    }
+
+    if (ch1 != ch2)
+        result = 1;
+
+    fclose(fp1);
+    fclose(fp2);
+    return result;
+}
+
 
 int main(int argc, char *argv[]) {
 
@@ -34,16 +68,24 @@ int main(int argc, char *argv[]) {
     cfdp_core_init(&cfd_entity_sender, &filestore, &transport);
     test_transport_init_and_bind(&cfd_entity_sender);
 
-    cfdp_core_put(&cfd_entity_sender, 13, "../test/test_send_of_small_file/files/local/small.txt", "received_small.txt");
+    cfdp_core_put(&cfd_entity_sender, 13, "test/files/small.txt", "received_small.txt");
 
     while(!cfdp_core_is_done(&cfd_entity_sender)){
         usleep(1000 * 100);
     }
 
-    if(!file_exists("test/test_send_of_small_file/files/remote/received_small.txt"))
-        return -1;
-
+    sleep(1);
     test_transport_close();
+
+    if(!file_exists("test/test_send_of_small_file/target/received_small.txt"))
+    {
+        return -1;
+    }
+
+    if(compare_files("test/files/small.txt", "test/test_send_of_small_file/target/received_small.txt") != 0){
+        return -1;
+    }
+        
 
     return 0;
 }

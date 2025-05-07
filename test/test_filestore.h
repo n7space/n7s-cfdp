@@ -4,7 +4,7 @@
 uint64_t test_filestore_get_file_size(const char *filepath) {
     FILE *file = fopen(filepath, "rb");
     if (file == NULL) {
-        printf("Error: Could not open file\n");
+        printf("Error: Could not open file %s\n", filepath);
         return 0;
     }
 
@@ -18,7 +18,7 @@ void test_filestore_read_file(const char *filepath, uint32_t offset, char *data,
     FILE *file = fopen(filepath, "rb");
     if (file == NULL)
     {
-        printf("Error: Could not open file\n");
+        printf("Error: Could not open file %s\n", filepath);
         return;
     }
 
@@ -37,7 +37,7 @@ void test_filestore_write_to_file(const char *filepath, uint32_t offset, const c
     FILE *file = fopen(filepath, "wb");
     if (file == NULL)
     {
-        printf("Error: Could not open file\n");
+        printf("Error: Could not open file %s\n", filepath);
         return;
     }
 
@@ -55,7 +55,7 @@ void test_filestore_write_to_file(const char *filepath, uint32_t offset, const c
 uint32_t test_filestore_calculate_checksum(const char *filepath){
     FILE *file = fopen(filepath, "rb");
     if (file == NULL) {
-        printf("Error: Could not open file\n");
+        printf("Error: Could not open file %s\n", filepath);
         return 0;
     }
 
@@ -91,13 +91,13 @@ uint32_t test_filestore_calculate_checksum(const char *filepath){
 void test_filestore_copy_file(const char *src_path, const char *dest_path) {
     FILE *src = fopen(src_path, "rb");
     if (!src) {
-        printf("Error: Failed to open source file");
+        printf("Error: Failed to open source file %s\n", src_path);
         return;
     }
 
     FILE *dest = fopen(dest_path, "wb");
     if (!dest) {
-        printf("Error: Failed to open destination file");
+        printf("Error: Failed to open destination file%s\n", dest_path);
         fclose(src);
         return;
     }
