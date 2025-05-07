@@ -6,14 +6,14 @@
 #include <stdio.h>
 #include <string.h>
 
-static void ulong_to_bytes(uint64_t data, byte *result, int *size)
+static void uint64_to_bytes(uint64_t data, byte *result, int *size)
 {
 	*size = 0;
-	uint64_t eval_data = data;
+	uint64_t data_for_size_calculations = data;
 
-	while (eval_data != 0) {
+	while (data_for_size_calculations != 0) {
 		(*size)++;
-		eval_data >>= 8;
+		data_for_size_calculations >>= 8;
 	}
 
 	for (size_t i = 0; i < *size; i++) {
@@ -51,13 +51,13 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
 	header.crc_flag = cfdpCRCFlag_crc_not_present;
 
-	ulong_to_bytes(sender_machine->transaction.source_entity_id,
+	uint64_to_bytes(sender_machine->transaction.source_entity_id,
 		       header.source_entity_id.arr,
 		       &header.source_entity_id.nCount);
-	ulong_to_bytes(sender_machine->transaction.destination_entity_id,
+	uint64_to_bytes(sender_machine->transaction.destination_entity_id,
 		       header.destination_entity_id.arr,
 		       &header.destination_entity_id.nCount);
-	ulong_to_bytes(sender_machine->transaction.seq_number,
+	uint64_to_bytes(sender_machine->transaction.seq_number,
 		       header.transaction_sequence_number.arr,
 		       &header.transaction_sequence_number.nCount);
 
@@ -95,7 +95,9 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
+#ifdef __unix__ 
 		printf("cannot encode cfdp pdu error_code = %d\n", error_code);
+#endif
 		return;
 	}
 
@@ -115,13 +117,13 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
 	header.crc_flag = cfdpCRCFlag_crc_not_present;
 
-	ulong_to_bytes(sender_machine->transaction.source_entity_id,
+	uint64_to_bytes(sender_machine->transaction.source_entity_id,
 		       header.source_entity_id.arr,
 		       &header.source_entity_id.nCount);
-	ulong_to_bytes(sender_machine->transaction.destination_entity_id,
+	uint64_to_bytes(sender_machine->transaction.destination_entity_id,
 		       header.destination_entity_id.arr,
 		       &header.destination_entity_id.nCount);
-	ulong_to_bytes(sender_machine->transaction.seq_number,
+	uint64_to_bytes(sender_machine->transaction.seq_number,
 		       header.transaction_sequence_number.arr,
 		       &header.transaction_sequence_number.nCount);
 
@@ -144,7 +146,9 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
+#ifdef __unix__ 
 		printf("cannot encode cfdp pdu error_code = %d\n", error_code);
+#endif
 		return;
 	}
 
@@ -170,13 +174,13 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
 	header.crc_flag = cfdpCRCFlag_crc_not_present;
 
-	ulong_to_bytes(sender_machine->transaction.source_entity_id,
+	uint64_to_bytes(sender_machine->transaction.source_entity_id,
 		       header.source_entity_id.arr,
 		       &header.source_entity_id.nCount);
-	ulong_to_bytes(sender_machine->transaction.destination_entity_id,
+	uint64_to_bytes(sender_machine->transaction.destination_entity_id,
 		       header.destination_entity_id.arr,
 		       &header.destination_entity_id.nCount);
-	ulong_to_bytes(sender_machine->transaction.seq_number,
+	uint64_to_bytes(sender_machine->transaction.seq_number,
 		       header.transaction_sequence_number.arr,
 		       &header.transaction_sequence_number.nCount);
 
@@ -200,7 +204,9 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
+#ifdef __unix__ 
 		printf("cannot encode cfdp pdu error_code = %d\n", error_code);
+#endif
 		return;
 	}
 
@@ -241,7 +247,9 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			break;
 		}
 		default: {
+#ifdef __unix__ 
 			printf("Event not support for state SEND_METADATA\n");
+#endif
 		}
 		}
 	} else if (sender_machine->state == SEND_FILE) {
@@ -350,7 +358,9 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			break;
 		}
 		default: {
+#ifdef __unix__ 
 			printf("Event not support for state WAIT_FOR_EOF\n");
+#endif
 		}
 		}
 	}

@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
 	struct cfdp_core cfd_entity_sender;
 
-	cfdp_core_init(&cfd_entity_sender, &filestore, &transport);
+	cfdp_core_init(&cfd_entity_sender, &filestore, &transport, 6, 30);
 	test_transport_init_and_bind(&cfd_entity_sender);
 
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/small.txt",

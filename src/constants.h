@@ -30,7 +30,6 @@ enum FaultHandlerAction {
 #define MAX_NUMBER_OF_RECEIVER_MACHINES 1
 
 #define FILE_SEGMENT_LEN (cfdpFileData_REQUIRED_BYTES_FOR_ACN_ENCODING - 1)
-#define INACTIVITY_TIMEOUT_IN_SECONDS 30
 
 extern const enum FaultHandlerAction DEFAULT_FAULT_HANDLER_ACTIONS[16];
 

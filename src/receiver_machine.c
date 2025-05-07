@@ -15,7 +15,6 @@ void receiver_machine_init(struct receiver_machine *receiver_machine,
 	receiver_machine->timer.core = receiver_machine->core;
 	receiver_machine->timer.transaction_id =
 	    receiver_machine->transaction_id;
-	receiver_machine->timer.timeout = INACTIVITY_TIMEOUT_IN_SECONDS;
 
 	receiver_machine->condition_code = cfdpConditionCode_no_error;
 	receiver_machine->delivery_code = cfdpDeliveryCode_data_incomplete;
@@ -108,7 +107,9 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		default: {
+#ifdef __unix__ 
 			printf("Event not support for state WAIT_FOR_MD\n");
+#endif
 		}
 		}
 	} else if (receiver_machine->state == WAIT_FOR_EOF) {
@@ -232,7 +233,9 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		default: {
+#ifdef __unix__ 
 			printf("Event not support for state WAIT_FOR_EOF\n");
+#endif
 		}
 		}
 	}
