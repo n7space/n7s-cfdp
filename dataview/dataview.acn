@@ -102,9 +102,9 @@ CfdpPDU [] {
       large-file-flag                        NULL [pattern '0'B],
       pdu-data-field-length                  PDUDataFieldLength [encoding pos-int, size 16],
       segmentation-control                   NULL [pattern '0'B],
-      length-of-entity-ids                   LengthOfEntityIds [encoding pos-int, size 3, mapping-function entitylen], -- TODO add proper mapping function, 0 means 1 octet string
+      length-of-entity-ids                   LengthOfEntityIds [encoding pos-int, size 3, mapping-function entitylen],
       segment-metadata-flag                  NULL [pattern '0'B],
-      length-of-transaction-sequence-number  LengthOfTransactionSequenceNumber [encoding pos-int, size 3, mapping-function entitylen], -- TODO add proper mapping function, 0 means 1 octet string
+      length-of-transaction-sequence-number  LengthOfTransactionSequenceNumber [encoding pos-int, size 3, mapping-function entitylen],
       source-entity-id                       [size length-of-entity-ids],
       transaction-sequence-number            [size length-of-transaction-sequence-number],
       destination-entity-id                  [size length-of-entity-ids]

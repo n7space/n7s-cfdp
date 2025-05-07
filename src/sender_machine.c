@@ -25,6 +25,8 @@ static void ulong_to_bytes(uint64_t data, byte *result, int *size)
 void sender_machine_init(struct sender_machine *sender_machine, struct transaction transaction)
 {
 	sender_machine->transaction = transaction;
+	sender_machine->transaction_id.source_entity_id = transaction.source_entity_id;
+	sender_machine->transaction_id.seq_number = transaction.seq_number;
 	sender_machine->condition_code = cfdpConditionCode_no_error;
 	sender_machine->is_frozen = false;
 	sender_machine->is_suspended = false;

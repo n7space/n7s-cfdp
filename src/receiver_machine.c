@@ -4,8 +4,12 @@
 #include <assert.h>
 #include <stdio.h>
 
-void receiver_machine_init(struct receiver_machine *receiver_machine)
+void receiver_machine_init(struct receiver_machine *receiver_machine, struct transaction transaction)
 {
+	receiver_machine->transaction = transaction;
+	receiver_machine->transaction_id.source_entity_id = transaction.source_entity_id;
+	receiver_machine->transaction_id.seq_number = transaction.seq_number;
+
 	receiver_machine->timer.core = receiver_machine->core;
 	receiver_machine->timer.transaction_id = receiver_machine->transaction_id;
 	receiver_machine->timer.timeout = INACTIVITY_TIMEOUT_IN_SECONDS;
@@ -31,7 +35,7 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 	if (receiver_machine->state == WAIT_FOR_MD) {
 		switch (event->type) {
 		case E0_ENTERED_STATE: {
-			receiver_machine_init(receiver_machine);
+			receiver_machine_init(receiver_machine, event->transaction);
 			receiver_timer_restart(&receiver_machine->timer);
 			break;
 		}
@@ -120,6 +124,7 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		case E11_RECEIVED_FILEDATA: {
+			assert(pdu != NULL);
 			cfdp_core_filesegment_received_indication(
 			    receiver_machine->core,
 			    receiver_machine->transaction_id);
@@ -142,6 +147,7 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		case E12_RECEIVED_EOF_NO_ERROR: {
+			assert(pdu != NULL);
 			cfdp_core_eof_received_indication(
 			    receiver_machine->core,
 			    receiver_machine->transaction_id);
