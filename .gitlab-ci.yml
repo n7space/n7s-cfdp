@@ -1,4 +1,8 @@
-image: docker.io/python:3.12-bookworm 
+image: docker.io/python:3.12-bookworm
+
+before_script:
+  - git clone https://gitlab.com/librecube/lib/python-cfdp.git
+  - pushd python-cfdp; pip install cfdp; popd
 
 build-job:
   stage: build
