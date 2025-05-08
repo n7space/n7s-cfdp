@@ -3,7 +3,7 @@
 #include "transaction.h"
 
 void transaction_store_data_to_file(struct transaction *transaction,
-					 const cfdpFileDataPDU *file_data_pdu)
+				    const cfdpFileDataPDU *file_data_pdu)
 {
 	transaction->filestore->filestore_write(
 	    transaction->destination_filename, file_data_pdu->segment_offset,
@@ -21,8 +21,8 @@ uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
 
 void transaction_delete_stored_file(struct transaction *transaction)
 {
-	    transaction->filestore->filestore_delete_file(
-		transaction->destination_filename);
+	transaction->filestore->filestore_delete_file(
+	    transaction->destination_filename);
 }
 
 bool transaction_is_file_transfer_in_progress(struct transaction *transaction)

@@ -3,7 +3,8 @@
 #include <stdio.h>
 
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
-		    struct transport *transport, const uint32_t entity_id, const uint32_t inactivity_timeout)
+		    struct transport *transport, const uint32_t entity_id,
+		    const uint32_t inactivity_timeout)
 {
 	core->sender[0].core = core;
 	core->receiver[0].core = core;
@@ -137,88 +138,99 @@ void cfdp_core_report(struct cfdp_core *core,
 void cfdp_core_transaction_indication(struct cfdp_core *core,
 				      struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, TRANSACTION_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(
+		    core, TRANSACTION_INDICATION, transaction_id);
 	}
 }
 
 void cfdp_core_eof_sent_indication(struct cfdp_core *core,
 				   struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, EOF_SENT_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(core, EOF_SENT_INDICATION,
+						    transaction_id);
 	}
 }
 
 void cfdp_core_finished_indication(struct cfdp_core *core,
 				   struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, FINISHED_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(core, FINISHED_INDICATION,
+						    transaction_id);
 	}
 }
 
 void cfdp_core_report_indication(struct cfdp_core *core,
 				 struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, REPORT_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(core, REPORT_INDICATION,
+						    transaction_id);
 	}
 }
 
 void cfdp_core_eof_received_indication(struct cfdp_core *core,
 				       struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, EOF_RECEIVED_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(
+		    core, EOF_RECEIVED_INDICATION, transaction_id);
 	}
 }
 
 void cfdp_core_metadata_received_indication(
     struct cfdp_core *core, struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, METADATA_RECEIVED_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(
+		    core, METADATA_RECEIVED_INDICATION, transaction_id);
 	}
 }
 
 void cfdp_core_filesegment_received_indication(
     struct cfdp_core *core, struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, FILESEGMENT_RECEIVED_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(
+		    core, FILESEGMENT_RECEIVED_INDICATION, transaction_id);
 	}
 }
 
 void cfdp_core_abandoned_indication(struct cfdp_core *core,
 				    struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, ABANDONED_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(core, ABANDONED_INDICATION,
+						    transaction_id);
 	}
 }
 
 void cfdp_core_suspended_indication(struct cfdp_core *core,
 				    struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, SUSPENDED_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(core, SUSPENDED_INDICATION,
+						    transaction_id);
 	}
 }
 
 void cfdp_core_resumed_indication(struct cfdp_core *core,
 				  struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, RESUMED_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(core, RESUMED_INDICATION,
+						    transaction_id);
 	}
 }
 
 void cfdp_core_fault_indication(struct cfdp_core *core,
 				struct transaction_id transaction_id)
 {
-	if(core->cfdp_core_indication_callback != NULL){
-		core->cfdp_core_indication_callback(core, FAULT_INDICATION, transaction_id);
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(core, FAULT_INDICATION,
+						    transaction_id);
 	}
 }
 
@@ -330,7 +342,7 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	      pdu->payload.u.file_directive.file_directive_pdu.kind ==
 		  FileDirectivePDU_eof_pdu_PRESENT) ||
 	    !(pdu->payload.kind == PayloadData_file_data_PRESENT)) {
-			core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
+		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}
 

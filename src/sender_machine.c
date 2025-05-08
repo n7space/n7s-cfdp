@@ -52,14 +52,15 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	header.crc_flag = cfdpCRCFlag_crc_not_present;
 
 	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-		       header.source_entity_id.arr,
-		       &header.source_entity_id.nCount);
-	uint64_to_bytes_big_endian(sender_machine->transaction.destination_entity_id,
-		       header.destination_entity_id.arr,
-		       &header.destination_entity_id.nCount);
+				   header.source_entity_id.arr,
+				   &header.source_entity_id.nCount);
+	uint64_to_bytes_big_endian(
+	    sender_machine->transaction.destination_entity_id,
+	    header.destination_entity_id.arr,
+	    &header.destination_entity_id.nCount);
 	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-		       header.transaction_sequence_number.arr,
-		       &header.transaction_sequence_number.nCount);
+				   header.transaction_sequence_number.arr,
+				   &header.transaction_sequence_number.nCount);
 
 	metadata_pdu.closure_requested = ClosureRequested_requested;
 	metadata_pdu.checksum_type = 0;
@@ -95,8 +96,9 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
-		if(sender_machine->core->cfdp_core_error_callback != NULL){
-			sender_machine->core->cfdp_core_error_callback(sender_machine->core, ASN1SCC_ERROR, error_code);
+		if (sender_machine->core->cfdp_core_error_callback != NULL) {
+			sender_machine->core->cfdp_core_error_callback(
+			    sender_machine->core, ASN1SCC_ERROR, error_code);
 		}
 		return;
 	}
@@ -118,14 +120,15 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	header.crc_flag = cfdpCRCFlag_crc_not_present;
 
 	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-		       header.source_entity_id.arr,
-		       &header.source_entity_id.nCount);
-	uint64_to_bytes_big_endian(sender_machine->transaction.destination_entity_id,
-		       header.destination_entity_id.arr,
-		       &header.destination_entity_id.nCount);
+				   header.source_entity_id.arr,
+				   &header.source_entity_id.nCount);
+	uint64_to_bytes_big_endian(
+	    sender_machine->transaction.destination_entity_id,
+	    header.destination_entity_id.arr,
+	    &header.destination_entity_id.nCount);
 	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-		       header.transaction_sequence_number.arr,
-		       &header.transaction_sequence_number.nCount);
+				   header.transaction_sequence_number.arr,
+				   &header.transaction_sequence_number.nCount);
 
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
@@ -146,8 +149,9 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
-		if(sender_machine->core->cfdp_core_error_callback != NULL){
-			sender_machine->core->cfdp_core_error_callback(sender_machine->core, ASN1SCC_ERROR, error_code);
+		if (sender_machine->core->cfdp_core_error_callback != NULL) {
+			sender_machine->core->cfdp_core_error_callback(
+			    sender_machine->core, ASN1SCC_ERROR, error_code);
 		}
 		return;
 	}
@@ -175,14 +179,15 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	header.crc_flag = cfdpCRCFlag_crc_not_present;
 
 	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-		       header.source_entity_id.arr,
-		       &header.source_entity_id.nCount);
-	uint64_to_bytes_big_endian(sender_machine->transaction.destination_entity_id,
-		       header.destination_entity_id.arr,
-		       &header.destination_entity_id.nCount);
+				   header.source_entity_id.arr,
+				   &header.source_entity_id.nCount);
+	uint64_to_bytes_big_endian(
+	    sender_machine->transaction.destination_entity_id,
+	    header.destination_entity_id.arr,
+	    &header.destination_entity_id.nCount);
 	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-		       header.transaction_sequence_number.arr,
-		       &header.transaction_sequence_number.nCount);
+				   header.transaction_sequence_number.arr,
+				   &header.transaction_sequence_number.nCount);
 
 	eof_pdu.condition_code = sender_machine->condition_code;
 	eof_pdu.file_checksum =
@@ -204,8 +209,9 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
-		if(sender_machine->core->cfdp_core_error_callback != NULL){
-			sender_machine->core->cfdp_core_error_callback(sender_machine->core, ASN1SCC_ERROR, error_code);
+		if (sender_machine->core->cfdp_core_error_callback != NULL) {
+			sender_machine->core->cfdp_core_error_callback(
+			    sender_machine->core, ASN1SCC_ERROR, error_code);
 		}
 		return;
 	}
@@ -247,8 +253,11 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			break;
 		}
 		default: {
-			if(sender_machine->core->cfdp_core_error_callback != NULL){
-				sender_machine->core->cfdp_core_error_callback(sender_machine->core, UNSUPPORTED_ACTION, 0);
+			if (sender_machine->core->cfdp_core_error_callback !=
+			    NULL) {
+				sender_machine->core->cfdp_core_error_callback(
+				    sender_machine->core, UNSUPPORTED_ACTION,
+				    0);
 			}
 		}
 		}
@@ -358,8 +367,11 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			break;
 		}
 		default: {
-			if(sender_machine->core->cfdp_core_error_callback != NULL){
-				sender_machine->core->cfdp_core_error_callback(sender_machine->core, UNSUPPORTED_ACTION, 0);
+			if (sender_machine->core->cfdp_core_error_callback !=
+			    NULL) {
+				sender_machine->core->cfdp_core_error_callback(
+				    sender_machine->core, UNSUPPORTED_ACTION,
+				    0);
 			}
 		}
 		}

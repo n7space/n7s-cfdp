@@ -107,8 +107,12 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		default: {
-			if(receiver_machine->core->cfdp_core_error_callback != NULL){
-				receiver_machine->core->cfdp_core_error_callback(receiver_machine->core, UNSUPPORTED_ACTION, 0);
+			if (receiver_machine->core->cfdp_core_error_callback !=
+			    NULL) {
+				receiver_machine->core
+				    ->cfdp_core_error_callback(
+					receiver_machine->core,
+					UNSUPPORTED_ACTION, 0);
 			}
 		}
 		}
@@ -181,7 +185,8 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 					    receiver_machine->transaction_id,
 					    DEFAULT_FAULT_HANDLER_ACTIONS
 						[cfdpConditionCode_file_checksum_failure]);
-					transaction_delete_stored_file(&receiver_machine->transaction);
+					transaction_delete_stored_file(
+					    &receiver_machine->transaction);
 					break;
 				}
 			}
@@ -229,8 +234,12 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		default: {
-			if(receiver_machine->core->cfdp_core_error_callback != NULL){
-				receiver_machine->core->cfdp_core_error_callback(receiver_machine->core, UNSUPPORTED_ACTION, 0);
+			if (receiver_machine->core->cfdp_core_error_callback !=
+			    NULL) {
+				receiver_machine->core
+				    ->cfdp_core_error_callback(
+					receiver_machine->core,
+					UNSUPPORTED_ACTION, 0);
 			}
 		}
 		}

@@ -51,13 +51,19 @@ int compare_files(const char *file1, const char *file2)
 	return result;
 }
 
-void indication_callback(struct cfdp_core *core, const enum IndicationType indication_type, const struct transaction_id transaction_id){
+void indication_callback(struct cfdp_core *core,
+			 const enum IndicationType indication_type,
+			 const struct transaction_id transaction_id)
+{
 	printf("cfdp indication type=%d source_entity_id = %d seq_number = "
-	       "%d\n", indication_type,
-	       transaction_id.source_entity_id, transaction_id.seq_number);
+	       "%d\n",
+	       indication_type, transaction_id.source_entity_id,
+	       transaction_id.seq_number);
 }
 
-void error_callback(struct cfdp_core *core, const enum ErrorType error_type, const uint32_t error_code){
+void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
+		    const uint32_t error_code)
+{
 	printf("cfdp error type=%d error_code = %d\n", error_type, error_code);
 }
 

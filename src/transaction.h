@@ -18,7 +18,7 @@ struct transaction {
 };
 
 void transaction_store_data_to_file(struct transaction *transaction,
-					 const cfdpFileDataPDU *file_data_pdu);
+				    const cfdpFileDataPDU *file_data_pdu);
 uint32_t transaction_get_stored_file_checksum(struct transaction *transaction);
 void transaction_delete_stored_file(struct transaction *transaction);
 
