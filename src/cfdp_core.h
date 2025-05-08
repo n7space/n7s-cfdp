@@ -22,6 +22,9 @@ struct cfdp_core {
 	struct sender_machine sender[MAX_NUMBER_OF_SENDER_MACHINES];
 	struct receiver_machine receiver[MAX_NUMBER_OF_RECEIVER_MACHINES];
 	uint32_t inactivity_timeout;
+
+	void (*cfdp_core_indication_callback)(struct cfdp_core *core, const enum IndicationType indication_type, const struct transaction_id transaction_id);
+	void (*cfdp_core_error_callback)(struct cfdp_core *core, const enum ErrorType error_type, const uint32_t error_code);
 };
 
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,

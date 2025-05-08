@@ -2,24 +2,27 @@
 #include "filestore.h"
 #include "transaction.h"
 
-void transaction_store_data_in_temp_file(struct transaction *transaction,
+void transaction_store_data_to_file(struct transaction *transaction,
 					 const cfdpFileDataPDU *file_data_pdu)
 {
 	transaction->filestore->filestore_write(
-	    TEMP_FILE_NAME, file_data_pdu->segment_offset,
+	    transaction->destination_filename, file_data_pdu->segment_offset,
 	    file_data_pdu->file_data.arr, file_data_pdu->file_data.nCount);
 }
 
-uint32_t transaction_get_temp_file_checksum(struct transaction *transaction)
+uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
 {
-	return transaction->filestore->filestore_calculate_checksum(
-	    TEMP_FILE_NAME);
+	uint32_t checksum =
+	    transaction->filestore->filestore_calculate_checksum(
+		transaction->destination_filename);
+
+	return checksum;
 }
 
-void transaction_copy_temp_file_to_dest_file(struct transaction *transaction)
+void transaction_delete_stored_file(struct transaction *transaction)
 {
-	transaction->filestore->filestore_replace_file(
-	    transaction->destination_filename, TEMP_FILE_NAME);
+	    transaction->filestore->filestore_delete_file(
+		transaction->destination_filename);
 }
 
 bool transaction_is_file_transfer_in_progress(struct transaction *transaction)

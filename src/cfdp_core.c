@@ -61,8 +61,6 @@ void cfdp_core_issue_request(struct cfdp_core *core,
 		event.transaction = core->receiver[0].transaction;
 		event.type = event_type;
 		receiver_machine_update_state(&core->receiver[0], &event, NULL);
-	} else {
-		// TODO handle transaction id not present
 	}
 }
 
@@ -139,109 +137,89 @@ void cfdp_core_report(struct cfdp_core *core,
 void cfdp_core_transaction_indication(struct cfdp_core *core,
 				      struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf("cfdp transaction indication source_entity_id = %d seq_number = "
-	       "%d\n",
-	       transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, TRANSACTION_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_eof_sent_indication(struct cfdp_core *core,
 				   struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf(
-	    "cfdp eof sent indication source_entity_id = %d seq_number = %d\n",
-	    transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, EOF_SENT_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_finished_indication(struct cfdp_core *core,
 				   struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf(
-	    "cfdp finished indication source_entity_id = %d seq_number = %d\n",
-	    transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, FINISHED_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_report_indication(struct cfdp_core *core,
 				 struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf("cfdp report indication source_entity_id = %d seq_number = %d\n",
-	       transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, REPORT_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_eof_received_indication(struct cfdp_core *core,
 				       struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf("cfdp eof received indication source_entity_id = %d seq_number "
-	       "= %d\n",
-	       transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, EOF_RECEIVED_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_metadata_received_indication(
     struct cfdp_core *core, struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf("cfdp metadata received indication source_entity_id = %d "
-	       "seq_number = %d\n",
-	       transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, METADATA_RECEIVED_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_filesegment_received_indication(
     struct cfdp_core *core, struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf("cfdp filesegment received indication source_entity_id = %d "
-	       "seq_number = %d\n",
-	       transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, FILESEGMENT_RECEIVED_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_abandoned_indication(struct cfdp_core *core,
 				    struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf(
-	    "cfdp abandoned indication source_entity_id = %d seq_number = %d\n",
-	    transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, ABANDONED_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_suspended_indication(struct cfdp_core *core,
 				    struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf(
-	    "cfdp suspended indication source_entity_id = %d seq_number = %d\n",
-	    transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, SUSPENDED_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_resumed_indication(struct cfdp_core *core,
 				  struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf(
-	    "cfdp resumed indication source_entity_id = %d seq_number = %d\n",
-	    transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, RESUMED_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_fault_indication(struct cfdp_core *core,
 				struct transaction_id transaction_id)
 {
-#ifdef __unix__ 
-	printf("cfdp fault indication source_entity_id = %d seq_number = %d\n",
-	       transaction_id.source_entity_id, transaction_id.seq_number);
-#endif
+	if(core->cfdp_core_indication_callback != NULL){
+		core->cfdp_core_indication_callback(core, FAULT_INDICATION, transaction_id);
+	}
 }
 
 void cfdp_core_freeze(struct cfdp_core *core, uint32_t destination_entity_id)
@@ -341,10 +319,7 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 					       const cfdpCfdpPDU *pdu)
 {
 	if (pdu->pdu_header.direction == cfdpDirection_toward_sender) {
-#ifdef __unix__ 
-		printf("pdu towards sender in unacknowledged mode not "
-		       "supported, pdu droped\n");
-#endif
+		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}
 
@@ -355,9 +330,7 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	      pdu->payload.u.file_directive.file_directive_pdu.kind ==
 		  FileDirectivePDU_eof_pdu_PRESENT) ||
 	    !(pdu->payload.kind == PayloadData_file_data_PRESENT)) {
-#ifdef __unix__ 
-		printf("unsupported pdu, pdu droped\n");
-#endif
+			core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}
 
@@ -405,16 +378,12 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 	cfdpCfdpPDU pdu;
 	int error_code = 0;
 	if (!cfdpCfdpPDU_ACN_Decode(&pdu, &bit_stream, &error_code)) {
-#ifdef __unix__ 
-		printf("cannot decode CfdpPDU, error code = %d\n", error_code);
-#endif
+		core->cfdp_core_error_callback(core, ASN1SCC_ERROR, error_code);
 		return;
 	}
 
 	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {
-#ifdef __unix__ 
-		printf("pdu in acknowledged mode not supported, pdu droped\n");
-#endif
+		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}
 
@@ -467,9 +436,7 @@ void cfdp_core_run_fault_handler(struct cfdp_core *core,
 		break;
 	}
 	default: {
-#ifdef __unix__ 
-		printf("condition code not supportet in fault handler\n");
-#endif
+		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
 	}
 	}
 }

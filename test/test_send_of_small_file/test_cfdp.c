@@ -51,6 +51,16 @@ int compare_files(const char *file1, const char *file2)
 	return result;
 }
 
+void indication_callback(struct cfdp_core *core, const enum IndicationType indication_type, const struct transaction_id transaction_id){
+	printf("cfdp indication type=%d source_entity_id = %d seq_number = "
+	       "%d\n", indication_type,
+	       transaction_id.source_entity_id, transaction_id.seq_number);
+}
+
+void error_callback(struct cfdp_core *core, const enum ErrorType error_type, const uint32_t error_code){
+	printf("cfdp error type=%d error_code = %d\n", error_type, error_code);
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -69,6 +79,9 @@ int main(int argc, char *argv[])
 	struct cfdp_core cfd_entity_sender;
 
 	cfdp_core_init(&cfd_entity_sender, &filestore, &transport, 6, 30);
+	cfd_entity_sender.cfdp_core_indication_callback = indication_callback;
+	cfd_entity_sender.cfdp_core_error_callback = error_callback;
+
 	test_transport_init_and_bind(&cfd_entity_sender);
 
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/small.txt",

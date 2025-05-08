@@ -1,8 +1,6 @@
 #ifndef TRANSACTION_H
 #define TRANSACTION_H
 
-static const char TEMP_FILE_NAME[] = ".temp_received_file";
-
 struct cfdp_core;
 struct filestore_cfg;
 
@@ -19,10 +17,10 @@ struct transaction {
 	uint32_t file_position;
 };
 
-void transaction_store_data_in_temp_file(struct transaction *transaction,
-					 const cfdpFileDataPDU *file_data);
-uint32_t transaction_get_temp_file_checksum(struct transaction *transaction);
-void transaction_copy_temp_file_to_dest_file(struct transaction *transaction);
+void transaction_store_data_to_file(struct transaction *transaction,
+					 const cfdpFileDataPDU *file_data_pdu);
+uint32_t transaction_get_stored_file_checksum(struct transaction *transaction);
+void transaction_delete_stored_file(struct transaction *transaction);
 
 uint32_t transaction_get_file_size(struct transaction *transaction);
 uint32_t transaction_get_file_checksum(struct transaction *transaction);

@@ -107,9 +107,9 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		default: {
-#ifdef __unix__ 
-			printf("Event not support for state WAIT_FOR_MD\n");
-#endif
+			if(receiver_machine->core->cfdp_core_error_callback != NULL){
+				receiver_machine->core->cfdp_core_error_callback(receiver_machine->core, UNSUPPORTED_ACTION, 0);
+			}
 		}
 		}
 	} else if (receiver_machine->state == WAIT_FOR_EOF) {
@@ -138,7 +138,7 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 				&receiver_machine->transaction)) {
 				const cfdpFileDataPDU *file_data_pdu =
 				    &(pdu->payload.u.file_data.file_data_pdu);
-				transaction_store_data_in_temp_file(
+				transaction_store_data_to_file(
 				    &receiver_machine->transaction,
 				    file_data_pdu);
 				if (receiver_machine->received_file_size <
@@ -171,7 +171,7 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 					break;
 				}
 
-				if (transaction_get_temp_file_checksum(
+				if (transaction_get_stored_file_checksum(
 					&receiver_machine->transaction) !=
 				    pdu->payload.u.file_directive
 					.file_directive_pdu.u.eof_pdu
@@ -181,13 +181,9 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 					    receiver_machine->transaction_id,
 					    DEFAULT_FAULT_HANDLER_ACTIONS
 						[cfdpConditionCode_file_checksum_failure]);
+					transaction_delete_stored_file(&receiver_machine->transaction);
 					break;
 				}
-
-				receiver_machine->delivery_code =
-				    DeliveryCode_data_complete;
-				transaction_copy_temp_file_to_dest_file(
-				    &receiver_machine->transaction);
 			}
 
 			cfdp_core_finished_indication(
@@ -233,9 +229,9 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		default: {
-#ifdef __unix__ 
-			printf("Event not support for state WAIT_FOR_EOF\n");
-#endif
+			if(receiver_machine->core->cfdp_core_error_callback != NULL){
+				receiver_machine->core->cfdp_core_error_callback(receiver_machine->core, UNSUPPORTED_ACTION, 0);
+			}
 		}
 		}
 	}
