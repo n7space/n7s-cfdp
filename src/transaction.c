@@ -12,9 +12,13 @@ void transaction_store_data_to_file(struct transaction *transaction,
 
 uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
 {
+	if(transaction->core->checksum_type == CHECKSUM_TYPE_NONE){
+		return 0;
+	}
+
 	uint32_t checksum =
 	    transaction->filestore->filestore_calculate_checksum(
-		transaction->destination_filename);
+		transaction->destination_filename, transaction->core->checksum_type);
 
 	return checksum;
 }
@@ -47,9 +51,13 @@ uint32_t transaction_get_file_size(struct transaction *transaction)
 
 uint32_t transaction_get_file_checksum(struct transaction *transaction)
 {
+	if(transaction->core->checksum_type == CHECKSUM_TYPE_NONE){
+		return 0;
+	}
+
 	uint32_t checksum =
 	    transaction->filestore->filestore_calculate_checksum(
-		transaction->source_filename);
+		transaction->source_filename, transaction->core->checksum_type);
 
 	return checksum;
 }

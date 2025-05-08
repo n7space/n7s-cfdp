@@ -40,7 +40,10 @@ DeliveryCode ::= ENUMERATED {data-complete (0), data-incomplete (1)}
 
 ClosureRequested ::= ENUMERATED {requested (0), not-requested (1)}
 
-ChecksumType ::= INTEGER (0..15)
+ChecksumType ::= ENUMERATED {
+   modular (0),
+   none (15)
+}
 
 FileNameSize ::= INTEGER (0..32)
 

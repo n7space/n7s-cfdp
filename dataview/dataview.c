@@ -1732,14 +1732,14 @@ flag cfdpChecksumType_Equal(const cfdpChecksumType* pVal1, const cfdpChecksumTyp
 flag cfdpChecksumType_IsConstraintValid(const cfdpChecksumType* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-    ret = ((*(pVal)) <= 15UL);
+    ret = ((((*(pVal)) == ChecksumType_modular)) || (((*(pVal)) == ChecksumType_none)));
     *pErrCode = ret ? 0 :  ERR_CHECKSUMTYPE;
 
 	return ret;
 }
 
 #ifdef __cplusplus
-const cfdpChecksumType cfdpChecksumType_constant = 0UL;
+const cfdpChecksumType cfdpChecksumType_constant = ChecksumType_modular;
 #endif
 
 void cfdpChecksumType_Initialize(cfdpChecksumType* pVal)
@@ -1758,7 +1758,18 @@ flag cfdpChecksumType_Encode(const cfdpChecksumType* pVal, BitStream* pBitStrm, 
 	*pErrCode = 0;
 	ret = bCheckConstraints ? cfdpChecksumType_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    BitStream_EncodeConstraintPosWholeNumber(pBitStrm, (*(pVal)), 0, 15);
+	    switch((*(pVal)))
+	    {
+	        case ChecksumType_modular:
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 1);
+	        	break;
+	        case ChecksumType_none:
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 1);
+	        	break;
+	        default:                    /*COVERAGE_IGNORE*/
+	    	    *pErrCode = ERR_UPER_ENCODE_CHECKSUMTYPE; /*COVERAGE_IGNORE*/
+	    	    ret = FALSE;            /*COVERAGE_IGNORE*/
+	    }
     } /*COVERAGE_IGNORE*/
 
 
@@ -1771,8 +1782,27 @@ flag cfdpChecksumType_Decode(cfdpChecksumType* pVal, BitStream* pBitStrm, int* p
 	*pErrCode = 0;
 
 
-	ret = BitStream_DecodeConstraintPosWholeNumber(pBitStrm, pVal, 0, 15);
-	*pErrCode = ret ? 0 : ERR_UPER_DECODE_CHECKSUMTYPE;
+	{
+	    asn1SccSint enumIndex;
+	    ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &enumIndex, 0, 1);
+	    *pErrCode = ret ? 0 : ERR_UPER_DECODE_CHECKSUMTYPE;
+	    if (ret) {
+	        switch(enumIndex)
+	        {
+	            case 0:
+	                (*(pVal)) = ChecksumType_modular;
+	                break;
+	            case 1:
+	                (*(pVal)) = ChecksumType_none;
+	                break;
+	            default:                        /*COVERAGE_IGNORE*/
+		            *pErrCode = ERR_UPER_DECODE_CHECKSUMTYPE;     /*COVERAGE_IGNORE*/
+		            ret = FALSE;                /*COVERAGE_IGNORE*/
+	        }
+	    } else {
+	        (*(pVal)) = ChecksumType_modular;             /*COVERAGE_IGNORE*/
+	    }
+	}
 
 	return ret  && cfdpChecksumType_IsConstraintValid(pVal, pErrCode);
 }
@@ -1781,10 +1811,24 @@ flag cfdpChecksumType_ACN_Encode(const cfdpChecksumType* pVal, BitStream* pBitSt
 {
     flag ret = TRUE;
 
+	asn1SccUint intVal_pVal;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpChecksumType_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, (*(pVal)), 4);
+	    switch((*(pVal))) {
+	        case ChecksumType_modular:
+	            intVal_pVal = 0UL;
+	            break;
+	        case ChecksumType_none:
+	            intVal_pVal = 1UL;
+	            break;
+	        default:                                    /*COVERAGE_IGNORE*/
+	            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	            *pErrCode = ERR_ACN_ENCODE_CHECKSUMTYPE;                 /*COVERAGE_IGNORE*/
+	    }
+	    if (ret) {
+	    	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal, 4);
+	    }
     } /*COVERAGE_IGNORE*/
 
 
@@ -1796,9 +1840,23 @@ flag cfdpChecksumType_ACN_Decode(cfdpChecksumType* pVal, BitStream* pBitStrm, in
     flag ret = TRUE;
 	*pErrCode = 0;
 
+	asn1SccUint intVal_pVal;
 
-	ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, pVal, 4);
+	ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal)), 4);
 	*pErrCode = ret ? 0 : ERR_ACN_DECODE_CHECKSUMTYPE;
+	if (ret) {
+	    switch (intVal_pVal) {
+	        case 0:
+	            (*(pVal)) = ChecksumType_modular;
+	            break;
+	        case 1:
+	            (*(pVal)) = ChecksumType_none;
+	            break;
+	    default:                                    /*COVERAGE_IGNORE*/
+	        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        *pErrCode = ERR_ACN_DECODE_CHECKSUMTYPE;                 /*COVERAGE_IGNORE*/
+	    }
+	} /*COVERAGE_IGNORE*/
 
     return ret && cfdpChecksumType_IsConstraintValid(pVal, pErrCode);
 }
@@ -2025,7 +2083,7 @@ flag cfdpMetadataPDU_IsConstraintValid(const cfdpMetadataPDU* pVal, int* pErrCod
 }
 
 #ifdef __cplusplus
-const cfdpMetadataPDU cfdpMetadataPDU_constant = {.closure_requested = ClosureRequested_requested, .checksum_type = 0UL, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 64-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 64-1] = 0 }}};
+const cfdpMetadataPDU cfdpMetadataPDU_constant = {.closure_requested = ClosureRequested_requested, .checksum_type = ChecksumType_modular, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 64-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 64-1] = 0 }}};
 #endif
 
 void cfdpMetadataPDU_Initialize(cfdpMetadataPDU* pVal)
@@ -2105,6 +2163,7 @@ flag cfdpMetadataPDU_ACN_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm
 	asn1SccUint MetadataPDU_destination_file_name_size;
 	flag MetadataPDU_destination_file_name_size_is_initialized=FALSE;
 	asn1SccUint intVal_pVal_closure_requested;
+	asn1SccUint intVal_pVal_checksum_type;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpMetadataPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
@@ -2137,7 +2196,20 @@ flag cfdpMetadataPDU_ACN_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm
 	            }
 	            if (ret) {
 	                /*Encode checksum_type */
-	                Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, pVal->checksum_type, 4);
+	                switch(pVal->checksum_type) {
+	                    case ChecksumType_modular:
+	                        intVal_pVal_checksum_type = 0UL;
+	                        break;
+	                    case ChecksumType_none:
+	                        intVal_pVal_checksum_type = 1UL;
+	                        break;
+	                    default:                                    /*COVERAGE_IGNORE*/
+	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                        *pErrCode = ERR_ACN_ENCODE_METADATAPDU_CHECKSUM_TYPE;                 /*COVERAGE_IGNORE*/
+	                }
+	                if (ret) {
+	                	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_checksum_type, 4);
+	                }
 	                if (ret) {
 	                    /*Encode file_size */
 	                    Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->file_size);
@@ -2195,6 +2267,7 @@ flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int*
 	asn1SccUint MetadataPDU_source_file_name_size;
 	asn1SccUint MetadataPDU_destination_file_name_size;
 	asn1SccUint intVal_pVal_closure_requested;
+	asn1SccUint intVal_pVal_checksum_type;
 
 	/*Decode MetadataPDU_reserved1 */
 	{
@@ -2234,8 +2307,21 @@ flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int*
 
 	        if (ret) {
 	            /*Decode checksum_type */
-	            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(pVal->checksum_type)), 4);
+	            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_checksum_type)), 4);
 	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_METADATAPDU_CHECKSUM_TYPE;
+	            if (ret) {
+	                switch (intVal_pVal_checksum_type) {
+	                    case 0:
+	                        pVal->checksum_type = ChecksumType_modular;
+	                        break;
+	                    case 1:
+	                        pVal->checksum_type = ChecksumType_none;
+	                        break;
+	                default:                                    /*COVERAGE_IGNORE*/
+	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                    *pErrCode = ERR_ACN_DECODE_METADATAPDU_CHECKSUM_TYPE;                 /*COVERAGE_IGNORE*/
+	                }
+	            } /*COVERAGE_IGNORE*/
 	            if (ret) {
 	                /*Decode file_size */
 	                ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->file_size)));
@@ -2977,6 +3063,7 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	asn1SccUint FileDirectiveType_file_directive_pdu_metadata_pdu_destination_file_name_size;
 	flag FileDirectiveType_file_directive_pdu_metadata_pdu_destination_file_name_size_is_initialized=FALSE;
 	asn1SccUint intVal_pVal_file_directive_pdu_u_metadata_pdu_closure_requested;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileDirectiveType_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
@@ -3316,7 +3403,20 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	        }
 	        	        if (ret) {
 	        	            /*Encode checksum_type */
-	        	            Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, pVal->file_directive_pdu.u.metadata_pdu.checksum_type, 4);
+	        	            switch(pVal->file_directive_pdu.u.metadata_pdu.checksum_type) {
+	        	                case ChecksumType_modular:
+	        	                    intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type = 0UL;
+	        	                    break;
+	        	                case ChecksumType_none:
+	        	                    intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type = 1UL;
+	        	                    break;
+	        	                default:                                    /*COVERAGE_IGNORE*/
+	        	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	        	                    *pErrCode = ERR_ACN_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE;                 /*COVERAGE_IGNORE*/
+	        	            }
+	        	            if (ret) {
+	        	            	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type, 4);
+	        	            }
 	        	            if (ret) {
 	        	                /*Encode file_size */
 	        	                Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->file_directive_pdu.u.metadata_pdu.file_size);
@@ -3392,6 +3492,7 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 	asn1SccUint FileDirectiveType_file_directive_pdu_metadata_pdu_source_file_name_size;
 	asn1SccUint FileDirectiveType_file_directive_pdu_metadata_pdu_destination_file_name_size;
 	asn1SccUint intVal_pVal_file_directive_pdu_u_metadata_pdu_closure_requested;
+	asn1SccUint intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type;
 
 	/*Decode FileDirectiveType_directive_code */
 	ret = Acn_Dec_Int_PositiveInteger_ConstSize_8(pBitStrm, (&(FileDirectiveType_directive_code)));
@@ -3736,8 +3837,21 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 
 	                if (ret) {
 	                    /*Decode checksum_type */
-	                    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(pVal->file_directive_pdu.u.metadata_pdu.checksum_type)), 4);
+	                    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type)), 4);
 	                    *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE;
+	                    if (ret) {
+	                        switch (intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type) {
+	                            case 0:
+	                                pVal->file_directive_pdu.u.metadata_pdu.checksum_type = ChecksumType_modular;
+	                                break;
+	                            case 1:
+	                                pVal->file_directive_pdu.u.metadata_pdu.checksum_type = ChecksumType_none;
+	                                break;
+	                        default:                                    /*COVERAGE_IGNORE*/
+	                            ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                            *pErrCode = ERR_ACN_DECODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE;                 /*COVERAGE_IGNORE*/
+	                        }
+	                    } /*COVERAGE_IGNORE*/
 	                    if (ret) {
 	                        /*Decode file_size */
 	                        ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->file_directive_pdu.u.metadata_pdu.file_size)));
@@ -6829,6 +6943,7 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size;
 	flag CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size_is_initialized=FALSE;
 	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested;
+	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type;
 	static byte arr[cfdpPayloadData_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	BitStream bitStrm;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code;
@@ -6839,6 +6954,7 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpCfdpPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
@@ -7272,7 +7388,20 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	        }
 	                                	    	        if (ret) {
 	                                	    	            /*Encode checksum_type */
-	                                	    	            Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type, 4);
+	                                	    	            switch(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type) {
+	                                	    	                case ChecksumType_modular:
+	                                	    	                    intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type = 0UL;
+	                                	    	                    break;
+	                                	    	                case ChecksumType_none:
+	                                	    	                    intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type = 1UL;
+	                                	    	                    break;
+	                                	    	                default:                                    /*COVERAGE_IGNORE*/
+	                                	    	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                	    	                    *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE;                 /*COVERAGE_IGNORE*/
+	                                	    	            }
+	                                	    	            if (ret) {
+	                                	    	            	Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type, 4);
+	                                	    	            }
 	                                	    	            if (ret) {
 	                                	    	                /*Encode file_size */
 	                                	    	                Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.file_size);
@@ -7471,6 +7600,7 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size;
 	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested;
+	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type;
 
 	/*Decode pdu_header */
 	/*Decode CfdpPDU_pdu_header_version */
@@ -7986,8 +8116,21 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 
 	                                    if (ret) {
 	                                        /*Decode checksum_type */
-	                                        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type)), 4);
+	                                        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type)), 4);
 	                                        *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE;
+	                                        if (ret) {
+	                                            switch (intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type) {
+	                                                case 0:
+	                                                    pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type = ChecksumType_modular;
+	                                                    break;
+	                                                case 1:
+	                                                    pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type = ChecksumType_none;
+	                                                    break;
+	                                            default:                                    /*COVERAGE_IGNORE*/
+	                                                ret = FALSE;                            /*COVERAGE_IGNORE*/
+	                                                *pErrCode = ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DIRECTIVE_FILE_DIRECTIVE_PDU_METADATA_PDU_CHECKSUM_TYPE;                 /*COVERAGE_IGNORE*/
+	                                            }
+	                                        } /*COVERAGE_IGNORE*/
 	                                        if (ret) {
 	                                            /*Decode file_size */
 	                                            ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.file_size)));

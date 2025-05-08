@@ -450,25 +450,31 @@ flag cfdpClosureRequested_ACN_Encode(const cfdpClosureRequested* pVal, BitStream
 
 #define ERR_ACN_DECODE_CLOSUREREQUESTED		110  /**/
 flag cfdpClosureRequested_ACN_Decode(cfdpClosureRequested* pVal, BitStream* pBitStrm, int* pErrCode);
-typedef asn1SccUint cfdpChecksumType;
+typedef enum {
+    ChecksumType_modular = 0,
+    ChecksumType_none = 15
+} cfdpChecksumType;
 
+// please use the following macros to avoid breaking code.
+#define cfdpChecksumType_modular ChecksumType_modular
+#define cfdpChecksumType_none ChecksumType_none
 
 flag cfdpChecksumType_Equal(const cfdpChecksumType* pVal1, const cfdpChecksumType* pVal2);
 
-#define ERR_CHECKSUMTYPE		111  /*(0..15)*/
+#define ERR_CHECKSUMTYPE		111  /*modular | none*/
 flag cfdpChecksumType_IsConstraintValid(const cfdpChecksumType* pVal, int* pErrCode);
 
 #ifdef __cplusplus
 extern const cfdpChecksumType cfdpChecksumType_constant;
 #else
-#define cfdpChecksumType_constant 0UL
+#define cfdpChecksumType_constant ChecksumType_modular
 #endif
 
 void cfdpChecksumType_Initialize(cfdpChecksumType* pVal);
 
 #define ERR_UPER_ENCODE_CHECKSUMTYPE		112  /**/
 #define cfdpChecksumType_REQUIRED_BYTES_FOR_ENCODING       1
-#define cfdpChecksumType_REQUIRED_BITS_FOR_ENCODING        4
+#define cfdpChecksumType_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpChecksumType_Encode(const cfdpChecksumType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
@@ -575,7 +581,7 @@ flag cfdpMetadataPDU_IsConstraintValid(const cfdpMetadataPDU* pVal, int* pErrCod
 #ifdef __cplusplus
 extern const cfdpMetadataPDU cfdpMetadataPDU_constant;
 #else
-#define cfdpMetadataPDU_constant {.closure_requested = ClosureRequested_requested, .checksum_type = 0UL, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 64-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 64-1] = 0 }}}
+#define cfdpMetadataPDU_constant {.closure_requested = ClosureRequested_requested, .checksum_type = ChecksumType_modular, .file_size = 0UL, .source_file_name = {.nCount = 0, .arr  = {[0 ... 64-1] = 0 }}, .destination_file_name = {.nCount = 0, .arr  = {[0 ... 64-1] = 0 }}}
 #endif
 
 void cfdpMetadataPDU_Initialize(cfdpMetadataPDU* pVal);
@@ -586,8 +592,8 @@ void cfdpMetadataPDU_Initialize(cfdpMetadataPDU* pVal);
 #define ERR_UPER_ENCODE_METADATAPDU_FILE_SIZE_2		152  /**/
 #define ERR_UPER_ENCODE_METADATAPDU_SOURCE_FILE_NAME_2		162  /**/
 #define ERR_UPER_ENCODE_METADATAPDU_DESTINATION_FILE_NAME_2		172  /**/
-#define cfdpMetadataPDU_REQUIRED_BYTES_FOR_ENCODING       135
-#define cfdpMetadataPDU_REQUIRED_BITS_FOR_ENCODING        1075
+#define cfdpMetadataPDU_REQUIRED_BYTES_FOR_ENCODING       134
+#define cfdpMetadataPDU_REQUIRED_BITS_FOR_ENCODING        1072
 
 flag cfdpMetadataPDU_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
@@ -771,7 +777,7 @@ void cfdpFileDirectivePDU_Initialize(cfdpFileDirectivePDU* pVal);
 #define ERR_UPER_ENCODE_FILEDIRECTIVEPDU_ACK_PDU_2		325  /**/
 #define ERR_UPER_ENCODE_FILEDIRECTIVEPDU_METADATA_PDU_2		381  /**/
 #define cfdpFileDirectivePDU_REQUIRED_BYTES_FOR_ENCODING       135
-#define cfdpFileDirectivePDU_REQUIRED_BITS_FOR_ENCODING        1077
+#define cfdpFileDirectivePDU_REQUIRED_BITS_FOR_ENCODING        1074
 
 flag cfdpFileDirectivePDU_Encode(const cfdpFileDirectivePDU* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
@@ -804,7 +810,7 @@ void cfdpFileDirectiveType_Initialize(cfdpFileDirectiveType* pVal);
 #define ERR_UPER_ENCODE_FILEDIRECTIVETYPE		565  /**/
 #define ERR_UPER_ENCODE_FILEDIRECTIVETYPE_FILE_DIRECTIVE_PDU_2		562  /**/
 #define cfdpFileDirectiveType_REQUIRED_BYTES_FOR_ENCODING       135
-#define cfdpFileDirectiveType_REQUIRED_BITS_FOR_ENCODING        1077
+#define cfdpFileDirectiveType_REQUIRED_BITS_FOR_ENCODING        1074
 
 flag cfdpFileDirectiveType_Encode(const cfdpFileDirectiveType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 

@@ -3,13 +3,14 @@
 #include <stdio.h>
 
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
-		    struct transport *transport, const uint32_t entity_id,
+		    struct transport *transport, const uint32_t entity_id, const enum ChecksumType checksum_type,
 		    const uint32_t inactivity_timeout)
 {
 	core->sender[0].core = core;
 	core->receiver[0].core = core;
 	core->receiver[0].timer.timeout = inactivity_timeout;
 	core->entity_id = entity_id;
+	core->checksum_type = checksum_type;
 	core->filestore = filestore;
 	core->transport = transport;
 	core->transaction_sequence_number = 0;
@@ -73,7 +74,7 @@ cfdp_core_put(struct cfdp_core *core, uint32_t destination_entity_id,
 	core->transaction_sequence_number++;
 
 	struct transaction transaction = {
-	    .kernel = core,
+	    .core = core,
 	    .filestore = core->filestore,
 	    .source_entity_id = core->entity_id,
 	    .seq_number = core->transaction_sequence_number,
@@ -339,7 +340,7 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	}
 
 	struct transaction transaction;
-	transaction.kernel = core;
+	transaction.core = core;
 	transaction.filestore = core->filestore;
 	transaction.source_entity_id =
 	    bytes_to_ulong(pdu->pdu_header.source_entity_id.arr,

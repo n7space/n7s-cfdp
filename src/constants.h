@@ -36,6 +36,11 @@ enum IndicationType {
 	FAULT_INDICATION
 };
 
+enum ChecksumType {
+	CHECKSUM_TYPE_MODULAR = 0,
+	CHECKSUM_TYPE_NONE = 15
+};
+
 enum ErrorType { ASN1SCC_ERROR, UNSUPPORTED_ACTION };
 
 #define DIRECTIVE_CODE_EOF 0x04

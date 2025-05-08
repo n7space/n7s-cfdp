@@ -55,8 +55,12 @@ void test_filestore_write_to_file(const char *filepath, uint32_t offset,
 	fclose(file);
 }
 
-uint32_t test_filestore_calculate_checksum(const char *filepath)
+uint32_t test_filestore_calculate_checksum(const char *filepath, const enum ChecksumType checksum_type)
 {
+	if(checksum_type != CHECKSUM_TYPE_MODULAR){
+		return 0;
+	}
+
 	FILE *file = fopen(filepath, "rb");
 	if (file == NULL) {
 		printf("Error: Could not open file %s\n", filepath);

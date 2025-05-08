@@ -20,7 +20,7 @@ struct filestore_cfg {
 			       char *data, const uint32_t length);
 	void (*filestore_write)(const char *filepath, uint32_t offset,
 				const char *data, const uint32_t length);
-	uint32_t (*filestore_calculate_checksum)(const char *filepath);
+	uint32_t (*filestore_calculate_checksum)(const char *filepath, const enum ChecksumType checksum_type);
 
 	void *file_ptr;
 };

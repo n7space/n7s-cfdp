@@ -21,6 +21,7 @@ struct cfdp_core {
 	uint32_t transaction_sequence_number;
 	struct sender_machine sender[MAX_NUMBER_OF_SENDER_MACHINES];
 	struct receiver_machine receiver[MAX_NUMBER_OF_RECEIVER_MACHINES];
+	enum ChecksumType checksum_type;
 	uint32_t inactivity_timeout;
 
 	void (*cfdp_core_indication_callback)(
@@ -32,7 +33,7 @@ struct cfdp_core {
 };
 
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
-		    struct transport *transport, const uint32_t entity_id,
+		    struct transport *transport, const uint32_t entity_id, const enum ChecksumType checksum_type,
 		    const uint32_t inactivity_timeout);
 
 void cfdp_core_issue_request(struct cfdp_core *core,

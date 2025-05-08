@@ -5,7 +5,7 @@ struct cfdp_core;
 struct filestore_cfg;
 
 struct transaction {
-	struct cfdp_core *kernel;
+	struct cfdp_core *core;
 	struct filestore_cfg *filestore;
 	uint64_t source_entity_id;
 	uint64_t seq_number;
