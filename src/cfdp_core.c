@@ -3,7 +3,8 @@
 #include <stdio.h>
 
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
-		    struct transport *transport, const uint32_t entity_id, const enum ChecksumType checksum_type,
+		    struct transport *transport, const uint32_t entity_id,
+		    const enum ChecksumType checksum_type,
 		    const uint32_t inactivity_timeout)
 {
 	core->sender[0].core = core;
@@ -290,7 +291,8 @@ static struct event create_event_for_delivery(struct cfdp_core *core,
 		default:
 			// Unsupported pdus in Class 1
 			// See CCSDS 720.2-G-3, Chapter 5.4, Table 5-5
-			core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
+			core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION,
+						       0);
 			break;
 		}
 	}

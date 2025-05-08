@@ -33,7 +33,8 @@ struct cfdp_core {
 };
 
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
-		    struct transport *transport, const uint32_t entity_id, const enum ChecksumType checksum_type,
+		    struct transport *transport, const uint32_t entity_id,
+		    const enum ChecksumType checksum_type,
 		    const uint32_t inactivity_timeout);
 
 void cfdp_core_issue_request(struct cfdp_core *core,

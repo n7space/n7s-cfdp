@@ -63,7 +63,8 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 				   &header.transaction_sequence_number.nCount);
 
 	metadata_pdu.closure_requested = ClosureRequested_requested;
-	metadata_pdu.checksum_type = (cfdpChecksumType)sender_machine->core->checksum_type;
+	metadata_pdu.checksum_type =
+	    (cfdpChecksumType)sender_machine->core->checksum_type;
 	metadata_pdu.file_size =
 	    transaction_get_file_size(&sender_machine->transaction);
 
