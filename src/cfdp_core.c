@@ -283,25 +283,13 @@ static struct event create_event_for_delivery(struct cfdp_core *core,
 				type = E17_RECEIVED_FINISHED_CANCEL;
 			}
 			break;
-		case FileDirectivePDU_ack_pdu_PRESENT:
-			if (pdu->payload.u.file_directive.file_directive_pdu.u
-				.ack_pdu.directive_code_of_ack_pdu ==
-			    DIRECTIVE_CODE_EOF) {
-				type = E14_RECEIVED_ACK_EOF;
-			} else if (pdu->payload.u.file_directive
-				       .file_directive_pdu.u.ack_pdu
-				       .directive_code_of_ack_pdu ==
-				   DIRECTIVE_CODE_FINISHED) {
-				type = E18_RECEIVED_ACK_FINISHED;
-			} else {
-				// not implemented
-			}
-			break;
 		case FileDirectivePDU_metadata_pdu_PRESENT:
 			type = E10_RECEIVED_METADATA;
 			break;
 		default:
-			// not implemented
+			// Unsupported pdus in Class 1
+			// See CCSDS 720.2-G-3, Chapter 5.4, Table 5-5
+			core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
 			break;
 		}
 	}
@@ -331,6 +319,8 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 					       const cfdpCfdpPDU *pdu)
 {
 	if (pdu->pdu_header.direction == cfdpDirection_toward_sender) {
+		// Class 2 specific PDU unsupported
+		// See CCSDS 720.2-G-3, Chapter 5.4, Table 5-5
 		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}
@@ -342,6 +332,8 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	      pdu->payload.u.file_directive.file_directive_pdu.kind ==
 		  FileDirectivePDU_eof_pdu_PRESENT) ||
 	    !(pdu->payload.kind == PayloadData_file_data_PRESENT)) {
+		// Unsupported pdus in Class 1
+		// See CCSDS 720.2-G-3, Chapter 5.4, Table 5-5
 		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}

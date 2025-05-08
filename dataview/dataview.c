@@ -7391,7 +7391,7 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                        /*Encode CfdpPDU_pdu_header_length_of_entity_ids */
 	                                        if (CfdpPDU_pdu_header_length_of_entity_ids_is_initialized) {
 	                                            ret = TRUE;
-	                                            Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, entitylen_encode(CfdpPDU_pdu_header_length_of_entity_ids), 3);
+	                                            Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, cfdp_entity_len_encode(CfdpPDU_pdu_header_length_of_entity_ids), 3);
 	                                        } else {
 	                                            *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_LENGTH_OF_ENTITY_IDS_UNINITIALIZED;         /*COVERAGE_IGNORE*/
 	                                            ret = FALSE;                    /*COVERAGE_IGNORE*/
@@ -7410,7 +7410,7 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                                /*Encode CfdpPDU_pdu_header_length_of_transaction_sequence_number */
 	                                                if (CfdpPDU_pdu_header_length_of_transaction_sequence_number_is_initialized) {
 	                                                    ret = TRUE;
-	                                                    Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, entitylen_encode(CfdpPDU_pdu_header_length_of_transaction_sequence_number), 3);
+	                                                    Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, cfdp_entity_len_encode(CfdpPDU_pdu_header_length_of_transaction_sequence_number), 3);
 	                                                } else {
 	                                                    *pErrCode = ERR_ACN_ENCODE_CFDPPDU_PDU_HEADER_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER_UNINITIALIZED;         /*COVERAGE_IGNORE*/
 	                                                    ret = FALSE;                    /*COVERAGE_IGNORE*/
@@ -7565,7 +7565,7 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	                                /*Decode CfdpPDU_pdu_header_length_of_entity_ids */
 	                                ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(CfdpPDU_pdu_header_length_of_entity_ids)), 3);
 	                                if (ret) {
-	                                    *(&(CfdpPDU_pdu_header_length_of_entity_ids)) = entitylen_decode(*(&(CfdpPDU_pdu_header_length_of_entity_ids)));
+	                                    *(&(CfdpPDU_pdu_header_length_of_entity_ids)) = cfdp_entity_len_decode(*(&(CfdpPDU_pdu_header_length_of_entity_ids)));
 	                                }
 
 	                                *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_LENGTH_OF_ENTITY_IDS;
@@ -7583,7 +7583,7 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	                                        /*Decode CfdpPDU_pdu_header_length_of_transaction_sequence_number */
 	                                        ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(CfdpPDU_pdu_header_length_of_transaction_sequence_number)), 3);
 	                                        if (ret) {
-	                                            *(&(CfdpPDU_pdu_header_length_of_transaction_sequence_number)) = entitylen_decode(*(&(CfdpPDU_pdu_header_length_of_transaction_sequence_number)));
+	                                            *(&(CfdpPDU_pdu_header_length_of_transaction_sequence_number)) = cfdp_entity_len_decode(*(&(CfdpPDU_pdu_header_length_of_transaction_sequence_number)));
 	                                        }
 
 	                                        *pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PDU_HEADER_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER;
