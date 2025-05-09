@@ -6,11 +6,16 @@ ASN1_POLICY_FLAGS ?= -typePrefix cfdp -renamePolicy 3 -equal -fp AUTO -c -ig -uP
 
 SOURCES := $(wildcard src/*.c)
 DATAVIEW_SOURCES := $(wildcard dataview/*.c)
-TEST_SOURCES := $(wildcard test/test_send_of_small_file/*.c)
+SEND_SMALL_FILE_TEST_SOURCES := $(wildcard test/test_send_of_small_file/*.c)
+RECEIVE_SMALL_FILE_TEST_SOURCES := $(wildcard test/test_receive_of_small_file/*.c)
 
-CFDP_PYTHON := test/test_send_of_small_file/python_cfdp_receiver.py
-CFDP_PYTHON_PID := script.pid
-RECEIVER_FILE := test/test_send_of_small_file/target/received_small.txt
+CFDP_PYTHON_RECEIVER := test/test_send_of_small_file/python_cfdp_receiver.py
+CFDP_PYTHON_RECEIVER_PID := script.pid
+CFDP_PYTHON_SENDER := test/test_receive_of_small_file/python_cfdp_sender.py
+SENT_FILE := test/test_send_of_small_file/target/received_small.txt
+RECEIVED_FILE := test/test_receive_of_small_file/target/receiver_small.txt
+
+CFDP_PID := script.pid
 
 all:
 	echo "Build run"
@@ -26,16 +31,29 @@ test-send-small-file:
 	mkdir -p build
 	mkdir -p test/test_send_of_small_file/target
 	-pkill python3
-	gcc -g -pthread -Isrc -Idataview -Itest -o build/cfdp_test $(filter-out src/main.c, $(SOURCES)) $(TEST_SOURCES) $(DATAVIEW_SOURCES)
-	chmod +x $(CFDP_PYTHON)
-	python3 $(CFDP_PYTHON) & echo $$! > $(CFDP_PYTHON_PID)
+	gcc -g -pthread -Isrc -Idataview -Itest -o build/send_small_file_cfdp_test $(filter-out src/main.c, $(SOURCES)) $(SEND_SMALL_FILE_TEST_SOURCES) $(DATAVIEW_SOURCES)
+	chmod +x $(CFDP_PYTHON_RECEIVER)
+	python3 $(CFDP_PYTHON_RECEIVER) & echo $$! > $(CFDP_PYTHON_RECEIVER_PID)
 	sleep 1
-	./build/cfdp_test
+	./build/send_small_file_cfdp_test
 	sleep 1
-	kill `cat $(CFDP_PYTHON_PID)` && rm -f $(CFDP_PYTHON_PID)
-	rm -f $(RECEIVER_FILE)
+	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
+	rm -f $(SENT_FILE)
 
-test: test-send-small-file
+test-receive-small-file:
+	mkdir -p build
+	mkdir -p test/test_receive_of_small_file/target
+	-pkill python3
+	gcc -g -pthread -Isrc -Idataview -Itest -o build/receive_small_file_cfdp_test $(filter-out src/main.c, $(SOURCES)) $(RECEIVE_SMALL_FILE_TEST_SOURCES) $(DATAVIEW_SOURCES)
+	./build/receive_small_file_cfdp_test & echo $$! > $(CFDP_PID)
+	sleep 1
+	chmod +x $(CFDP_PYTHON_SENDER)
+	python3 $(CFDP_PYTHON_SENDER)
+	sleep 1
+	kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
+	rm -f $(RECEIVED_FILE)
+
+test: test-send-small-file test-receive-small-file
 
 clean:
 	rm -rf build/*

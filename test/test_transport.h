@@ -18,6 +18,7 @@ int sockfd;
 void *test_transport_receiver_thread(void *arg)
 {
 	char buffer[BUFFER_SIZE];
+	memset(buffer, 0x0, (size_t)BUFFER_SIZE);
 	struct sockaddr_in client_addr;
 	socklen_t addr_len = sizeof(client_addr);
 
@@ -26,7 +27,6 @@ void *test_transport_receiver_thread(void *arg)
 				 (struct sockaddr *)&client_addr, &addr_len);
 		if (n > 0) {
 			buffer[n] = '\0';
-			printf("[Thread] Received: %s\n", buffer);
 		} else {
 			perror("recvfrom failed\n");
 			continue;

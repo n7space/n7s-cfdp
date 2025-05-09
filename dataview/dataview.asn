@@ -103,6 +103,8 @@ MessageType ::= ENUMERATED {
 
 PDUType ::= INTEGER (0 .. 1)
 
+Version ::= INTEGER (0 .. 7)
+
 Direction ::= ENUMERATED {toward-receiver (0), toward-sender (1)}
 
 TransmissionMode ::= ENUMERATED {acknowledged (0), unacknowledged (1)}
@@ -128,6 +130,7 @@ TransactionSequenceNumber ::= OCTET STRING (SIZE(1..7))
 Options ::= OCTET STRING (SIZE(0..32))
 
 PDUHeader ::= SEQUENCE {
+   version Version,
    direction Direction,
    transmission-mode TransmissionMode,
    crc-flag CRCFlag,

@@ -22,6 +22,28 @@ static void uint64_to_bytes_big_endian(uint64_t data, byte *result, int *size)
 	}
 }
 
+static cfdpPDUHeader create_pdu_header(struct sender_machine *sender_machine){
+	cfdpPDUHeader header;
+
+	header.version = 1;
+	header.direction = cfdpDirection_toward_receiver;
+	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
+	header.crc_flag = cfdpCRCFlag_crc_not_present;
+
+	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
+				   header.source_entity_id.arr,
+				   &header.source_entity_id.nCount);
+	uint64_to_bytes_big_endian(
+	    sender_machine->transaction.destination_entity_id,
+	    header.destination_entity_id.arr,
+	    &header.destination_entity_id.nCount);
+	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
+				   header.transaction_sequence_number.arr,
+				   &header.transaction_sequence_number.nCount);
+
+	return header;
+}
+
 void sender_machine_init(struct sender_machine *sender_machine,
 			 struct transaction transaction)
 {
@@ -44,23 +66,8 @@ void sender_machine_close(struct sender_machine *sender_machine)
 void sender_machine_send_metadata(struct sender_machine *sender_machine)
 {
 	cfdpCfdpPDU pdu;
-	cfdpPDUHeader header;
+	cfdpPDUHeader header = create_pdu_header(sender_machine);
 	cfdpMetadataPDU metadata_pdu;
-
-	header.direction = cfdpDirection_toward_receiver;
-	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
-	header.crc_flag = cfdpCRCFlag_crc_not_present;
-
-	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-				   header.source_entity_id.arr,
-				   &header.source_entity_id.nCount);
-	uint64_to_bytes_big_endian(
-	    sender_machine->transaction.destination_entity_id,
-	    header.destination_entity_id.arr,
-	    &header.destination_entity_id.nCount);
-	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-				   header.transaction_sequence_number.arr,
-				   &header.transaction_sequence_number.nCount);
 
 	metadata_pdu.closure_requested = ClosureRequested_requested;
 	metadata_pdu.checksum_type =
@@ -111,25 +118,10 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 void sender_machine_send_file_data(struct sender_machine *sender_machine)
 {
 	cfdpCfdpPDU pdu;
-	cfdpPDUHeader header;
+	cfdpPDUHeader header = create_pdu_header(sender_machine);
 	cfdpFileDataPDU file_data_pdu;
 	byte data[FILE_SEGMENT_LEN];
 	uint32_t length;
-
-	header.direction = cfdpDirection_toward_receiver;
-	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
-	header.crc_flag = cfdpCRCFlag_crc_not_present;
-
-	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-				   header.source_entity_id.arr,
-				   &header.source_entity_id.nCount);
-	uint64_to_bytes_big_endian(
-	    sender_machine->transaction.destination_entity_id,
-	    header.destination_entity_id.arr,
-	    &header.destination_entity_id.nCount);
-	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-				   header.transaction_sequence_number.arr,
-				   &header.transaction_sequence_number.nCount);
 
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
@@ -172,23 +164,8 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 void sender_machine_send_eof(struct sender_machine *sender_machine)
 {
 	cfdpCfdpPDU pdu;
-	cfdpPDUHeader header;
+	cfdpPDUHeader header = create_pdu_header(sender_machine);
 	cfdpEofPDU eof_pdu;
-
-	header.direction = cfdpDirection_toward_receiver;
-	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
-	header.crc_flag = cfdpCRCFlag_crc_not_present;
-
-	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-				   header.source_entity_id.arr,
-				   &header.source_entity_id.nCount);
-	uint64_to_bytes_big_endian(
-	    sender_machine->transaction.destination_entity_id,
-	    header.destination_entity_id.arr,
-	    &header.destination_entity_id.nCount);
-	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-				   header.transaction_sequence_number.arr,
-				   &header.transaction_sequence_number.nCount);
 
 	eof_pdu.condition_code = sender_machine->condition_code;
 	eof_pdu.file_checksum =

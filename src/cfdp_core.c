@@ -50,6 +50,34 @@ static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
 	}
 }
 
+static void handle_file_data_pdu_bitstream(unsigned char *buf,
+			    long *count)
+{
+	if(*count < 1){
+		return;
+	}
+
+	const bool is_file_data = (buf[0] >> 4) & 0x01;
+
+	if(!is_file_data){
+		return;
+	}
+
+	const int length_of_entity_id = ((buf[3] >> 4) & 0x07) + 1;
+	const int length_of_transaction_sequence_number = (buf[3] & 0x07) + 1;
+
+	const int header_with_segment_offset_size =
+	    8 + 2 * length_of_entity_id + length_of_transaction_sequence_number;
+
+	const int file_data_size = *count - header_with_segment_offset_size;
+
+	for (int i = *count; i > header_with_segment_offset_size - 1; --i) {
+		buf[i] = buf[i - 1];
+	}
+	buf[header_with_segment_offset_size] = (unsigned char)file_data_size;
+	(*count)++;
+}
+
 void cfdp_core_issue_request(struct cfdp_core *core,
 			     struct transaction_id transaction_id,
 			     enum EventType event_type)
@@ -250,7 +278,7 @@ void cfdp_core_thaw(struct cfdp_core *core, uint32_t destination_entity_id)
 
 static uint64_t bytes_to_ulong(const byte *data, int size)
 {
-	uint64_t result;
+	uint64_t result = 0;
 	for (int i = 0; i < size && i < sizeof(uint64_t); i++) {
 		result <<= 8;
 		result |= data[i];
@@ -298,7 +326,6 @@ static struct event create_event_for_delivery(struct cfdp_core *core,
 	}
 
 	struct event event;
-	event.transaction = core->sender[0].transaction;
 	event.type = type;
 
 	return event;
@@ -308,6 +335,7 @@ static void deliver_pdu_to_sender_machine(struct cfdp_core *core,
 					  const cfdpCfdpPDU *pdu)
 {
 	struct event event = create_event_for_delivery(core, pdu);
+	event.transaction = core->sender[0].transaction;
 	sender_machine_update_state(&core->sender[0], &event);
 }
 
@@ -315,6 +343,7 @@ static void deliver_pdu_to_receiver_machine(struct cfdp_core *core,
 					    const cfdpCfdpPDU *pdu)
 {
 	struct event event = create_event_for_delivery(core, pdu);
+	event.transaction = core->receiver[0].transaction;
 	receiver_machine_update_state(&core->receiver[0], &event, pdu);
 }
 
@@ -330,10 +359,10 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 
 	if (!(pdu->payload.kind == PayloadData_file_directive_PRESENT &&
 	      pdu->payload.u.file_directive.file_directive_pdu.kind ==
-		  FileDirectivePDU_metadata_pdu_PRESENT) ||
+		  FileDirectivePDU_metadata_pdu_PRESENT) &&
 	    !(pdu->payload.kind == PayloadData_file_directive_PRESENT &&
 	      pdu->payload.u.file_directive.file_directive_pdu.kind ==
-		  FileDirectivePDU_eof_pdu_PRESENT) ||
+		  FileDirectivePDU_eof_pdu_PRESENT) &&
 	    !(pdu->payload.kind == PayloadData_file_data_PRESENT)) {
 		// Unsupported pdus in Class 1
 		// See CCSDS 720.2-G-3, Chapter 5.4, Table 5-5
@@ -368,7 +397,14 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 			    .metadata_pdu.destination_file_name.arr,
 			MAX_FILE_NAME_SIZE);
 		transaction.destination_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
+
+		transaction.file_size =
+		    pdu->payload.u.file_directive.file_directive_pdu.u
+			.metadata_pdu.file_size;
+		transaction.file_position = 0;
 	}
+
+	core->receiver[0].state = WAIT_FOR_MD;
 
 	struct event event = {.transaction = transaction,
 			      .type = E0_ENTERED_STATE};
@@ -379,6 +415,9 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 			    long count)
 {
+	// This is done to properly initialize file_data.nCount
+	handle_file_data_pdu_bitstream(buf, &count);
+
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, count);
 
@@ -387,6 +426,13 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 	if (!cfdpCfdpPDU_ACN_Decode(&pdu, &bit_stream, &error_code)) {
 		core->cfdp_core_error_callback(core, ASN1SCC_ERROR, error_code);
 		return;
+	}
+
+	// This is done to properly initialize file_data.nCount
+	if(pdu.payload.kind == PayloadData_file_data_PRESENT){
+		cfdpFileDataPDU *file_data_pdu =
+				    &(pdu.payload.u.file_data.file_data_pdu);
+		file_data_pdu->file_data.arr[file_data_pdu->file_data.nCount - 1] = buf[count - 1];
 	}
 
 	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {

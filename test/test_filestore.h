@@ -128,4 +128,10 @@ void test_filestore_copy_file(const char *src_path, const char *dest_path)
 	fclose(dest);
 }
 
+void test_delete_file(const char *filepath){
+	if (remove(filepath) != 0) {
+		printf("Error: Delete file error\n");
+	}
+}
+
 #endif
