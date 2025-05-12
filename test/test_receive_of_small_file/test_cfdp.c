@@ -4,53 +4,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-bool file_exists(const char *fname)
-{
-	FILE *file;
-	if ((file = fopen(fname, "r"))) {
-		fclose(file);
-		return true;
-	}
-	return false;
-}
-
-int compare_files(const char *file1, const char *file2)
-{
-	FILE *fp1 = fopen(file1, "rb");
-	FILE *fp2 = fopen(file2, "rb");
-
-	if (!fp1 || !fp2) {
-		if (fp1)
-			fclose(fp1);
-		if (fp2)
-			fclose(fp2);
-		return -1;
-	}
-
-	int result = 0;
-	int ch1, ch2;
-
-	while (1) {
-		ch1 = fgetc(fp1);
-		ch2 = fgetc(fp2);
-
-		if (ch1 != ch2) {
-			result = 1;
-			break;
-		}
-
-		if (ch1 == EOF || ch2 == EOF)
-			break;
-	}
-
-	if (ch1 != ch2)
-		result = 1;
-
-	fclose(fp1);
-	fclose(fp2);
-	return result;
-}
-
 void indication_callback(struct cfdp_core *core,
 			 const enum IndicationType indication_type,
 			 const struct transaction_id transaction_id)

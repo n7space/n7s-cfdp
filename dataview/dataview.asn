@@ -47,7 +47,7 @@ ChecksumType ::= ENUMERATED {
 
 FileNameSize ::= INTEGER (0..32)
 
-FileName ::= OCTET STRING (SIZE(0..64))
+FileName ::= OCTET STRING (SIZE(0..128))
 
 FileStatus ::= ENUMERATED {
    discarted-deliberately (0),

@@ -69,6 +69,7 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 
 int main(int argc, char *argv[])
 {
+
 	struct filestore_cfg filestore;
 	filestore.filestore_replace_file = test_filestore_copy_file;
 	filestore.filestore_get_file_size = test_filestore_get_file_size;
@@ -97,17 +98,55 @@ int main(int argc, char *argv[])
 		usleep(1000 * 100);
 	}
 
+	cfdp_core_put(&cfd_entity_sender, 13, "test/files/small2.txt",
+		      "received_small2.txt");
+
+	while (!cfdp_core_is_done(&cfd_entity_sender)) {
+		usleep(1000 * 100);
+	}
+
+	cfdp_core_put(&cfd_entity_sender, 13, "test/files/small3.txt",
+		      "received_small3.txt");
+
+	while (!cfdp_core_is_done(&cfd_entity_sender)) {
+		usleep(1000 * 100);
+	}
+
 	sleep(1);
 	test_transport_close();
 
 	if (!file_exists(
-		"test/test_send_of_small_file/target/received_small1.txt")) {
+		"test/test_send_of_many_small_files/target/received_small1.txt")) {
+		return -1;
+	}
+
+	if (!file_exists(
+		"test/test_send_of_many_small_files/target/received_small2.txt")) {
+		return -1;
+	}
+
+	if (!file_exists(
+		"test/test_send_of_many_small_files/target/received_small3.txt")) {
 		return -1;
 	}
 
 	if (compare_files(
 		"test/files/small1.txt",
-		"test/test_send_of_small_file/target/received_small1.txt") !=
+		"test/test_send_of_many_small_files/target/received_small1.txt") !=
+	    0) {
+		return -1;
+	}
+
+	if (compare_files(
+		"test/files/small2.txt",
+		"test/test_send_of_many_small_files/target/received_small2.txt") !=
+	    0) {
+		return -1;
+	}
+
+	if (compare_files(
+		"test/files/small3.txt",
+		"test/test_send_of_many_small_files/target/received_small3.txt") !=
 	    0) {
 		return -1;
 	}
