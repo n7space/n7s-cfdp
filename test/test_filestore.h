@@ -39,7 +39,7 @@ void test_filestore_read_file(const char *filepath, uint32_t offset, char *data,
 void test_filestore_write_to_file(const char *filepath, uint32_t offset,
 				  const char *data, const uint32_t length)
 {
-	FILE *file = fopen(filepath, "wb");
+	FILE *file = fopen(filepath, "a");
 	if (file == NULL) {
 		printf("Error: Could not open file %s\n", filepath);
 		return;
