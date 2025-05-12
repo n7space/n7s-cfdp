@@ -10,11 +10,11 @@ from cfdp.filestore import NativeFileStore
 udp_transport = UdpTransport(routing={"*": [("127.0.0.1", 5111)]})
 udp_transport.bind("127.0.0.1", 5222)
 source_filename1 = "/small1.txt"
-destination_filename1 = "test/test_receive_of_many_small_files/target/received_small1.txt"
+destination_filename1 = "test/test_receive_many_small_files/target/received_small1.txt"
 source_filename2 = "/small2.txt"
-destination_filename2 = "test/test_receive_of_many_small_files/target/received_small2.txt"
+destination_filename2 = "test/test_receive_many_small_files/target/received_small2.txt"
 source_filename3 = "/small3.txt"
-destination_filename3 = "test/test_receive_of_many_small_files/target/received_small3.txt"
+destination_filename3 = "test/test_receive_many_small_files/target/received_small3.txt"
 
 cfdp_entity = cfdp.CfdpEntity(
     entity_id=5, filestore=NativeFileStore("test/files"), transport=udp_transport

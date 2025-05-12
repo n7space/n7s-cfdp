@@ -9,7 +9,7 @@ udp_transport = UdpTransport(routing={"*": [("127.0.0.1", 5111)]})
 udp_transport.bind("127.0.0.1", 5222)
 
 cfdp_entity = cfdp.CfdpEntity(
-    entity_id=13, filestore=NativeFileStore("test/test_send_of_many_small_files/target"), transport=udp_transport
+    entity_id=13, filestore=NativeFileStore("test/test_send_many_small_files/target"), transport=udp_transport
 )
 
 sleep(9)

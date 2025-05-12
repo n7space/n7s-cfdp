@@ -1,7 +1,7 @@
 build/
-test/test_send_of_small_file/target/*
-test/test_receive_of_small_file/target/*
-test/test_send_of_many_small_files/target/*
-test/test_receive_of_many_small_files/target/*
+test/test_send_small_file/target/*
+test/test_receive_small_file/target/*
+test/test_send_many_small_files/target/*
+test/test_receive_many_small_files/target/*
 *.pid
 
