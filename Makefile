@@ -11,6 +11,7 @@ RECEIVE_SMALL_FILE_TEST_SOURCES := $(wildcard test/test_receive_small_file/*.c)
 SEND_MANY_SMALL_FILES_TEST_SOURCES := $(wildcard test/test_send_many_small_files/*.c)
 RECEIVE_MANY_SMALL_FILES_TEST_SOURCES := $(wildcard test/test_receive_many_small_files/*.c)
 SEND_MEDIUM_FILE_TEST_SOURCES := $(wildcard test/test_send_medium_file/*.c)
+SEND_BIG_FILE_TEST_SOURCES := $(wildcard test/test_send_big_file/*.c)
 
 CFDP_PYTHON_RECEIVER := test/test_send_small_file/python_cfdp_receiver.py
 CFDP_PYTHON_RECEIVER_PID := script.pid
@@ -18,17 +19,7 @@ CFDP_PYTHON_MANY_FILES_RECEIVER := test/test_send_many_small_files/python_cfdp_r
 CFDP_PYTHON_SENDER := test/test_receive_small_file/python_cfdp_sender.py
 CFDP_PYTHON_MANY_FILES_SENDER := test/test_receive_many_small_files/python_cfdp_sender.py
 CFDP_PYTHON_MEDIUM_RECEIVER := test/test_send_medium_file/python_cfdp_receiver.py
-
-SENT_FILE1 := test/test_send_small_file/target/received_small1.txt
-RECEIVED_FILE1 := test/test_receive_small_file/target/received_small1.txt
-
-SENT_MANY_FILE1 := test/test_send_many_small_files/target/received_small1.txt
-SENT_MANY_FILE2 := test/test_send_many_small_files/target/received_small2.txt
-SENT_MANY_FILE3 := test/test_send_many_small_files/target/received_small3.txt
-
-RECEIVED_MANY_FILE1 := test/test_receive_many_small_files/target/received_small1.txt
-RECEIVED_MANY_FILE2 := test/test_receive_many_small_files/target/received_small2.txt
-RECEIVED_MANY_FILE3 := test/test_receive_many_small_files/target/received_small3.txt
+CFDP_PYTHON_BIG_RECEIVER := test/test_send_big_file/python_cfdp_receiver.py
 
 CFDP_PID := script.pid
 
@@ -110,4 +101,16 @@ test-send-medium-file:
 	sleep 1
 	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
 
-test: clean test-send-small-file test-receive-small-file test-send-many-small-files test-receive-many-small-files test-send-medium-file
+test-send-big-file:
+	mkdir -p build
+	mkdir -p test/test_send_big_file/target
+	-pkill python3
+	gcc -g -pthread -Isrc -Idataview -Itest -o build/send_big_file_cfdp_test $(filter-out src/main.c, $(SOURCES)) $(SEND_BIG_FILE_TEST_SOURCES) $(DATAVIEW_SOURCES)
+	chmod +x $(CFDP_PYTHON_BIG_RECEIVER)
+	python3 $(CFDP_PYTHON_BIG_RECEIVER) & echo $$! > $(CFDP_PYTHON_RECEIVER_PID)
+	sleep 1
+	./build/send_big_file_cfdp_test
+	sleep 1
+	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
+
+test: clean test-send-small-file test-receive-small-file test-send-many-small-files test-receive-many-small-files test-send-medium-file test-send-big-file

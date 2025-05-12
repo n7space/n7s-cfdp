@@ -4,5 +4,6 @@ test/test_receive_small_file/target/*
 test/test_send_many_small_files/target/*
 test/test_receive_many_small_files/target/*
 test/test_send_medium_file/target/*
+test/test_send_big_file/target/*
 *.pid
 
