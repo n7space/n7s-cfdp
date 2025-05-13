@@ -22,7 +22,8 @@ static void uint64_to_bytes_big_endian(uint64_t data, byte *result, int *size)
 	}
 }
 
-static cfdpPDUHeader create_pdu_header(struct sender_machine *sender_machine){
+static cfdpPDUHeader create_pdu_header(struct sender_machine *sender_machine)
+{
 	cfdpPDUHeader header;
 
 	header.version = 1;
@@ -125,8 +126,8 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
-	if(!transaction_get_file_segment(&sender_machine->transaction, data,
-				     &length)){
+	if (!transaction_get_file_segment(&sender_machine->transaction, data,
+					  &length)) {
 		if (sender_machine->core->cfdp_core_error_callback != NULL) {
 			sender_machine->core->cfdp_core_error_callback(
 			    sender_machine->core, SEGMENTATION_ERROR, 0);
@@ -161,11 +162,11 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	memset(modified_buf, 0x0, (size_t)size);
 	memcpy(modified_buf, buf, determinant_index - 1);
-	memcpy(modified_buf + determinant_index - 1, buf + determinant_index + 1,
-	       length);
+	memcpy(modified_buf + determinant_index - 1,
+	       buf + determinant_index + 1, length);
 
-	for(int i = 0; i < determinant_size; i++){
-		if(--modified_buf[2] == 0xFF){
+	for (int i = 0; i < determinant_size; i++) {
+		if (--modified_buf[2] == 0xFF) {
 			modified_buf[1]--;
 		}
 	}

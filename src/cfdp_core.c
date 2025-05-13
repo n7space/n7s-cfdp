@@ -50,18 +50,17 @@ static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
 	}
 }
 
-static void handle_file_data_pdu_bitstream(unsigned char *buf,
-			    long *count)
+static void handle_file_data_pdu_bitstream(unsigned char *buf, long *count)
 {
 	const int determinant_size = 2;
 
-	if(*count < 1){
+	if (*count < 1) {
 		return;
 	}
 
 	const bool is_file_data = (buf[0] >> 4) & 0x01;
 
-	if(!is_file_data){
+	if (!is_file_data) {
 		return;
 	}
 
@@ -73,17 +72,20 @@ static void handle_file_data_pdu_bitstream(unsigned char *buf,
 
 	const int file_data_size = *count - header_with_segment_offset_size;
 
-	for (int i = 0; i < determinant_size; i++){
-		for (int j = *count + i; j > header_with_segment_offset_size - 1 + i; --j) {
+	for (int i = 0; i < determinant_size; i++) {
+		for (int j = *count + i;
+		     j > header_with_segment_offset_size - 1 + i; --j) {
 			buf[j] = buf[j - 1];
 		}
 	}
 
-	buf[header_with_segment_offset_size + 1] = (unsigned char)(file_data_size & 0xFF);
-	buf[header_with_segment_offset_size] = (unsigned char)((file_data_size >> 8) & 0xFF);
+	buf[header_with_segment_offset_size + 1] =
+	    (unsigned char)(file_data_size & 0xFF);
+	buf[header_with_segment_offset_size] =
+	    (unsigned char)((file_data_size >> 8) & 0xFF);
 
-	for(int i = 0; i < determinant_size; i++){
-		if(++buf[2] == 0x00){
+	for (int i = 0; i < determinant_size; i++) {
+		if (++buf[2] == 0x00) {
 			buf[1]++;
 		}
 	}
@@ -442,10 +444,11 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 	}
 
 	// This is done to properly initialize file_data.nCount
-	if(pdu.payload.kind == PayloadData_file_data_PRESENT){
+	if (pdu.payload.kind == PayloadData_file_data_PRESENT) {
 		cfdpFileDataPDU *file_data_pdu =
-				    &(pdu.payload.u.file_data.file_data_pdu);
-		file_data_pdu->file_data.arr[file_data_pdu->file_data.nCount - 1] = buf[count - 1];
+		    &(pdu.payload.u.file_data.file_data_pdu);
+		file_data_pdu->file_data
+		    .arr[file_data_pdu->file_data.nCount - 1] = buf[count - 1];
 	}
 
 	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {
