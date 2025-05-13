@@ -156,15 +156,22 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	}
 
 	// manual bitstream modification to remove file-data determinant
-	int determinant_index = bit_stream.currentByte - length;
+	const int determinant_size = 2;
+	int determinant_index = bit_stream.currentByte - length - 1;
 	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	memset(modified_buf, 0x0, (size_t)size);
 	memcpy(modified_buf, buf, determinant_index - 1);
-	memcpy(modified_buf + determinant_index - 1, buf + determinant_index,
+	memcpy(modified_buf + determinant_index - 1, buf + determinant_index + 1,
 	       length);
 
+	for(int i = 0; i < determinant_size; i++){
+		if(--modified_buf[2] == 0xFF){
+			modified_buf[1]--;
+		}
+	}
+
 	sender_machine->core->transport->transport_send_pdu(
-	    modified_buf, bit_stream.currentByte - 1);
+	    modified_buf, bit_stream.currentByte - determinant_size);
 }
 
 void sender_machine_send_eof(struct sender_machine *sender_machine)

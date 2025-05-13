@@ -10,7 +10,7 @@
 
 #define PORT 5111
 #define RECEIVER_PORT 5222
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 8192
 const char IP_ADDRESS[] = "127.0.0.1";
 
 int sockfd;

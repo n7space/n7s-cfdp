@@ -3989,14 +3989,14 @@ flag cfdpFileData_Equal(const cfdpFileData* pVal1, const cfdpFileData* pVal2)
 flag cfdpFileData_IsConstraintValid(const cfdpFileData* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-    ret = (pVal->nCount <= 254);
+    ret = (pVal->nCount <= 4096);
     *pErrCode = ret ? 0 :  ERR_FILEDATA;
 
 	return ret;
 }
 
 #ifdef __cplusplus
-const cfdpFileData cfdpFileData_constant = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }};
+const cfdpFileData cfdpFileData_constant = {.nCount = 0, .arr  = {[0 ... 4096-1] = 0 }};
 #endif
 
 void cfdpFileData_Initialize(cfdpFileData* pVal)
@@ -4015,7 +4015,7 @@ flag cfdpFileData_Encode(const cfdpFileData* pVal, BitStream* pBitStrm, int* pEr
 	*pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileData_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 254);
+	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 4096);
 	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
     } /*COVERAGE_IGNORE*/
 
@@ -4030,7 +4030,7 @@ flag cfdpFileData_Decode(cfdpFileData* pVal, BitStream* pBitStrm, int* pErrCode)
 
 	asn1SccSint nCount;
 
-	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 254);
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 4096);
 	*pErrCode = ret ? 0 : ERR_UPER_DECODE_FILEDATA;
 	pVal->nCount = (long)nCount;
 	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
@@ -4045,7 +4045,7 @@ flag cfdpFileData_ACN_Encode(const cfdpFileData* pVal, BitStream* pBitStrm, int*
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileData_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 254);
+	    BitStream_EncodeConstraintWholeNumber(pBitStrm, pVal->nCount, 0, 4096);
 	    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
     } /*COVERAGE_IGNORE*/
 
@@ -4060,7 +4060,7 @@ flag cfdpFileData_ACN_Decode(cfdpFileData* pVal, BitStream* pBitStrm, int* pErrC
 
 	asn1SccSint nCount;
 
-	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 254);
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &nCount, 0, 4096);
 	*pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDATA;
 	pVal->nCount = (long)nCount;
 	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
@@ -4096,7 +4096,7 @@ flag cfdpFileDataPDU_IsConstraintValid(const cfdpFileDataPDU* pVal, int* pErrCod
 }
 
 #ifdef __cplusplus
-const cfdpFileDataPDU cfdpFileDataPDU_constant = {.segment_offset = 0UL, .file_data = {.nCount = 0, .arr  = {[0 ... 254-1] = 0 }}};
+const cfdpFileDataPDU cfdpFileDataPDU_constant = {.segment_offset = 0UL, .file_data = {.nCount = 0, .arr  = {[0 ... 4096-1] = 0 }}};
 #endif
 
 void cfdpFileDataPDU_Initialize(cfdpFileDataPDU* pVal)
@@ -4147,14 +4147,30 @@ flag cfdpFileDataPDU_ACN_Encode(const cfdpFileDataPDU* pVal, BitStream* pBitStrm
 {
     flag ret = TRUE;
 
+	asn1SccUint FileDataPDU_file_data_length;
+	flag FileDataPDU_file_data_length_is_initialized=FALSE;
     *pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileDataPDU_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
 	    /*Encode segment_offset */
 	    Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, pVal->segment_offset);
 	    if (ret) {
-	        /*Encode file_data */
-	        ret = cfdpFileData_ACN_Encode((&(pVal->file_data)), pBitStrm, pErrCode, FALSE);
+	        FileDataPDU_file_data_length_is_initialized = TRUE;
+	        FileDataPDU_file_data_length = pVal->file_data.nCount;
+	        if (ret) {
+	            /*Encode FileDataPDU_file_data_length */
+	            if (FileDataPDU_file_data_length_is_initialized) {
+	                ret = TRUE;
+	                Acn_Enc_Int_PositiveInteger_ConstSize_big_endian_16(pBitStrm, FileDataPDU_file_data_length);
+	            } else {
+	                *pErrCode = ERR_ACN_ENCODE_FILEDATAPDU_FILE_DATA_LENGTH_UNINITIALIZED;         /*COVERAGE_IGNORE*/
+	                ret = FALSE;                    /*COVERAGE_IGNORE*/
+	            }
+	        }   /*COVERAGE_IGNORE*/
+	        if (ret) {
+	            /*Encode file_data */
+	            ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->file_data.arr, pVal->file_data.nCount);
+	        }   /*COVERAGE_IGNORE*/
 	    }   /*COVERAGE_IGNORE*/
     } /*COVERAGE_IGNORE*/
 
@@ -4167,13 +4183,24 @@ flag cfdpFileDataPDU_ACN_Decode(cfdpFileDataPDU* pVal, BitStream* pBitStrm, int*
     flag ret = TRUE;
 	*pErrCode = 0;
 
+	asn1SccUint FileDataPDU_file_data_length;
 
 	/*Decode segment_offset */
 	ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_32(pBitStrm, (&(pVal->segment_offset)));
 	*pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDATAPDU_SEGMENT_OFFSET;
 	if (ret) {
-	    /*Decode file_data */
-	    ret = cfdpFileData_ACN_Decode((&(pVal->file_data)), pBitStrm, pErrCode);
+	    /*Decode FileDataPDU_file_data_length */
+	    ret = Acn_Dec_Int_PositiveInteger_ConstSize_big_endian_16(pBitStrm, (&(FileDataPDU_file_data_length)));
+	    *pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDATAPDU_FILE_DATA_LENGTH;
+	    if (ret) {
+	        /*Decode file_data */
+	        ret = ((FileDataPDU_file_data_length<=4096));
+	        if (ret) {
+	            pVal->file_data.nCount = (int)FileDataPDU_file_data_length;
+	            ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->file_data.arr, pVal->file_data.nCount);
+	        	*pErrCode = ret ? 0 : ERR_ACN_DECODE_FILEDATAPDU_FILE_DATA;
+	        }
+	    }   /*COVERAGE_IGNORE*/
 	}   /*COVERAGE_IGNORE*/
 
     return ret && cfdpFileDataPDU_IsConstraintValid(pVal, pErrCode);
@@ -6982,7 +7009,7 @@ flag cfdpCfdpPDU_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrC
 	        	ret = cfdpPayloadData_Encode((&(pVal->payload)), &bitStrm, pErrCode, FALSE);
 	        	if (ret) {
 	        		int nCount = bitStrm.currentBit == 0 ? bitStrm.currentByte : (bitStrm.currentByte + 1);
-	        		ret = BitStream_EncodeOctetString(pBitStrm, arr, nCount, 2, 263);
+	        		ret = BitStream_EncodeOctetString(pBitStrm, arr, nCount, 2, 4102);
 	        	}
 	        }
 	    }   /*COVERAGE_IGNORE*/
@@ -7009,7 +7036,7 @@ flag cfdpCfdpPDU_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCode)
 	    	BitStream bitStrm;
 	    	BitStream_Init(&bitStrm, arr, sizeof(arr));
 	    	int nCount;
-	    	ret = BitStream_DecodeOctetString(pBitStrm, arr, &nCount, 2, 263);
+	    	ret = BitStream_DecodeOctetString(pBitStrm, arr, &nCount, 2, 4102);
 	    	if (ret) {
 	    		ret = cfdpPayloadData_Decode((&(pVal->payload)), &bitStrm, pErrCode);
 	    	}

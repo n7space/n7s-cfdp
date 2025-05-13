@@ -53,6 +53,8 @@ static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
 static void handle_file_data_pdu_bitstream(unsigned char *buf,
 			    long *count)
 {
+	const int determinant_size = 2;
+
 	if(*count < 1){
 		return;
 	}
@@ -71,11 +73,22 @@ static void handle_file_data_pdu_bitstream(unsigned char *buf,
 
 	const int file_data_size = *count - header_with_segment_offset_size;
 
-	for (int i = *count; i > header_with_segment_offset_size - 1; --i) {
-		buf[i] = buf[i - 1];
+	for (int i = 0; i < determinant_size; i++){
+		for (int j = *count + i; j > header_with_segment_offset_size - 1 + i; --j) {
+			buf[j] = buf[j - 1];
+		}
 	}
-	buf[header_with_segment_offset_size] = (unsigned char)file_data_size;
-	(*count)++;
+
+	buf[header_with_segment_offset_size + 1] = (unsigned char)(file_data_size & 0xFF);
+	buf[header_with_segment_offset_size] = (unsigned char)((file_data_size >> 8) & 0xFF);
+
+	for(int i = 0; i < determinant_size; i++){
+		if(++buf[2] == 0x00){
+			buf[1]++;
+		}
+	}
+
+	*count = *count + determinant_size;
 }
 
 void cfdp_core_issue_request(struct cfdp_core *core,

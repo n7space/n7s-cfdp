@@ -7,10 +7,6 @@ from time import sleep
 from cfdp.transport.udp import UdpTransport
 from cfdp.filestore import NativeFileStore
 
-cfdp.constants.DEFAULT_MAX_FILE_SEGMENT_LEN = 200
-
-print(cfdp.constants.DEFAULT_MAX_FILE_SEGMENT_LEN)
-
 udp_transport = UdpTransport(routing={"*": [("127.0.0.1", 5111)]})
 udp_transport.bind("127.0.0.1", 5222)
 source_filename = "/medium.txt"
