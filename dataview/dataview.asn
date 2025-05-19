@@ -19,11 +19,13 @@ ConditionCode ::= ENUMERATED {
    nak-limit-reached (7),
    inactivity-detected (8),
    invalid-file-structure (9),
+   check-limit-reached (10),
+   unsupported-checksum-type (11),
    suspend-request-received (14),
    cancel-request-received (15)
 }
 
-FileChecksum ::= OCTET STRING (SIZE(4))
+FileChecksum ::= INTEGER (0..4294967295)
 
 FileSize ::= INTEGER (0..4294967295)
 
@@ -38,11 +40,14 @@ DeliveryCode ::= ENUMERATED {data-complete (0), data-incomplete (1)}
 
 ClosureRequested ::= ENUMERATED {requested (0), not-requested (1)}
 
-ChecksumType ::= INTEGER (0..15)
+ChecksumType ::= ENUMERATED {
+   modular (0),
+   none (15)
+}
 
 FileNameSize ::= INTEGER (0..32)
 
-FileName ::= OCTET STRING (SIZE(0..32))
+FileName ::= OCTET STRING (SIZE(0..64))
 
 FileStatus ::= ENUMERATED {
    discarted-deliberately (0),
@@ -96,8 +101,6 @@ MessageType ::= ENUMERATED {
    remote-resume-response (57)
 }
 
-ProtocolVersion ::= INTEGER (0 .. 7)
-
 PDUType ::= INTEGER (0 .. 1)
 
 Direction ::= ENUMERATED {toward-receiver (0), toward-sender (1)}
@@ -125,13 +128,9 @@ TransactionSequenceNumber ::= OCTET STRING (SIZE(1..7))
 Options ::= OCTET STRING (SIZE(0..32))
 
 PDUHeader ::= SEQUENCE {
-   version ProtocolVersion,
    direction Direction,
    transmission-mode TransmissionMode,
    crc-flag CRCFlag,
-   large-file-flag LargeFileFlag,
-   segmentation-control SegmentationControl,
-   segment-metadata-flag SegmentMetadataFlag,
    source-entity-id EntityId,
    transaction-sequence-number TransactionSequenceNumber,
    destination-entity-id EntityId
