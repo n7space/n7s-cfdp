@@ -156,7 +156,11 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		return;
 	}
 
-	// manual bitstream modification to remove file-data determinant
+	// asn1scc cannot accept one determinant determining two seperate octet
+	// strings with two different interpretations through mapping functions.
+	// It was then decided to leave FileData octet string with default
+	// determinant generated before octet string (2 bytes). It needs to be
+	// removed after asn1scc encode
 	const int determinant_size = 2;
 	int determinant_index = bit_stream.currentByte - length - 1;
 	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];

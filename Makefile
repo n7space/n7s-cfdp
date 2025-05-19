@@ -14,6 +14,7 @@ SEND_MEDIUM_FILE_TEST_SOURCES := $(wildcard test/test_send_medium_file/*.c)
 RECEIVE_MEDIUM_FILE_TEST_SOURCES := $(wildcard test/test_receive_medium_file/*.c)
 SEND_BIG_FILE_TEST_SOURCES := $(wildcard test/test_send_big_file/*.c)
 RECEIVE_BIG_FILE_TEST_SOURCES := $(wildcard test/test_receive_big_file/*.c)
+SEND_BIG_FILE_TEST_WITH_TRANSPORT_NOT_READY_SOURCES := $(wildcard test/test_send_file_with_transport_not_ready/*.c)
 TEST_SOURCE := test/test_filestore.c test/test_transport.c
 
 CFDP_PYTHON_RECEIVER := test/test_send_small_file/python_cfdp_receiver.py
@@ -25,6 +26,7 @@ CFDP_PYTHON_MEDIUM_SENDER := test/test_receive_medium_file/python_cfdp_sender.py
 CFDP_PYTHON_BIG_SENDER := test/test_receive_big_file/python_cfdp_sender.py
 CFDP_PYTHON_MEDIUM_RECEIVER := test/test_send_medium_file/python_cfdp_receiver.py
 CFDP_PYTHON_BIG_RECEIVER := test/test_send_big_file/python_cfdp_receiver.py
+CFDP_PYTHON_BIG_TRANSPORT_IS_READY_RECEIVER := test/test_send_file_with_transport_not_ready/python_cfdp_receiver.py
 
 CFDP_PID := script.pid
 
@@ -47,6 +49,7 @@ clean:
 	rm -rf test/test_send_medium_file/target/*
 	rm -rf test/test_receive_medium_file/target/*
 	rm -rf test/test_receive_big_file/target/*
+	rm -rf test/test_send_file_with_transport_not_ready/target/*
 
 test-send-small-file:
 	mkdir -p build
@@ -144,4 +147,16 @@ test-receive-big-file:
 	sleep 1
 	kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
 
-test: clean test-send-small-file test-receive-small-file test-send-many-small-files test-receive-many-small-files test-send-medium-file test-receive-medium-file test-send-big-file test-receive-big-file
+test-send-file-with-transport-not-ready:
+	mkdir -p build
+	mkdir -p test/test_send_file_with_transport_not_ready/target
+	-pkill python3
+	gcc -g -pthread -Isrc -Idataview -Itest -o build/send_big_file_cfdp_test $(filter-out src/main.c, $(SOURCES)) $(SEND_BIG_FILE_TEST_WITH_TRANSPORT_NOT_READY_SOURCES) $(DATAVIEW_SOURCES) $(TEST_SOURCE)
+	chmod +x $(CFDP_PYTHON_BIG_TRANSPORT_IS_READY_RECEIVER)
+	python3 $(CFDP_PYTHON_BIG_TRANSPORT_IS_READY_RECEIVER) & echo $$! > $(CFDP_PYTHON_RECEIVER_PID)
+	sleep 1
+	./build/send_big_file_cfdp_test
+	sleep 1
+	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
+
+test: clean test-send-small-file test-receive-small-file test-send-many-small-files test-receive-many-small-files test-send-medium-file test-receive-medium-file test-send-big-file test-receive-big-file test-send-file-with-transport-not-ready

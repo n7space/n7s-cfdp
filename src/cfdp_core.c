@@ -2,6 +2,11 @@
 #include "event.h"
 #include <stdio.h>
 
+#define FILE_DATA_INDICATION_BIT 0x10
+#define ENTITY_ID_LENGTH_MASK 0x70
+#define TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK 0x07
+#define FULL_MASK 0xff
+
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 		    struct transport *transport, const uint32_t entity_id,
 		    const enum ChecksumType checksum_type,
@@ -50,7 +55,8 @@ static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
 	}
 }
 
-static void handle_file_data_pdu_bitstream(unsigned char *buf, long *count)
+static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
+    unsigned char *buf, long *count)
 {
 	const int determinant_size = 2;
 
@@ -58,14 +64,15 @@ static void handle_file_data_pdu_bitstream(unsigned char *buf, long *count)
 		return;
 	}
 
-	const bool is_file_data = (buf[0] >> 4) & 0x01;
+	const bool is_file_data = (buf[0] & FILE_DATA_INDICATION_BIT) != 0;
 
 	if (!is_file_data) {
 		return;
 	}
 
-	const int length_of_entity_id = ((buf[3] >> 4) & 0x07) + 1;
-	const int length_of_transaction_sequence_number = (buf[3] & 0x07) + 1;
+	const int length_of_entity_id = (buf[3] & ENTITY_ID_LENGTH_MASK) + 1;
+	const int length_of_transaction_sequence_number =
+	    (buf[3] & TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) + 1;
 
 	const int header_with_segment_offset_size =
 	    8 + 2 * length_of_entity_id + length_of_transaction_sequence_number;
@@ -80,9 +87,9 @@ static void handle_file_data_pdu_bitstream(unsigned char *buf, long *count)
 	}
 
 	buf[header_with_segment_offset_size + 1] =
-	    (unsigned char)(file_data_size & 0xFF);
+	    (unsigned char)(file_data_size & FULL_MASK);
 	buf[header_with_segment_offset_size] =
-	    (unsigned char)((file_data_size >> 8) & 0xFF);
+	    (unsigned char)((file_data_size >> 8) & FULL_MASK);
 
 	for (int i = 0; i < determinant_size; i++) {
 		if (++buf[2] == 0x00) {
@@ -430,8 +437,13 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 			    long count)
 {
-	// This is done to properly initialize file_data.nCount
-	handle_file_data_pdu_bitstream(buf, &count);
+	// asn1scc cannot accept one determinant determining two seperate octet
+	// strings with two different interpretations through mapping functions.
+	// It was then decided to leave FileData octet string with default
+	// determinant generated before octet string (2 bytes). It needs to be
+	// added before asn1scc decode
+	add_determinant_of_file_data_octet_string_in_encoded_bit_stream(buf,
+									&count);
 
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, count);

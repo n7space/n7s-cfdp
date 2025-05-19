@@ -494,7 +494,7 @@ typedef asn1SccUint cfdpFileNameSize;
 
 flag cfdpFileNameSize_Equal(const cfdpFileNameSize* pVal1, const cfdpFileNameSize* pVal2);
 
-#define ERR_FILENAMESIZE		116  /*(0..32)*/
+#define ERR_FILENAMESIZE		116  /*(0..128)*/
 flag cfdpFileNameSize_IsConstraintValid(const cfdpFileNameSize* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -507,7 +507,7 @@ void cfdpFileNameSize_Initialize(cfdpFileNameSize* pVal);
 
 #define ERR_UPER_ENCODE_FILENAMESIZE		117  /**/
 #define cfdpFileNameSize_REQUIRED_BYTES_FOR_ENCODING       1
-#define cfdpFileNameSize_REQUIRED_BITS_FOR_ENCODING        6
+#define cfdpFileNameSize_REQUIRED_BITS_FOR_ENCODING        8
 
 flag cfdpFileNameSize_Encode(const cfdpFileNameSize* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 

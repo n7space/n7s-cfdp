@@ -45,7 +45,7 @@ ChecksumType ::= ENUMERATED {
    none (15)
 }
 
-FileNameSize ::= INTEGER (0..32)
+FileNameSize ::= INTEGER (0..128)
 
 FileName ::= OCTET STRING (SIZE(0..128))
 
@@ -58,6 +58,8 @@ FileStatus ::= ENUMERATED {
 
 SegmentOffset ::= INTEGER (0..4294967295)
 
+-- FileData size indicated maximum size of file data segment sent in File data PDUDataFieldLength
+-- It can be changed to configure maximum file segment size
 FileData ::= OCTET STRING (SIZE(0..4096))
 
 ResponseRequired ::= ENUMERATED {nak (0), keep-alive (1)}

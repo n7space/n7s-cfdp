@@ -1871,7 +1871,7 @@ flag cfdpFileNameSize_Equal(const cfdpFileNameSize* pVal1, const cfdpFileNameSiz
 flag cfdpFileNameSize_IsConstraintValid(const cfdpFileNameSize* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-    ret = ((*(pVal)) <= 32UL);
+    ret = ((*(pVal)) <= 128UL);
     *pErrCode = ret ? 0 :  ERR_FILENAMESIZE;
 
 	return ret;
@@ -1897,7 +1897,7 @@ flag cfdpFileNameSize_Encode(const cfdpFileNameSize* pVal, BitStream* pBitStrm, 
 	*pErrCode = 0;
 	ret = bCheckConstraints ? cfdpFileNameSize_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
-	    BitStream_EncodeConstraintPosWholeNumber(pBitStrm, (*(pVal)), 0, 32);
+	    BitStream_EncodeConstraintPosWholeNumber(pBitStrm, (*(pVal)), 0, 128);
     } /*COVERAGE_IGNORE*/
 
 
@@ -1910,7 +1910,7 @@ flag cfdpFileNameSize_Decode(cfdpFileNameSize* pVal, BitStream* pBitStrm, int* p
 	*pErrCode = 0;
 
 
-	ret = BitStream_DecodeConstraintPosWholeNumber(pBitStrm, pVal, 0, 32);
+	ret = BitStream_DecodeConstraintPosWholeNumber(pBitStrm, pVal, 0, 128);
 	*pErrCode = ret ? 0 : ERR_UPER_DECODE_FILENAMESIZE;
 
 	return ret  && cfdpFileNameSize_IsConstraintValid(pVal, pErrCode);
