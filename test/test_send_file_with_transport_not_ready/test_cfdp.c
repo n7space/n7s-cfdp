@@ -1,5 +1,3 @@
-#define TRANSPORT_IS_READY_TEST 1
-
 #include "cfdp_core.h"
 #include "test_filestore.h"
 #include "test_transport.h"
@@ -70,10 +68,10 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 }
 
 bool transport_is_ready() 
-{ 
+{
 	static int count = 0;
 	count++;
-	if(count < 4){
+	if(count < 4 && count != 1){
 		printf("transport is not ready\n");
 		return false;
 	}
