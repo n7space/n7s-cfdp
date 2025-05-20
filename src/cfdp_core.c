@@ -3,8 +3,7 @@
 #include <stdio.h>
 
 #define FILE_DATA_INDICATION_BIT 0x10
-#define ENTITY_ID_LENGTH_MASK 0x70
-#define TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK 0x07
+#define ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK 0x07
 #define FULL_MASK 0xff
 
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
@@ -75,9 +74,13 @@ static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
 		return;
 	}
 
-	const int length_of_entity_id = (buf[3] & ENTITY_ID_LENGTH_MASK) + 1;
+	const int length_of_entity_id =
+	    ((buf[3] >> 4) &
+	     ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) +
+	    1;
 	const int length_of_transaction_sequence_number =
-	    (buf[3] & TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) + 1;
+	    (buf[3] & ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) +
+	    1;
 
 	const int header_with_segment_offset_size =
 	    8 + 2 * length_of_entity_id + length_of_transaction_sequence_number;
@@ -527,8 +530,8 @@ bool cfdp_core_is_done(struct cfdp_core *core)
 	return core->sender[0].state == COMPLETED;
 }
 
-void cfdp_core_transport_is_ready_callback(struct cfdp_core *core){
-	cfdp_core_issue_request(core,
-					core->sender[0].transaction_id,
-					E1_SEND_FILE_DATA);
+void cfdp_core_transport_is_ready_callback(struct cfdp_core *core)
+{
+	cfdp_core_issue_request(core, core->sender[0].transaction_id,
+				E1_SEND_FILE_DATA);
 }
