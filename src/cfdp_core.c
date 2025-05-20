@@ -2,6 +2,10 @@
 #include "event.h"
 #include <stdio.h>
 
+#define FILE_DATA_INDICATION_BIT 0x10
+#define ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK 0x07
+#define FULL_MASK 0xff
+
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 		    struct transport *transport, const uint32_t entity_id,
 		    const enum ChecksumType checksum_type,
@@ -48,6 +52,60 @@ static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
 		event.type = event_type;
 		sender_machine_update_state(&core->sender[0], &event);
 	}
+}
+
+// asn1scc cannot accept one determinant determining two seperate octet
+// strings with two different interpretations through mapping functions.
+// It was then decided to leave FileData octet string with default
+// determinant generated before octet string (2 bytes). It needs to be
+// added before asn1scc decode
+static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
+    unsigned char *buf, long *count)
+{
+	const int determinant_size = 2;
+
+	if (*count < 1) {
+		return;
+	}
+
+	const bool is_file_data = (buf[0] & FILE_DATA_INDICATION_BIT) != 0;
+
+	if (!is_file_data) {
+		return;
+	}
+
+	const int length_of_entity_id =
+	    ((buf[3] >> 4) &
+	     ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) +
+	    1;
+	const int length_of_transaction_sequence_number =
+	    (buf[3] & ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) +
+	    1;
+
+	const int header_with_segment_offset_size =
+	    8 + 2 * length_of_entity_id + length_of_transaction_sequence_number;
+
+	const int file_data_size = *count - header_with_segment_offset_size;
+
+	for (int i = 0; i < determinant_size; i++) {
+		for (int j = *count + i;
+		     j > header_with_segment_offset_size - 1 + i; --j) {
+			buf[j] = buf[j - 1];
+		}
+	}
+
+	buf[header_with_segment_offset_size + 1] =
+	    (unsigned char)(file_data_size & FULL_MASK);
+	buf[header_with_segment_offset_size] =
+	    (unsigned char)((file_data_size >> 8) & FULL_MASK);
+
+	for (int i = 0; i < determinant_size; i++) {
+		if (++buf[2] == 0x00) {
+			buf[1]++;
+		}
+	}
+
+	*count = *count + determinant_size;
 }
 
 void cfdp_core_issue_request(struct cfdp_core *core,
@@ -250,7 +308,7 @@ void cfdp_core_thaw(struct cfdp_core *core, uint32_t destination_entity_id)
 
 static uint64_t bytes_to_ulong(const byte *data, int size)
 {
-	uint64_t result;
+	uint64_t result = 0;
 	for (int i = 0; i < size && i < sizeof(uint64_t); i++) {
 		result <<= 8;
 		result |= data[i];
@@ -298,7 +356,6 @@ static struct event create_event_for_delivery(struct cfdp_core *core,
 	}
 
 	struct event event;
-	event.transaction = core->sender[0].transaction;
 	event.type = type;
 
 	return event;
@@ -308,6 +365,7 @@ static void deliver_pdu_to_sender_machine(struct cfdp_core *core,
 					  const cfdpCfdpPDU *pdu)
 {
 	struct event event = create_event_for_delivery(core, pdu);
+	event.transaction = core->sender[0].transaction;
 	sender_machine_update_state(&core->sender[0], &event);
 }
 
@@ -315,6 +373,7 @@ static void deliver_pdu_to_receiver_machine(struct cfdp_core *core,
 					    const cfdpCfdpPDU *pdu)
 {
 	struct event event = create_event_for_delivery(core, pdu);
+	event.transaction = core->receiver[0].transaction;
 	receiver_machine_update_state(&core->receiver[0], &event, pdu);
 }
 
@@ -330,10 +389,10 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 
 	if (!(pdu->payload.kind == PayloadData_file_directive_PRESENT &&
 	      pdu->payload.u.file_directive.file_directive_pdu.kind ==
-		  FileDirectivePDU_metadata_pdu_PRESENT) ||
+		  FileDirectivePDU_metadata_pdu_PRESENT) &&
 	    !(pdu->payload.kind == PayloadData_file_directive_PRESENT &&
 	      pdu->payload.u.file_directive.file_directive_pdu.kind ==
-		  FileDirectivePDU_eof_pdu_PRESENT) ||
+		  FileDirectivePDU_eof_pdu_PRESENT) &&
 	    !(pdu->payload.kind == PayloadData_file_data_PRESENT)) {
 		// Unsupported pdus in Class 1
 		// See CCSDS 720.2-G-3, Chapter 5.4, Table 5-5
@@ -368,7 +427,14 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 			    .metadata_pdu.destination_file_name.arr,
 			MAX_FILE_NAME_SIZE);
 		transaction.destination_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
+
+		transaction.file_size =
+		    pdu->payload.u.file_directive.file_directive_pdu.u
+			.metadata_pdu.file_size;
+		transaction.file_position = 0;
 	}
+
+	core->receiver[0].state = WAIT_FOR_MD;
 
 	struct event event = {.transaction = transaction,
 			      .type = E0_ENTERED_STATE};
@@ -379,6 +445,9 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 			    long count)
 {
+	add_determinant_of_file_data_octet_string_in_encoded_bit_stream(buf,
+									&count);
+
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, count);
 
@@ -387,6 +456,14 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 	if (!cfdpCfdpPDU_ACN_Decode(&pdu, &bit_stream, &error_code)) {
 		core->cfdp_core_error_callback(core, ASN1SCC_ERROR, error_code);
 		return;
+	}
+
+	// This is done to properly initialize file_data.nCount
+	if (pdu.payload.kind == PayloadData_file_data_PRESENT) {
+		cfdpFileDataPDU *file_data_pdu =
+		    &(pdu.payload.u.file_data.file_data_pdu);
+		file_data_pdu->file_data
+		    .arr[file_data_pdu->file_data.nCount - 1] = buf[count - 1];
 	}
 
 	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {
@@ -451,4 +528,10 @@ void cfdp_core_run_fault_handler(struct cfdp_core *core,
 bool cfdp_core_is_done(struct cfdp_core *core)
 {
 	return core->sender[0].state == COMPLETED;
+}
+
+void cfdp_core_transport_is_ready_callback(struct cfdp_core *core)
+{
+	cfdp_core_issue_request(core, core->sender[0].transaction_id,
+				E1_SEND_FILE_DATA);
 }

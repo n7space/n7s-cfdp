@@ -20,8 +20,6 @@ void receiver_machine_init(struct receiver_machine *receiver_machine,
 	receiver_machine->delivery_code = cfdpDeliveryCode_data_incomplete;
 
 	receiver_machine->received_file_size = 0;
-
-	receiver_machine->state = WAIT_FOR_MD;
 }
 
 void receiver_machine_close(struct receiver_machine *receiver_machine)

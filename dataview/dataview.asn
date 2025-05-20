@@ -1,6 +1,8 @@
 CFDP-PROTOCOL DEFINITIONS ::=
 BEGIN
 
+maxFileNameSizeLength INTEGER ::= 128
+
 DirectiveCode ::= INTEGER (0..255)
 
 DirectiveSubtypeCode ::= ENUMERATED {
@@ -45,9 +47,9 @@ ChecksumType ::= ENUMERATED {
    none (15)
 }
 
-FileNameSize ::= INTEGER (0..32)
+FileNameSize ::= INTEGER (0..maxFileNameSizeLength)
 
-FileName ::= OCTET STRING (SIZE(0..64))
+FileName ::= OCTET STRING (SIZE(0..maxFileNameSizeLength))
 
 FileStatus ::= ENUMERATED {
    discarted-deliberately (0),
@@ -58,7 +60,9 @@ FileStatus ::= ENUMERATED {
 
 SegmentOffset ::= INTEGER (0..4294967295)
 
-FileData ::= OCTET STRING (SIZE(0..254))
+-- FileData size indicates maximum size of file data segment sent in File data PDUDataFieldLength
+-- It can be changed to configure maximum file segment size
+FileData ::= OCTET STRING (SIZE(0..4096))
 
 ResponseRequired ::= ENUMERATED {nak (0), keep-alive (1)}
 
@@ -103,6 +107,8 @@ MessageType ::= ENUMERATED {
 
 PDUType ::= INTEGER (0 .. 1)
 
+Version ::= INTEGER (0 .. 7)
+
 Direction ::= ENUMERATED {toward-receiver (0), toward-sender (1)}
 
 TransmissionMode ::= ENUMERATED {acknowledged (0), unacknowledged (1)}
@@ -128,6 +134,7 @@ TransactionSequenceNumber ::= OCTET STRING (SIZE(1..7))
 Options ::= OCTET STRING (SIZE(0..32))
 
 PDUHeader ::= SEQUENCE {
+   version Version,
    direction Direction,
    transmission-mode TransmissionMode,
    crc-flag CRCFlag,

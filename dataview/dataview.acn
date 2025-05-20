@@ -73,7 +73,8 @@ MetadataPDU [] {
 
 FileDataPDU [] {
    segment-offset                            [encoding pos-int, size 32],
-   file-data                                 []
+   file-data-length                          INTEGER [encoding pos-int, size 16],
+   file-data                                 [size file-data-length]
 }
 
 FileDirectivePDU <DirectiveCode:directive-code> [] {
@@ -94,7 +95,7 @@ FileDirectiveType [] {
 
 CfdpPDU [] {
    pdu-header                                [] {
-      version                                NULL [pattern '000'B],
+      version                                [encoding pos-int, size 3],
       pdu-type                               PDUType [encoding pos-int, size 1],
       direction                              [encoding pos-int, size 1],
       transmission-mode                      [encoding pos-int, size 1],

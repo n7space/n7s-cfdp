@@ -22,6 +22,29 @@ static void uint64_to_bytes_big_endian(uint64_t data, byte *result, int *size)
 	}
 }
 
+static cfdpPDUHeader create_pdu_header(struct sender_machine *sender_machine)
+{
+	cfdpPDUHeader header;
+
+	header.version = 1;
+	header.direction = cfdpDirection_toward_receiver;
+	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
+	header.crc_flag = cfdpCRCFlag_crc_not_present;
+
+	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
+				   header.source_entity_id.arr,
+				   &header.source_entity_id.nCount);
+	uint64_to_bytes_big_endian(
+	    sender_machine->transaction.destination_entity_id,
+	    header.destination_entity_id.arr,
+	    &header.destination_entity_id.nCount);
+	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
+				   header.transaction_sequence_number.arr,
+				   &header.transaction_sequence_number.nCount);
+
+	return header;
+}
+
 void sender_machine_init(struct sender_machine *sender_machine,
 			 struct transaction transaction)
 {
@@ -44,23 +67,8 @@ void sender_machine_close(struct sender_machine *sender_machine)
 void sender_machine_send_metadata(struct sender_machine *sender_machine)
 {
 	cfdpCfdpPDU pdu;
-	cfdpPDUHeader header;
+	cfdpPDUHeader header = create_pdu_header(sender_machine);
 	cfdpMetadataPDU metadata_pdu;
-
-	header.direction = cfdpDirection_toward_receiver;
-	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
-	header.crc_flag = cfdpCRCFlag_crc_not_present;
-
-	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-				   header.source_entity_id.arr,
-				   &header.source_entity_id.nCount);
-	uint64_to_bytes_big_endian(
-	    sender_machine->transaction.destination_entity_id,
-	    header.destination_entity_id.arr,
-	    &header.destination_entity_id.nCount);
-	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-				   header.transaction_sequence_number.arr,
-				   &header.transaction_sequence_number.nCount);
 
 	metadata_pdu.closure_requested = ClosureRequested_requested;
 	metadata_pdu.checksum_type =
@@ -89,8 +97,8 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	pdu.payload.u.file_directive.file_directive_pdu.u.metadata_pdu =
 	    metadata_pdu;
 
-	unsigned char buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
-	long size = cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING;
+	unsigned char buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
+	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
 	memset(buf, 0x0, (size_t)size);
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, size);
@@ -111,30 +119,21 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 void sender_machine_send_file_data(struct sender_machine *sender_machine)
 {
 	cfdpCfdpPDU pdu;
-	cfdpPDUHeader header;
+	cfdpPDUHeader header = create_pdu_header(sender_machine);
 	cfdpFileDataPDU file_data_pdu;
 	byte data[FILE_SEGMENT_LEN];
 	uint32_t length;
 
-	header.direction = cfdpDirection_toward_receiver;
-	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
-	header.crc_flag = cfdpCRCFlag_crc_not_present;
-
-	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-				   header.source_entity_id.arr,
-				   &header.source_entity_id.nCount);
-	uint64_to_bytes_big_endian(
-	    sender_machine->transaction.destination_entity_id,
-	    header.destination_entity_id.arr,
-	    &header.destination_entity_id.nCount);
-	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-				   header.transaction_sequence_number.arr,
-				   &header.transaction_sequence_number.nCount);
-
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
-	transaction_get_file_segment(&sender_machine->transaction, data,
-				     &length);
+	if (!transaction_get_file_segment(&sender_machine->transaction, data,
+					  &length)) {
+		if (sender_machine->core->cfdp_core_error_callback != NULL) {
+			sender_machine->core->cfdp_core_error_callback(
+			    sender_machine->core, SEGMENTATION_ERROR, 0);
+		}
+		return;
+	}
 	file_data_pdu.file_data.nCount = length;
 	strncpy(file_data_pdu.file_data.arr, data, length);
 
@@ -142,7 +141,7 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	pdu.payload.kind = PayloadData_file_data_PRESENT;
 	pdu.payload.u.file_data.file_data_pdu = file_data_pdu;
 
-	unsigned char buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
+	unsigned char buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
 	memset(buf, 0x0, (size_t)size);
 	BitStream bit_stream;
@@ -157,38 +156,34 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		return;
 	}
 
-	// manual bitstream modification to remove file-data determinant
-	int determinant_index = bit_stream.currentByte - length;
-	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
+	// asn1scc cannot accept one determinant determining two seperate octet
+	// strings with two different interpretations through mapping functions.
+	// It was then decided to leave FileData octet string with default
+	// determinant generated before octet string (2 bytes). It needs to be
+	// removed after asn1scc encode
+	const int determinant_size = 2;
+	int determinant_index = bit_stream.currentByte - length - 1;
+	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	memset(modified_buf, 0x0, (size_t)size);
 	memcpy(modified_buf, buf, determinant_index - 1);
-	memcpy(modified_buf + determinant_index - 1, buf + determinant_index,
-	       length);
+	memcpy(modified_buf + determinant_index - 1,
+	       buf + determinant_index + 1, length);
+
+	for (int i = 0; i < determinant_size; i++) {
+		if (--modified_buf[2] == 0xFF) {
+			modified_buf[1]--;
+		}
+	}
 
 	sender_machine->core->transport->transport_send_pdu(
-	    modified_buf, bit_stream.currentByte - 1);
+	    modified_buf, bit_stream.currentByte - determinant_size);
 }
 
 void sender_machine_send_eof(struct sender_machine *sender_machine)
 {
 	cfdpCfdpPDU pdu;
-	cfdpPDUHeader header;
+	cfdpPDUHeader header = create_pdu_header(sender_machine);
 	cfdpEofPDU eof_pdu;
-
-	header.direction = cfdpDirection_toward_receiver;
-	header.transmission_mode = cfdpTransmissionMode_unacknowledged;
-	header.crc_flag = cfdpCRCFlag_crc_not_present;
-
-	uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-				   header.source_entity_id.arr,
-				   &header.source_entity_id.nCount);
-	uint64_to_bytes_big_endian(
-	    sender_machine->transaction.destination_entity_id,
-	    header.destination_entity_id.arr,
-	    &header.destination_entity_id.nCount);
-	uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-				   header.transaction_sequence_number.arr,
-				   &header.transaction_sequence_number.nCount);
 
 	eof_pdu.condition_code = sender_machine->condition_code;
 	eof_pdu.file_checksum =
@@ -202,8 +197,8 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	    FileDirectivePDU_eof_pdu_PRESENT;
 	pdu.payload.u.file_directive.file_directive_pdu.u.eof_pdu = eof_pdu;
 
-	unsigned char buf[cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING];
-	long size = cfdpCfdpPDU_REQUIRED_BITS_FOR_ACN_ENCODING;
+	unsigned char buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
+	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
 	memset(buf, 0x0, (size_t)size);
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, size);
@@ -275,25 +270,28 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			    sender_machine->is_frozen)
 				break;
 
-			if (sender_machine->core->transport
+			if (!sender_machine->core->transport
 				->transport_is_ready()) {
-				sender_machine_send_file_data(sender_machine);
-				if (transaction_is_file_send_complete(
-					&sender_machine->transaction)) {
-					sender_machine_send_eof(sender_machine);
-					cfdp_core_eof_sent_indication(
-					    sender_machine->core,
-					    sender_machine->transaction_id);
-					cfdp_core_finished_indication(
-					    sender_machine->core,
-					    sender_machine->transaction_id);
-					sender_machine_close(sender_machine);
-					return;
-				}
+				break;
 			}
+
+			sender_machine_send_file_data(sender_machine);
+			if (transaction_is_file_send_complete(
+				&sender_machine->transaction)) {
+				sender_machine_send_eof(sender_machine);
+				cfdp_core_eof_sent_indication(
+					sender_machine->core,
+					sender_machine->transaction_id);
+				cfdp_core_finished_indication(
+					sender_machine->core,
+					sender_machine->transaction_id);
+				sender_machine_close(sender_machine);
+				return;
+			}
+
 			cfdp_core_issue_request(sender_machine->core,
-						sender_machine->transaction_id,
-						E1_SEND_FILE_DATA);
+					sender_machine->transaction_id,
+					E1_SEND_FILE_DATA);
 
 			break;
 		}
