@@ -110,4 +110,6 @@ void cfdp_core_run_fault_handler(struct cfdp_core *core,
 
 bool cfdp_core_is_done(struct cfdp_core *core);
 
+void cfdp_core_transport_is_ready_callback(struct cfdp_core *core);
+
 #endif

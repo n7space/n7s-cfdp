@@ -494,7 +494,7 @@ typedef asn1SccUint cfdpFileNameSize;
 
 flag cfdpFileNameSize_Equal(const cfdpFileNameSize* pVal1, const cfdpFileNameSize* pVal2);
 
-#define ERR_FILENAMESIZE		116  /*(0..128)*/
+#define ERR_FILENAMESIZE		116  /*(0..maxFileNameSizeLength)*/
 flag cfdpFileNameSize_IsConstraintValid(const cfdpFileNameSize* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -530,7 +530,7 @@ typedef struct {
 
 flag cfdpFileName_Equal(const cfdpFileName* pVal1, const cfdpFileName* pVal2);
 
-#define ERR_FILENAME		121  /*(SIZE(0..128))*/
+#define ERR_FILENAME		121  /*(SIZE(0..maxFileNameSizeLength))*/
 flag cfdpFileName_IsConstraintValid(const cfdpFileName* pVal, int* pErrCode);
 
 #ifdef __cplusplus
@@ -2066,6 +2066,7 @@ flag cfdpOptions_ACN_Encode(const cfdpOptions* pVal, BitStream* pBitStrm, int* p
 #define ERR_ACN_DECODE_OPTIONS		1101  /**/
 flag cfdpOptions_ACN_Decode(cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode);
 
+extern const asn1SccSint maxFileNameSizeLength;
 
 /* ================= Encoding/Decoding function prototypes =================
  * These functions are placed at the end of the file to make sure all types

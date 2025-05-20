@@ -270,25 +270,28 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			    sender_machine->is_frozen)
 				break;
 
-			if (sender_machine->core->transport
+			if (!sender_machine->core->transport
 				->transport_is_ready()) {
-				sender_machine_send_file_data(sender_machine);
-				if (transaction_is_file_send_complete(
-					&sender_machine->transaction)) {
-					sender_machine_send_eof(sender_machine);
-					cfdp_core_eof_sent_indication(
-					    sender_machine->core,
-					    sender_machine->transaction_id);
-					cfdp_core_finished_indication(
-					    sender_machine->core,
-					    sender_machine->transaction_id);
-					sender_machine_close(sender_machine);
-					return;
-				}
+				break;
 			}
+
+			sender_machine_send_file_data(sender_machine);
+			if (transaction_is_file_send_complete(
+				&sender_machine->transaction)) {
+				sender_machine_send_eof(sender_machine);
+				cfdp_core_eof_sent_indication(
+					sender_machine->core,
+					sender_machine->transaction_id);
+				cfdp_core_finished_indication(
+					sender_machine->core,
+					sender_machine->transaction_id);
+				sender_machine_close(sender_machine);
+				return;
+			}
+
 			cfdp_core_issue_request(sender_machine->core,
-						sender_machine->transaction_id,
-						E1_SEND_FILE_DATA);
+					sender_machine->transaction_id,
+					E1_SEND_FILE_DATA);
 
 			break;
 		}

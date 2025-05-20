@@ -1,6 +1,8 @@
 CFDP-PROTOCOL DEFINITIONS ::=
 BEGIN
 
+maxFileNameSizeLength INTEGER ::= 128
+
 DirectiveCode ::= INTEGER (0..255)
 
 DirectiveSubtypeCode ::= ENUMERATED {
@@ -45,9 +47,9 @@ ChecksumType ::= ENUMERATED {
    none (15)
 }
 
-FileNameSize ::= INTEGER (0..128)
+FileNameSize ::= INTEGER (0..maxFileNameSizeLength)
 
-FileName ::= OCTET STRING (SIZE(0..128))
+FileName ::= OCTET STRING (SIZE(0..maxFileNameSizeLength))
 
 FileStatus ::= ENUMERATED {
    discarted-deliberately (0),
@@ -58,7 +60,7 @@ FileStatus ::= ENUMERATED {
 
 SegmentOffset ::= INTEGER (0..4294967295)
 
--- FileData size indicated maximum size of file data segment sent in File data PDUDataFieldLength
+-- FileData size indicates maximum size of file data segment sent in File data PDUDataFieldLength
 -- It can be changed to configure maximum file segment size
 FileData ::= OCTET STRING (SIZE(0..4096))
 

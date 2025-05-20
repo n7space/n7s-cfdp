@@ -105,6 +105,9 @@ int main(int argc, char *argv[])
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/big.txt",
 		      "received_big.txt");
 
+	cfdp_core_transport_is_ready_callback(&cfd_entity_sender);
+	cfdp_core_transport_is_ready_callback(&cfd_entity_sender);
+
 	while (!cfdp_core_is_done(&cfd_entity_sender)) {
 		usleep(1000 * 100);
 	}

@@ -55,6 +55,11 @@ static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
 	}
 }
 
+// asn1scc cannot accept one determinant determining two seperate octet
+// strings with two different interpretations through mapping functions.
+// It was then decided to leave FileData octet string with default
+// determinant generated before octet string (2 bytes). It needs to be
+// added before asn1scc decode
 static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
     unsigned char *buf, long *count)
 {
@@ -437,11 +442,6 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 			    long count)
 {
-	// asn1scc cannot accept one determinant determining two seperate octet
-	// strings with two different interpretations through mapping functions.
-	// It was then decided to leave FileData octet string with default
-	// determinant generated before octet string (2 bytes). It needs to be
-	// added before asn1scc decode
 	add_determinant_of_file_data_octet_string_in_encoded_bit_stream(buf,
 									&count);
 
@@ -525,4 +525,10 @@ void cfdp_core_run_fault_handler(struct cfdp_core *core,
 bool cfdp_core_is_done(struct cfdp_core *core)
 {
 	return core->sender[0].state == COMPLETED;
+}
+
+void cfdp_core_transport_is_ready_callback(struct cfdp_core *core){
+	cfdp_core_issue_request(core,
+					core->sender[0].transaction_id,
+					E1_SEND_FILE_DATA);
 }
