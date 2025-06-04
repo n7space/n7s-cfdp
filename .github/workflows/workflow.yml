@@ -1,0 +1,22 @@
+name: Workflow
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: Build and test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Before script
+        run: |
+             git clone https://gitlab.com/librecube/lib/python-cfdp.git
+             pushd python-cfdp; pip install cfdp; popd
+             make clean
+
+      - name: Build
+        run: make all
+
+      - name: Test
+        run: make test
