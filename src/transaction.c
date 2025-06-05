@@ -7,7 +7,7 @@ void transaction_store_data_to_file(struct transaction *transaction,
 {
 	transaction->filestore->filestore_write(
 	    transaction->destination_filename, file_data_pdu->segment_offset,
-	    file_data_pdu->file_data.arr, file_data_pdu->file_data.nCount);
+	    (const char *)file_data_pdu->file_data.arr, file_data_pdu->file_data.nCount);
 }
 
 uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)

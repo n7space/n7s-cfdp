@@ -76,19 +76,19 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	metadata_pdu.file_size =
 	    transaction_get_file_size(&sender_machine->transaction);
 
-	strncpy(metadata_pdu.source_file_name.arr,
+	strncpy((char *)metadata_pdu.source_file_name.arr,
 		sender_machine->transaction.source_filename,
 		MAX_FILE_NAME_SIZE);
 	metadata_pdu.source_file_name.arr[MAX_FILE_NAME_SIZE - 1] = '\0';
 	metadata_pdu.source_file_name.nCount =
-	    strlen(metadata_pdu.source_file_name.arr);
+	    strlen((const char *)metadata_pdu.source_file_name.arr);
 
-	strncpy(metadata_pdu.destination_file_name.arr,
+	strncpy((char *)metadata_pdu.destination_file_name.arr,
 		sender_machine->transaction.destination_filename,
 		MAX_FILE_NAME_SIZE);
 	metadata_pdu.destination_file_name.arr[MAX_FILE_NAME_SIZE - 1] = '\0';
 	metadata_pdu.destination_file_name.nCount =
-	    strlen(metadata_pdu.destination_file_name.arr);
+	    strlen((const char *)metadata_pdu.destination_file_name.arr);
 
 	pdu.pdu_header = header;
 	pdu.payload.kind = PayloadData_file_directive_PRESENT;
@@ -126,7 +126,7 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
-	if (!transaction_get_file_segment(&sender_machine->transaction, data,
+	if (!transaction_get_file_segment(&sender_machine->transaction, (char *)data,
 					  &length)) {
 		if (sender_machine->core->cfdp_core_error_callback != NULL) {
 			sender_machine->core->cfdp_core_error_callback(
@@ -135,7 +135,7 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		return;
 	}
 	file_data_pdu.file_data.nCount = length;
-	strncpy(file_data_pdu.file_data.arr, data, length);
+	strncpy((char *)file_data_pdu.file_data.arr, (const char *)data, length);
 
 	pdu.pdu_header = header;
 	pdu.payload.kind = PayloadData_file_data_PRESENT;
