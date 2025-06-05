@@ -45,8 +45,8 @@ void cfdp_core_issue_request(struct cfdp_core *core,
 
 struct transaction_id
 cfdp_core_put(struct cfdp_core *core, uint32_t destination_entity_id,
-	      char source_filename[MAX_FILE_NAME_SIZE],
-	      char destination_filename[MAX_FILE_NAME_SIZE]);
+	      char *source_filename,
+	      char *destination_filename);
 
 void cfdp_core_cancel(struct cfdp_core *core,
 		      struct transaction_id transaction_id);

@@ -5,7 +5,7 @@ static int sockfd;
 
 void *test_transport_receiver_thread(void *arg)
 {
-	char buffer[BUFFER_SIZE];
+	uint8_t buffer[BUFFER_SIZE];
 	memset(buffer, 0x0, (size_t)BUFFER_SIZE);
 	struct sockaddr_in client_addr;
 	socklen_t addr_len = sizeof(client_addr);

@@ -127,8 +127,8 @@ void cfdp_core_issue_request(struct cfdp_core *core,
 
 struct transaction_id
 cfdp_core_put(struct cfdp_core *core, uint32_t destination_entity_id,
-	      char source_filename[MAX_FILE_NAME_SIZE],
-	      char destination_filename[MAX_FILE_NAME_SIZE])
+	      char *source_filename,
+	      char *destination_filename)
 {
 	core->transaction_sequence_number++;
 
@@ -319,7 +319,7 @@ static uint64_t bytes_to_ulong(const byte *data, int size)
 static struct event create_event_for_delivery(struct cfdp_core *core,
 					      const cfdpCfdpPDU *pdu)
 {
-	enum EventType type;
+	enum EventType type = E50_NOOP;
 
 	if (pdu->payload.kind == PayloadData_file_data_PRESENT) {
 		type = E11_RECEIVED_FILEDATA;
@@ -417,13 +417,13 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	    pdu->payload.u.file_directive.file_directive_pdu.kind ==
 		FileDirectivePDU_metadata_pdu_PRESENT) {
 		strncpy(transaction.source_filename,
-			pdu->payload.u.file_directive.file_directive_pdu.u
+			(const char *)pdu->payload.u.file_directive.file_directive_pdu.u
 			    .metadata_pdu.source_file_name.arr,
 			MAX_FILE_NAME_SIZE);
 		transaction.source_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
 
 		strncpy(transaction.destination_filename,
-			pdu->payload.u.file_directive.file_directive_pdu.u
+			(const char *)pdu->payload.u.file_directive.file_directive_pdu.u
 			    .metadata_pdu.destination_file_name.arr,
 			MAX_FILE_NAME_SIZE);
 		transaction.destination_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
