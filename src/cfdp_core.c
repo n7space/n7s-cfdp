@@ -127,10 +127,10 @@ void cfdp_core_issue_request(struct cfdp_core *core,
 	}
 }
 
-struct transaction_id
-cfdp_core_put(struct cfdp_core *core, uint32_t destination_entity_id,
-	      char *source_filename,
-	      char *destination_filename)
+struct transaction_id cfdp_core_put(struct cfdp_core *core,
+				    uint32_t destination_entity_id,
+				    char *source_filename,
+				    char *destination_filename)
 {
 	core->transaction_sequence_number++;
 
@@ -418,17 +418,25 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	if (pdu->payload.kind == PayloadData_file_directive_PRESENT &&
 	    pdu->payload.u.file_directive.file_directive_pdu.kind ==
 		FileDirectivePDU_metadata_pdu_PRESENT) {
-		strncpy(transaction.source_filename,
-			(const char *)pdu->payload.u.file_directive.file_directive_pdu.u
-			    .metadata_pdu.source_file_name.arr,
-			MAX_FILE_NAME_SIZE);
-		transaction.source_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
+		strncpy(
+		    transaction.source_filename,
+		    (const char *)pdu->payload.u.file_directive
+			.file_directive_pdu.u.metadata_pdu.source_file_name.arr,
+		    pdu->payload.u.file_directive.file_directive_pdu.u
+			.metadata_pdu.source_file_name.nCount);
+		transaction.source_filename
+		    [pdu->payload.u.file_directive.file_directive_pdu.u
+			 .metadata_pdu.source_file_name.nCount] = '\0';
 
 		strncpy(transaction.destination_filename,
-			(const char *)pdu->payload.u.file_directive.file_directive_pdu.u
-			    .metadata_pdu.destination_file_name.arr,
-			MAX_FILE_NAME_SIZE);
-		transaction.destination_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
+			(const char *)
+			    pdu->payload.u.file_directive.file_directive_pdu.u
+				.metadata_pdu.destination_file_name.arr,
+			pdu->payload.u.file_directive.file_directive_pdu.u
+			    .metadata_pdu.destination_file_name.nCount);
+		transaction.destination_filename
+		    [pdu->payload.u.file_directive.file_directive_pdu.u
+			 .metadata_pdu.destination_file_name.nCount] = '\0';
 
 		transaction.file_size =
 		    pdu->payload.u.file_directive.file_directive_pdu.u

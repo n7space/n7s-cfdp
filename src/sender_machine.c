@@ -79,14 +79,12 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	strncpy((char *)metadata_pdu.source_file_name.arr,
 		sender_machine->transaction.source_filename,
 		MAX_FILE_NAME_SIZE);
-	metadata_pdu.source_file_name.arr[MAX_FILE_NAME_SIZE - 1] = '\0';
 	metadata_pdu.source_file_name.nCount =
 	    strlen((const char *)metadata_pdu.source_file_name.arr);
 
 	strncpy((char *)metadata_pdu.destination_file_name.arr,
 		sender_machine->transaction.destination_filename,
 		MAX_FILE_NAME_SIZE);
-	metadata_pdu.destination_file_name.arr[MAX_FILE_NAME_SIZE - 1] = '\0';
 	metadata_pdu.destination_file_name.nCount =
 	    strlen((const char *)metadata_pdu.destination_file_name.arr);
 
