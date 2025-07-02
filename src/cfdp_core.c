@@ -12,7 +12,9 @@ void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 		    const uint32_t inactivity_timeout)
 {
 	core->sender[0].core = core;
+	core->sender[0].state = COMPLETED;
 	core->receiver[0].core = core;
+	core->receiver[0].state = COMPLETED;
 	core->receiver[0].timer.timeout = inactivity_timeout;
 	core->entity_id = entity_id;
 	core->checksum_type = checksum_type;
@@ -487,7 +489,7 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 	}
 
 	if (cfdp_core_is_request_to_receiver(core, transaction_id)) {
-		if (core->sender[0].state != COMPLETED) {
+		if (core->receiver[0].state != COMPLETED) {
 			deliver_pdu_to_receiver_machine(core, &pdu);
 			return;
 		}
