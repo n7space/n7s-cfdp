@@ -274,8 +274,7 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 				->transport_is_ready()) {
 				break;
 			}
-
-			sender_machine_send_file_data(sender_machine);
+			
 			if (transaction_is_file_send_complete(
 				&sender_machine->transaction)) {
 				sender_machine_send_eof(sender_machine);
@@ -287,6 +286,9 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 					sender_machine->transaction_id);
 				sender_machine_close(sender_machine);
 				return;
+			}
+			else{
+				sender_machine_send_file_data(sender_machine);
 			}
 
 			cfdp_core_issue_request(sender_machine->core,
