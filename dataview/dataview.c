@@ -437,10 +437,10 @@ flag cfdpConditionCode_ACN_Encode(const cfdpConditionCode* pVal, BitStream* pBit
 	            intVal_pVal = 11UL;
 	            break;
 	        case ConditionCode_suspend_request_received:
-	            intVal_pVal = 12UL;
+	            intVal_pVal = 14UL;
 	            break;
 	        case ConditionCode_cancel_request_received:
-	            intVal_pVal = 13UL;
+	            intVal_pVal = 15UL;
 	            break;
 	        default:                                    /*COVERAGE_IGNORE*/
 	            ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -502,10 +502,10 @@ flag cfdpConditionCode_ACN_Decode(cfdpConditionCode* pVal, BitStream* pBitStrm, 
 	        case 11:
 	            (*(pVal)) = ConditionCode_unsupported_checksum_type;
 	            break;
-	        case 12:
+	        case 14:
 	            (*(pVal)) = ConditionCode_suspend_request_received;
 	            break;
-	        case 13:
+	        case 15:
 	            (*(pVal)) = ConditionCode_cancel_request_received;
 	            break;
 	    default:                                    /*COVERAGE_IGNORE*/
@@ -817,10 +817,10 @@ flag cfdpEofPDU_ACN_Encode(const cfdpEofPDU* pVal, BitStream* pBitStrm, int* pEr
 	            intVal_pVal_condition_code = 11UL;
 	            break;
 	        case ConditionCode_suspend_request_received:
-	            intVal_pVal_condition_code = 12UL;
+	            intVal_pVal_condition_code = 14UL;
 	            break;
 	        case ConditionCode_cancel_request_received:
-	            intVal_pVal_condition_code = 13UL;
+	            intVal_pVal_condition_code = 15UL;
 	            break;
 	        default:                                    /*COVERAGE_IGNORE*/
 	            ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -898,10 +898,10 @@ flag cfdpEofPDU_ACN_Decode(cfdpEofPDU* pVal, BitStream* pBitStrm, int* pErrCode)
 	        case 11:
 	            pVal->condition_code = ConditionCode_unsupported_checksum_type;
 	            break;
-	        case 12:
+	        case 14:
 	            pVal->condition_code = ConditionCode_suspend_request_received;
 	            break;
-	        case 13:
+	        case 15:
 	            pVal->condition_code = ConditionCode_cancel_request_received;
 	            break;
 	    default:                                    /*COVERAGE_IGNORE*/
@@ -1272,10 +1272,10 @@ flag cfdpAckPDU_ACN_Encode(const cfdpAckPDU* pVal, BitStream* pBitStrm, int* pEr
 	                    intVal_pVal_condition_code = 11UL;
 	                    break;
 	                case ConditionCode_suspend_request_received:
-	                    intVal_pVal_condition_code = 12UL;
+	                    intVal_pVal_condition_code = 14UL;
 	                    break;
 	                case ConditionCode_cancel_request_received:
-	                    intVal_pVal_condition_code = 13UL;
+	                    intVal_pVal_condition_code = 15UL;
 	                    break;
 	                default:                                    /*COVERAGE_IGNORE*/
 	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -1393,10 +1393,10 @@ flag cfdpAckPDU_ACN_Decode(cfdpAckPDU* pVal, BitStream* pBitStrm, int* pErrCode)
 	                case 11:
 	                    pVal->condition_code = ConditionCode_unsupported_checksum_type;
 	                    break;
-	                case 12:
+	                case 14:
 	                    pVal->condition_code = ConditionCode_suspend_request_received;
 	                    break;
-	                case 13:
+	                case 15:
 	                    pVal->condition_code = ConditionCode_cancel_request_received;
 	                    break;
 	            default:                                    /*COVERAGE_IGNORE*/
@@ -1821,7 +1821,7 @@ flag cfdpChecksumType_ACN_Encode(const cfdpChecksumType* pVal, BitStream* pBitSt
 	            intVal_pVal = 0UL;
 	            break;
 	        case ChecksumType_none:
-	            intVal_pVal = 1UL;
+	            intVal_pVal = 15UL;
 	            break;
 	        default:                                    /*COVERAGE_IGNORE*/
 	            ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -1850,7 +1850,7 @@ flag cfdpChecksumType_ACN_Decode(cfdpChecksumType* pVal, BitStream* pBitStrm, in
 	        case 0:
 	            (*(pVal)) = ChecksumType_modular;
 	            break;
-	        case 1:
+	        case 15:
 	            (*(pVal)) = ChecksumType_none;
 	            break;
 	    default:                                    /*COVERAGE_IGNORE*/
@@ -2202,7 +2202,7 @@ flag cfdpMetadataPDU_ACN_Encode(const cfdpMetadataPDU* pVal, BitStream* pBitStrm
 	                        intVal_pVal_checksum_type = 0UL;
 	                        break;
 	                    case ChecksumType_none:
-	                        intVal_pVal_checksum_type = 1UL;
+	                        intVal_pVal_checksum_type = 15UL;
 	                        break;
 	                    default:                                    /*COVERAGE_IGNORE*/
 	                        ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -2315,7 +2315,7 @@ flag cfdpMetadataPDU_ACN_Decode(cfdpMetadataPDU* pVal, BitStream* pBitStrm, int*
 	                    case 0:
 	                        pVal->checksum_type = ChecksumType_modular;
 	                        break;
-	                    case 1:
+	                    case 15:
 	                        pVal->checksum_type = ChecksumType_none;
 	                        break;
 	                default:                                    /*COVERAGE_IGNORE*/
@@ -2666,10 +2666,10 @@ flag cfdpFinishedPDU_ACN_Encode(const cfdpFinishedPDU* pVal, BitStream* pBitStrm
 	            intVal_pVal_condition_code = 11UL;
 	            break;
 	        case ConditionCode_suspend_request_received:
-	            intVal_pVal_condition_code = 12UL;
+	            intVal_pVal_condition_code = 14UL;
 	            break;
 	        case ConditionCode_cancel_request_received:
-	            intVal_pVal_condition_code = 13UL;
+	            intVal_pVal_condition_code = 15UL;
 	            break;
 	        default:                                    /*COVERAGE_IGNORE*/
 	            ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -2781,10 +2781,10 @@ flag cfdpFinishedPDU_ACN_Decode(cfdpFinishedPDU* pVal, BitStream* pBitStrm, int*
 	        case 11:
 	            pVal->condition_code = ConditionCode_unsupported_checksum_type;
 	            break;
-	        case 12:
+	        case 14:
 	            pVal->condition_code = ConditionCode_suspend_request_received;
 	            break;
-	        case 13:
+	        case 15:
 	            pVal->condition_code = ConditionCode_cancel_request_received;
 	            break;
 	    default:                                    /*COVERAGE_IGNORE*/
@@ -3142,10 +3142,10 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 11UL;
 	        	        break;
 	        	    case ConditionCode_suspend_request_received:
-	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 12UL;
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 14UL;
 	        	        break;
 	        	    case ConditionCode_cancel_request_received:
-	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 13UL;
+	        	        intVal_pVal_file_directive_pdu_u_eof_pdu_condition_code = 15UL;
 	        	        break;
 	        	    default:                                    /*COVERAGE_IGNORE*/
 	        	        ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -3210,10 +3210,10 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 11UL;
 	        	        break;
 	        	    case ConditionCode_suspend_request_received:
-	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 12UL;
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 14UL;
 	        	        break;
 	        	    case ConditionCode_cancel_request_received:
-	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 13UL;
+	        	        intVal_pVal_file_directive_pdu_u_finished_pdu_condition_code = 15UL;
 	        	        break;
 	        	    default:                                    /*COVERAGE_IGNORE*/
 	        	        ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -3329,10 +3329,10 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 11UL;
 	        	                break;
 	        	            case ConditionCode_suspend_request_received:
-	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 12UL;
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 14UL;
 	        	                break;
 	        	            case ConditionCode_cancel_request_received:
-	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 13UL;
+	        	                intVal_pVal_file_directive_pdu_u_ack_pdu_condition_code = 15UL;
 	        	                break;
 	        	            default:                                    /*COVERAGE_IGNORE*/
 	        	                ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -3409,7 +3409,7 @@ flag cfdpFileDirectiveType_ACN_Encode(const cfdpFileDirectiveType* pVal, BitStre
 	        	                    intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type = 0UL;
 	        	                    break;
 	        	                case ChecksumType_none:
-	        	                    intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type = 1UL;
+	        	                    intVal_pVal_file_directive_pdu_u_metadata_pdu_checksum_type = 15UL;
 	        	                    break;
 	        	                default:                                    /*COVERAGE_IGNORE*/
 	        	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -3544,10 +3544,10 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 	                case 11:
 	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_unsupported_checksum_type;
 	                    break;
-	                case 12:
+	                case 14:
 	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_suspend_request_received;
 	                    break;
-	                case 13:
+	                case 15:
 	                    pVal->file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_cancel_request_received;
 	                    break;
 	            default:                                    /*COVERAGE_IGNORE*/
@@ -3620,10 +3620,10 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 	                case 11:
 	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_unsupported_checksum_type;
 	                    break;
-	                case 12:
+	                case 14:
 	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_suspend_request_received;
 	                    break;
-	                case 13:
+	                case 15:
 	                    pVal->file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_cancel_request_received;
 	                    break;
 	            default:                                    /*COVERAGE_IGNORE*/
@@ -3749,10 +3749,10 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 	                        case 11:
 	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_unsupported_checksum_type;
 	                            break;
-	                        case 12:
+	                        case 14:
 	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_suspend_request_received;
 	                            break;
-	                        case 13:
+	                        case 15:
 	                            pVal->file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_cancel_request_received;
 	                            break;
 	                    default:                                    /*COVERAGE_IGNORE*/
@@ -3845,7 +3845,7 @@ flag cfdpFileDirectiveType_ACN_Decode(cfdpFileDirectiveType* pVal, BitStream* pB
 	                            case 0:
 	                                pVal->file_directive_pdu.u.metadata_pdu.checksum_type = ChecksumType_modular;
 	                                break;
-	                            case 1:
+	                            case 15:
 	                                pVal->file_directive_pdu.u.metadata_pdu.checksum_type = ChecksumType_none;
 	                                break;
 	                        default:                                    /*COVERAGE_IGNORE*/
@@ -4970,13 +4970,13 @@ flag cfdpTypeFieldCode_ACN_Encode(const cfdpTypeFieldCode* pVal, BitStream* pBit
 	            intVal_pVal = 2UL;
 	            break;
 	        case TypeFieldCode_fault_handler_overrides:
-	            intVal_pVal = 3UL;
-	            break;
-	        case TypeFieldCode_flow_label:
 	            intVal_pVal = 4UL;
 	            break;
-	        case TypeFieldCode_entity_id:
+	        case TypeFieldCode_flow_label:
 	            intVal_pVal = 5UL;
+	            break;
+	        case TypeFieldCode_entity_id:
+	            intVal_pVal = 6UL;
 	            break;
 	        default:                                    /*COVERAGE_IGNORE*/
 	            ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -5011,13 +5011,13 @@ flag cfdpTypeFieldCode_ACN_Decode(cfdpTypeFieldCode* pVal, BitStream* pBitStrm, 
 	        case 2:
 	            (*(pVal)) = TypeFieldCode_message_to_user;
 	            break;
-	        case 3:
+	        case 4:
 	            (*(pVal)) = TypeFieldCode_fault_handler_overrides;
 	            break;
-	        case 4:
+	        case 5:
 	            (*(pVal)) = TypeFieldCode_flow_label;
 	            break;
-	        case 5:
+	        case 6:
 	            (*(pVal)) = TypeFieldCode_entity_id;
 	            break;
 	    default:                                    /*COVERAGE_IGNORE*/
@@ -5250,28 +5250,28 @@ flag cfdpMessageType_ACN_Encode(const cfdpMessageType* pVal, BitStream* pBitStrm
 	            intVal_pVal = 9UL;
 	            break;
 	        case MessageType_directory_listing_request:
-	            intVal_pVal = 10UL;
-	            break;
-	        case MessageType_directory_listing_response:
-	            intVal_pVal = 11UL;
-	            break;
-	        case MessageType_remote_status_report_request:
-	            intVal_pVal = 12UL;
-	            break;
-	        case MessageType_remote_status_report_response:
-	            intVal_pVal = 13UL;
-	            break;
-	        case MessageType_remote_suspend_request:
-	            intVal_pVal = 14UL;
-	            break;
-	        case MessageType_remote_suspend_response:
-	            intVal_pVal = 15UL;
-	            break;
-	        case MessageType_remote_resume_request:
 	            intVal_pVal = 16UL;
 	            break;
-	        case MessageType_remote_resume_response:
+	        case MessageType_directory_listing_response:
 	            intVal_pVal = 17UL;
+	            break;
+	        case MessageType_remote_status_report_request:
+	            intVal_pVal = 32UL;
+	            break;
+	        case MessageType_remote_status_report_response:
+	            intVal_pVal = 33UL;
+	            break;
+	        case MessageType_remote_suspend_request:
+	            intVal_pVal = 48UL;
+	            break;
+	        case MessageType_remote_suspend_response:
+	            intVal_pVal = 49UL;
+	            break;
+	        case MessageType_remote_resume_request:
+	            intVal_pVal = 56UL;
+	            break;
+	        case MessageType_remote_resume_response:
+	            intVal_pVal = 57UL;
 	            break;
 	        default:                                    /*COVERAGE_IGNORE*/
 	            ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -5327,28 +5327,28 @@ flag cfdpMessageType_ACN_Decode(cfdpMessageType* pVal, BitStream* pBitStrm, int*
 	        case 9:
 	            (*(pVal)) = MessageType_proxy_put_cancel;
 	            break;
-	        case 10:
+	        case 16:
 	            (*(pVal)) = MessageType_directory_listing_request;
 	            break;
-	        case 11:
+	        case 17:
 	            (*(pVal)) = MessageType_directory_listing_response;
 	            break;
-	        case 12:
+	        case 32:
 	            (*(pVal)) = MessageType_remote_status_report_request;
 	            break;
-	        case 13:
+	        case 33:
 	            (*(pVal)) = MessageType_remote_status_report_response;
 	            break;
-	        case 14:
+	        case 48:
 	            (*(pVal)) = MessageType_remote_suspend_request;
 	            break;
-	        case 15:
+	        case 49:
 	            (*(pVal)) = MessageType_remote_suspend_response;
 	            break;
-	        case 16:
+	        case 56:
 	            (*(pVal)) = MessageType_remote_resume_request;
 	            break;
-	        case 17:
+	        case 57:
 	            (*(pVal)) = MessageType_remote_resume_response;
 	            break;
 	    default:                                    /*COVERAGE_IGNORE*/
@@ -7062,23 +7062,10 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	asn1SccUint intVal_pVal_pdu_header_direction;
 	asn1SccUint intVal_pVal_pdu_header_transmission_mode;
 	asn1SccUint intVal_pVal_pdu_header_crc_flag;
-	asn1SccUint CfdpPDU_payload_file_directive_directive_code;
-	flag CfdpPDU_payload_file_directive_directive_code_is_initialized=FALSE;
-	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code;
-	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code;
-	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code;
-	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_finished_pdu_file_status;
-	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code;
-	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code;
-	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status;
-	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size;
-	flag CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size_is_initialized=FALSE;
-	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size;
-	flag CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size_is_initialized=FALSE;
-	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested;
-	asn1SccUint intVal_dummy_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type;
 	static byte arr[cfdpPayloadData_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	BitStream bitStrm;
+	asn1SccUint CfdpPDU_payload_file_directive_directive_code;
+	flag CfdpPDU_payload_file_directive_directive_code_is_initialized=FALSE;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_delivery_code;
@@ -7086,6 +7073,10 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_directive_subtype_code;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_transaction_status;
+	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size;
+	flag CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_source_file_name_size_is_initialized=FALSE;
+	asn1SccUint CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size;
+	flag CfdpPDU_payload_file_directive_file_directive_pdu_metadata_pdu_destination_file_name_size_is_initialized=FALSE;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_closure_requested;
 	asn1SccUint intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type;
     *pErrCode = 0;
@@ -7256,10 +7247,10 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 11UL;
 	                                	    	        break;
 	                                	    	    case ConditionCode_suspend_request_received:
-	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 12UL;
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 14UL;
 	                                	    	        break;
 	                                	    	    case ConditionCode_cancel_request_received:
-	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 13UL;
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_eof_pdu_condition_code = 15UL;
 	                                	    	        break;
 	                                	    	    default:                                    /*COVERAGE_IGNORE*/
 	                                	    	        ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -7324,10 +7315,10 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 11UL;
 	                                	    	        break;
 	                                	    	    case ConditionCode_suspend_request_received:
-	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 12UL;
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 14UL;
 	                                	    	        break;
 	                                	    	    case ConditionCode_cancel_request_received:
-	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 13UL;
+	                                	    	        intVal_pVal_payload_u_file_directive_file_directive_pdu_u_finished_pdu_condition_code = 15UL;
 	                                	    	        break;
 	                                	    	    default:                                    /*COVERAGE_IGNORE*/
 	                                	    	        ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -7443,10 +7434,10 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 11UL;
 	                                	    	                break;
 	                                	    	            case ConditionCode_suspend_request_received:
-	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 12UL;
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 14UL;
 	                                	    	                break;
 	                                	    	            case ConditionCode_cancel_request_received:
-	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 13UL;
+	                                	    	                intVal_pVal_payload_u_file_directive_file_directive_pdu_u_ack_pdu_condition_code = 15UL;
 	                                	    	                break;
 	                                	    	            default:                                    /*COVERAGE_IGNORE*/
 	                                	    	                ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -7523,7 +7514,7 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                	    	                    intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type = 0UL;
 	                                	    	                    break;
 	                                	    	                case ChecksumType_none:
-	                                	    	                    intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type = 1UL;
+	                                	    	                    intVal_pVal_payload_u_file_directive_file_directive_pdu_u_metadata_pdu_checksum_type = 15UL;
 	                                	    	                    break;
 	                                	    	                default:                                    /*COVERAGE_IGNORE*/
 	                                	    	                    ret = FALSE;                            /*COVERAGE_IGNORE*/
@@ -7595,7 +7586,6 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 	                                    ret = FALSE;                    /*COVERAGE_IGNORE*/
 	                                }
 	                                pBitStrm = pBitStrm_save;
-	                              //ret = cfdpPayloadData_ACN_Encode((&(pVal->payload)), &bitStrm, pErrCode, FALSE);
 	                            }
 	                            if (ret) {
 	                            	CfdpPDU_pdu_header_pdu_data_field_length = bitStrm.currentBit == 0 ? bitStrm.currentByte : (bitStrm.currentByte + 1);
@@ -7882,7 +7872,7 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	    /*Decode payload */
 	    /*open new scope to declare some variables*/
 	    {
-	    	/*decode to a temporary bitstream*/
+	    	
 	    	static byte arr[cfdpPayloadData_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	        BitStream* pBitStrm_save = pBitStrm;
 	    	BitStream bitStrm;
@@ -7890,6 +7880,7 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	    	ret = (int)CfdpPDU_pdu_header_pdu_data_field_length <= cfdpPayloadData_REQUIRED_BYTES_FOR_ACN_ENCODING;
 	    	*pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_2;
 	    	if (ret) {
+	    		/*decode to the temporary bitstream buffer */
 	    		ret = BitStream_DecodeOctetString_no_length(pBitStrm, arr, (int)CfdpPDU_pdu_header_pdu_data_field_length);
 	    		*pErrCode = ret ? 0 : ERR_ACN_DECODE_CFDPPDU_PAYLOAD_2;
 	    		if (ret) {
@@ -7946,10 +7937,10 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	                                    case 11:
 	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_unsupported_checksum_type;
 	                                        break;
-	                                    case 12:
+	                                    case 14:
 	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_suspend_request_received;
 	                                        break;
-	                                    case 13:
+	                                    case 15:
 	                                        pVal->payload.u.file_directive.file_directive_pdu.u.eof_pdu.condition_code = ConditionCode_cancel_request_received;
 	                                        break;
 	                                default:                                    /*COVERAGE_IGNORE*/
@@ -8022,10 +8013,10 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	                                    case 11:
 	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_unsupported_checksum_type;
 	                                        break;
-	                                    case 12:
+	                                    case 14:
 	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_suspend_request_received;
 	                                        break;
-	                                    case 13:
+	                                    case 15:
 	                                        pVal->payload.u.file_directive.file_directive_pdu.u.finished_pdu.condition_code = ConditionCode_cancel_request_received;
 	                                        break;
 	                                default:                                    /*COVERAGE_IGNORE*/
@@ -8151,10 +8142,10 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	                                            case 11:
 	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_unsupported_checksum_type;
 	                                                break;
-	                                            case 12:
+	                                            case 14:
 	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_suspend_request_received;
 	                                                break;
-	                                            case 13:
+	                                            case 15:
 	                                                pVal->payload.u.file_directive.file_directive_pdu.u.ack_pdu.condition_code = ConditionCode_cancel_request_received;
 	                                                break;
 	                                        default:                                    /*COVERAGE_IGNORE*/
@@ -8247,7 +8238,7 @@ flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCod
 	                                                case 0:
 	                                                    pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type = ChecksumType_modular;
 	                                                    break;
-	                                                case 1:
+	                                                case 15:
 	                                                    pVal->payload.u.file_directive.file_directive_pdu.u.metadata_pdu.checksum_type = ChecksumType_none;
 	                                                    break;
 	                                            default:                                    /*COVERAGE_IGNORE*/
