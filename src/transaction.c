@@ -83,3 +83,13 @@ bool transaction_get_file_segment(struct transaction *transaction,
 
 	return true;
 }
+
+uint32_t transaction_get_messages_to_user_count(struct transaction *transaction)
+{
+	return transaction->messages_to_user_count;
+}
+
+struct message_to_user transaction_get_message_to_user(struct transaction *transaction, uint32_t index)
+{
+	return transaction->messages_to_user[index];
+}

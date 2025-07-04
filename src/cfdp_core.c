@@ -140,6 +140,7 @@ struct transaction_id cfdp_core_put(struct cfdp_core *core,
 	    .source_entity_id = core->entity_id,
 	    .seq_number = core->transaction_sequence_number,
 	    .destination_entity_id = destination_entity_id,
+		.messages_to_user_count = 0
 	};
 
 	strncpy(transaction.source_filename, source_filename,
@@ -468,6 +469,11 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 		return;
 	}
 
+	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {
+		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
+		return;
+	}
+
 	// This is done to properly initialize file_data.nCount
 	if (pdu.payload.kind == PayloadData_file_data_PRESENT) {
 		cfdpFileDataPDU *file_data_pdu =
@@ -475,10 +481,15 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 		file_data_pdu->file_data
 		    .arr[file_data_pdu->file_data.nCount - 1] = buf[count - 1];
 	}
+	else if (pdu.payload.kind == PayloadData_file_directive_PRESENT && 
+			 pdu.payload.u.file_directive.file_directive_pdu.kind == FileDirectivePDU_metadata_pdu_PRESENT){
 
-	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {
-		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
-		return;
+		const int header_with_directive_code_size = 9 + 2 * pdu.header.source_entity_id.nCount + pdu.header.transaction_sequence_number.nCount;
+		const int metadata_pdu_size = 7 + pdu.payload.u.file_directive.file_directive_pdu.u.metadata_pdu.source_file_name.nCount + pdu.payload.u.file_directive.file_directive_pdu.u.metadata_pdu.destination_file_name.nCount;
+
+		if(header_with_directive_code_size + metadata_pdu_size != count){
+			
+		}
 	}
 
 	struct transaction_id transaction_id;

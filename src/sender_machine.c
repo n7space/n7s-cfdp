@@ -45,6 +45,65 @@ static cfdpPDUHeader create_pdu_header(struct sender_machine *sender_machine)
 	return header;
 }
 
+static void append_messages_to_user_to_metada_pdu(struct sender_machine *sender_machine, BitStream *bit_stream)
+{
+	const int message_to_user_count = transaction_get_messages_to_user_count(&sender_machine->transaction);
+
+	for(int i = 0; i < message_to_user_count; i++){
+		struct message_to_user message_to_user = transaction_get_message_to_user(&sender_machine->transaction, i);
+		cfdpTLV tlv;
+		tlv.length_value.kind = TLV_length_value_message_to_user_PRESENT;
+
+		switch(message_to_user.message_to_user_type) {
+			case DIRECTORY_LISTING_REQUEST: {
+				tlv.length_value.u.message_to_user.value.message_to_user.kind = MessageToUser_directory_listing_request_PRESENT;
+
+				strncpy((char *)tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_name.arr,
+					message_to_user.message_to_user_union.directory_listing_request.directory_name,
+					MAX_LISTING_FILE_NAME_SIZE);
+				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_name.nCount = 
+					strlen((const char *)message_to_user.message_to_user_union.directory_listing_request.directory_name);
+				break;
+			}
+			case DIRECTORY_LISTING_RESPONSE: {
+				tlv.length_value.u.message_to_user.value.message_to_user.kind = MessageToUser_directory_listing_response_PRESENT;
+
+				if(message_to_user.message_to_user_union.directory_listing_response.listing_response_code == LISTING_SUCCESSFUL){
+					tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.listing_response_code = cfdpListingResponseCode_successful;
+				}
+				else if (message_to_user.message_to_user_union.directory_listing_response.listing_response_code == LISTING_UNSUCCESSFUL) {
+					tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.listing_response_code = cfdpListingResponseCode_unsuccessful;
+				}
+
+				strncpy((char *)tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.directory_name.arr,
+					message_to_user.message_to_user_union.directory_listing_response.directory_name,
+					MAX_LISTING_FILE_NAME_SIZE);
+				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.directory_name.nCount = 
+					strlen((const char *)message_to_user.message_to_user_union.directory_listing_response.directory_name);
+				break;
+			}
+			default: {
+				if (sender_machine->core->cfdp_core_error_callback !=
+			    	NULL) {
+					sender_machine->core->cfdp_core_error_callback(
+				    sender_machine->core, UNSUPPORTED_ACTION,
+				    0);
+				}
+				return;
+			}
+		}
+
+		int error_code;
+		if (!cfdpTLV_ACN_Encode(&tlv, bit_stream, &error_code, true)) {
+			if (sender_machine->core->cfdp_core_error_callback != NULL) {
+				sender_machine->core->cfdp_core_error_callback(
+			    sender_machine->core, ASN1SCC_ERROR, error_code);
+			}
+			return;
+		}
+	}
+}
+
 void sender_machine_init(struct sender_machine *sender_machine,
 			 struct transaction transaction)
 {
@@ -95,9 +154,9 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	pdu.payload.u.file_directive.file_directive_pdu.u.metadata_pdu =
 	    metadata_pdu;
 
-	unsigned char buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
+	unsigned char buf[PDU_BUFFER_SIZE];
 	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
-	memset(buf, 0x0, (size_t)size);
+	memset(buf, 0x0, (size_t)PDU_BUFFER_SIZE);
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, size);
 	int error_code;
@@ -110,6 +169,8 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 		return;
 	}
 
+	append_messages_to_user_to_metada_pdu(sender_machine, &bit_stream);
+	
 	sender_machine->core->transport->transport_send_pdu(
 	    bit_stream.buf, bit_stream.currentByte);
 }
