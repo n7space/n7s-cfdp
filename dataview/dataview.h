@@ -1296,62 +1296,30 @@ flag cfdpTypeFieldCode_ACN_Encode(const cfdpTypeFieldCode* pVal, BitStream* pBit
 #define ERR_ACN_DECODE_TYPEFIELDCODE		650  /**/
 flag cfdpTypeFieldCode_ACN_Decode(cfdpTypeFieldCode* pVal, BitStream* pBitStrm, int* pErrCode);
 typedef enum {
-    MessageType_proxy_put_request = 0,
-    MessageType_proxy_message_to_user = 1,
-    MessageType_proxy_filestore_request = 2,
-    MessageType_proxy_fault_handler_override = 3,
-    MessageType_proxy_transmission_mode = 4,
-    MessageType_proxy_flow_label = 5,
-    MessageType_proxy_segmentation_control = 6,
-    MessageType_proxy_put_response = 7,
-    MessageType_proxy_filestore_response = 8,
-    MessageType_proxy_put_cancel = 9,
     MessageType_directory_listing_request = 16,
-    MessageType_directory_listing_response = 17,
-    MessageType_remote_status_report_request = 32,
-    MessageType_remote_status_report_response = 33,
-    MessageType_remote_suspend_request = 48,
-    MessageType_remote_suspend_response = 49,
-    MessageType_remote_resume_request = 56,
-    MessageType_remote_resume_response = 57
+    MessageType_directory_listing_response = 17
 } cfdpMessageType;
 
 // please use the following macros to avoid breaking code.
-#define cfdpMessageType_proxy_put_request MessageType_proxy_put_request
-#define cfdpMessageType_proxy_message_to_user MessageType_proxy_message_to_user
-#define cfdpMessageType_proxy_filestore_request MessageType_proxy_filestore_request
-#define cfdpMessageType_proxy_fault_handler_override MessageType_proxy_fault_handler_override
-#define cfdpMessageType_proxy_transmission_mode MessageType_proxy_transmission_mode
-#define cfdpMessageType_proxy_flow_label MessageType_proxy_flow_label
-#define cfdpMessageType_proxy_segmentation_control MessageType_proxy_segmentation_control
-#define cfdpMessageType_proxy_put_response MessageType_proxy_put_response
-#define cfdpMessageType_proxy_filestore_response MessageType_proxy_filestore_response
-#define cfdpMessageType_proxy_put_cancel MessageType_proxy_put_cancel
 #define cfdpMessageType_directory_listing_request MessageType_directory_listing_request
 #define cfdpMessageType_directory_listing_response MessageType_directory_listing_response
-#define cfdpMessageType_remote_status_report_request MessageType_remote_status_report_request
-#define cfdpMessageType_remote_status_report_response MessageType_remote_status_report_response
-#define cfdpMessageType_remote_suspend_request MessageType_remote_suspend_request
-#define cfdpMessageType_remote_suspend_response MessageType_remote_suspend_response
-#define cfdpMessageType_remote_resume_request MessageType_remote_resume_request
-#define cfdpMessageType_remote_resume_response MessageType_remote_resume_response
 
 flag cfdpMessageType_Equal(const cfdpMessageType* pVal1, const cfdpMessageType* pVal2);
 
-#define ERR_MESSAGETYPE		651  /*proxy-put-request | proxy-message-to-user | proxy-filestore-request | proxy-fault-handler-override | proxy-transmission-mode | proxy-flow-label | proxy-segmentation-control | proxy-put-response | proxy-filestore-response | proxy-put-cancel | directory-listing-request | directory-listing-response | remote-status-report-request | remote-status-report-response | remote-suspend-request | remote-suspend-response | remote-resume-request | remote-resume-response*/
+#define ERR_MESSAGETYPE		651  /*directory-listing-request | directory-listing-response*/
 flag cfdpMessageType_IsConstraintValid(const cfdpMessageType* pVal, int* pErrCode);
 
 #ifdef __cplusplus
 extern const cfdpMessageType cfdpMessageType_constant;
 #else
-#define cfdpMessageType_constant MessageType_proxy_put_request
+#define cfdpMessageType_constant MessageType_directory_listing_request
 #endif
 
 void cfdpMessageType_Initialize(cfdpMessageType* pVal);
 
 #define ERR_UPER_ENCODE_MESSAGETYPE		652  /**/
 #define cfdpMessageType_REQUIRED_BYTES_FOR_ENCODING       1
-#define cfdpMessageType_REQUIRED_BITS_FOR_ENCODING        5
+#define cfdpMessageType_REQUIRED_BITS_FOR_ENCODING        1
 
 flag cfdpMessageType_Encode(const cfdpMessageType* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
@@ -2074,45 +2042,458 @@ flag cfdpCfdpPDU_ACN_Encode(const cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* p
 #define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DATA		989  /**/
 #define ERR_ACN_DECODE_CFDPPDU_PAYLOAD_FILE_DATA_FILE_DATA_PDU		984  /**/
 flag cfdpCfdpPDU_ACN_Decode(cfdpCfdpPDU* pVal, BitStream* pBitStrm, int* pErrCode);
-typedef struct {
-    int nCount;
-    byte arr[32];
-} cfdpOptions;
+typedef enum {
+    ListingResponseCode_successful = 0,
+    ListingResponseCode_unsuccessful = 1
+} cfdpListingResponseCode;
 
+// please use the following macros to avoid breaking code.
+#define cfdpListingResponseCode_successful ListingResponseCode_successful
+#define cfdpListingResponseCode_unsuccessful ListingResponseCode_unsuccessful
 
-flag cfdpOptions_Equal(const cfdpOptions* pVal1, const cfdpOptions* pVal2);
+flag cfdpListingResponseCode_Equal(const cfdpListingResponseCode* pVal1, const cfdpListingResponseCode* pVal2);
 
-#define ERR_OPTIONS		1097  /*(SIZE(0..32))*/
-flag cfdpOptions_IsConstraintValid(const cfdpOptions* pVal, int* pErrCode);
+#define ERR_LISTINGRESPONSECODE		1097  /*successful | unsuccessful*/
+flag cfdpListingResponseCode_IsConstraintValid(const cfdpListingResponseCode* pVal, int* pErrCode);
 
 #ifdef __cplusplus
-extern const cfdpOptions cfdpOptions_constant;
+extern const cfdpListingResponseCode cfdpListingResponseCode_constant;
 #else
-#define cfdpOptions_constant {.nCount = 0, .arr  = {[0 ... 32-1] = 0 }}
+#define cfdpListingResponseCode_constant ListingResponseCode_successful
 #endif
 
-void cfdpOptions_Initialize(cfdpOptions* pVal);
+void cfdpListingResponseCode_Initialize(cfdpListingResponseCode* pVal);
 
-#define ERR_UPER_ENCODE_OPTIONS		1098  /**/
-#define cfdpOptions_REQUIRED_BYTES_FOR_ENCODING       33
-#define cfdpOptions_REQUIRED_BITS_FOR_ENCODING        262
+#define ERR_UPER_ENCODE_LISTINGRESPONSECODE		1098  /**/
+#define cfdpListingResponseCode_REQUIRED_BYTES_FOR_ENCODING       1
+#define cfdpListingResponseCode_REQUIRED_BITS_FOR_ENCODING        1
 
-flag cfdpOptions_Encode(const cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+flag cfdpListingResponseCode_Encode(const cfdpListingResponseCode* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_UPER_DECODE_OPTIONS		1099  /**/
-flag cfdpOptions_Decode(cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode);
+#define ERR_UPER_DECODE_LISTINGRESPONSECODE		1099  /**/
+flag cfdpListingResponseCode_Decode(cfdpListingResponseCode* pVal, BitStream* pBitStrm, int* pErrCode);
 
-#define cfdpOptions_REQUIRED_BYTES_FOR_ACN_ENCODING       33
-#define cfdpOptions_REQUIRED_BITS_FOR_ACN_ENCODING        262
+#define cfdpListingResponseCode_REQUIRED_BYTES_FOR_ACN_ENCODING       1
+#define cfdpListingResponseCode_REQUIRED_BITS_FOR_ACN_ENCODING        1
 
-#define ERR_ACN_ENCODE_OPTIONS		1100  /**/
+#define ERR_ACN_ENCODE_LISTINGRESPONSECODE		1100  /**/
 
-flag cfdpOptions_ACN_Encode(const cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+flag cfdpListingResponseCode_ACN_Encode(const cfdpListingResponseCode* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
 
-#define ERR_ACN_DECODE_OPTIONS		1101  /**/
-flag cfdpOptions_ACN_Decode(cfdpOptions* pVal, BitStream* pBitStrm, int* pErrCode);
+#define ERR_ACN_DECODE_LISTINGRESPONSECODE		1101  /**/
+flag cfdpListingResponseCode_ACN_Decode(cfdpListingResponseCode* pVal, BitStream* pBitStrm, int* pErrCode);
+typedef asn1SccUint cfdpListingFileNameSize;
+
+
+flag cfdpListingFileNameSize_Equal(const cfdpListingFileNameSize* pVal1, const cfdpListingFileNameSize* pVal2);
+
+#define ERR_LISTINGFILENAMESIZE		1102  /*(0..maxListingFileNameSizeLength)*/
+flag cfdpListingFileNameSize_IsConstraintValid(const cfdpListingFileNameSize* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpListingFileNameSize cfdpListingFileNameSize_constant;
+#else
+#define cfdpListingFileNameSize_constant 0UL
+#endif
+
+void cfdpListingFileNameSize_Initialize(cfdpListingFileNameSize* pVal);
+
+#define ERR_UPER_ENCODE_LISTINGFILENAMESIZE		1103  /**/
+#define cfdpListingFileNameSize_REQUIRED_BYTES_FOR_ENCODING       1
+#define cfdpListingFileNameSize_REQUIRED_BITS_FOR_ENCODING        7
+
+flag cfdpListingFileNameSize_Encode(const cfdpListingFileNameSize* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_LISTINGFILENAMESIZE		1104  /**/
+flag cfdpListingFileNameSize_Decode(cfdpListingFileNameSize* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define cfdpListingFileNameSize_REQUIRED_BYTES_FOR_ACN_ENCODING       1
+#define cfdpListingFileNameSize_REQUIRED_BITS_FOR_ACN_ENCODING        7
+
+#define ERR_ACN_ENCODE_LISTINGFILENAMESIZE		1105  /**/
+
+flag cfdpListingFileNameSize_ACN_Encode(const cfdpListingFileNameSize* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_LISTINGFILENAMESIZE		1106  /**/
+flag cfdpListingFileNameSize_ACN_Decode(cfdpListingFileNameSize* pVal, BitStream* pBitStrm, int* pErrCode);
+typedef struct {
+    int nCount;
+    byte arr[120];
+} cfdpListingFileName;
+
+
+flag cfdpListingFileName_Equal(const cfdpListingFileName* pVal1, const cfdpListingFileName* pVal2);
+
+#define ERR_LISTINGFILENAME		1107  /*(SIZE(0..maxListingFileNameSizeLength))*/
+flag cfdpListingFileName_IsConstraintValid(const cfdpListingFileName* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpListingFileName cfdpListingFileName_constant;
+#else
+#define cfdpListingFileName_constant {.nCount = 0, .arr  = {[0 ... 120-1] = 0 }}
+#endif
+
+void cfdpListingFileName_Initialize(cfdpListingFileName* pVal);
+
+#define ERR_UPER_ENCODE_LISTINGFILENAME		1108  /**/
+#define cfdpListingFileName_REQUIRED_BYTES_FOR_ENCODING       121
+#define cfdpListingFileName_REQUIRED_BITS_FOR_ENCODING        967
+
+flag cfdpListingFileName_Encode(const cfdpListingFileName* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_LISTINGFILENAME		1109  /**/
+flag cfdpListingFileName_Decode(cfdpListingFileName* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define cfdpListingFileName_REQUIRED_BYTES_FOR_ACN_ENCODING       121
+#define cfdpListingFileName_REQUIRED_BITS_FOR_ACN_ENCODING        967
+
+#define ERR_ACN_ENCODE_LISTINGFILENAME		1110  /**/
+
+flag cfdpListingFileName_ACN_Encode(const cfdpListingFileName* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_LISTINGFILENAME		1111  /**/
+flag cfdpListingFileName_ACN_Decode(cfdpListingFileName* pVal, BitStream* pBitStrm, int* pErrCode);
+/*-- cfdpDirectoryListingRequest --------------------------------------------*/
+typedef struct {
+    cfdpListingFileName directory_name;
+    cfdpListingFileName directory_file_name;
+
+} cfdpDirectoryListingRequest;
+
+flag cfdpDirectoryListingRequest_Equal(const cfdpDirectoryListingRequest* pVal1, const cfdpDirectoryListingRequest* pVal2);
+
+#define ERR_DIRECTORYLISTINGREQUEST		1132  /**/
+#define ERR_DIRECTORYLISTINGREQUEST_DIRECTORY_NAME_2		1119  /**/
+#define ERR_DIRECTORYLISTINGREQUEST_DIRECTORY_FILE_NAME_2		1129  /**/
+flag cfdpDirectoryListingRequest_IsConstraintValid(const cfdpDirectoryListingRequest* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpDirectoryListingRequest cfdpDirectoryListingRequest_constant;
+#else
+#define cfdpDirectoryListingRequest_constant {.directory_name = {.nCount = 0, .arr  = {[0 ... 120-1] = 0 }}, .directory_file_name = {.nCount = 0, .arr  = {[0 ... 120-1] = 0 }}}
+#endif
+
+void cfdpDirectoryListingRequest_Initialize(cfdpDirectoryListingRequest* pVal);
+
+#define ERR_UPER_ENCODE_DIRECTORYLISTINGREQUEST		1133  /**/
+#define ERR_UPER_ENCODE_DIRECTORYLISTINGREQUEST_DIRECTORY_NAME_2		1120  /**/
+#define ERR_UPER_ENCODE_DIRECTORYLISTINGREQUEST_DIRECTORY_FILE_NAME_2		1130  /**/
+#define cfdpDirectoryListingRequest_REQUIRED_BYTES_FOR_ENCODING       242
+#define cfdpDirectoryListingRequest_REQUIRED_BITS_FOR_ENCODING        1934
+
+flag cfdpDirectoryListingRequest_Encode(const cfdpDirectoryListingRequest* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_DIRECTORYLISTINGREQUEST		1134  /**/
+#define ERR_UPER_DECODE_DIRECTORYLISTINGREQUEST_DIRECTORY_NAME_2		1121  /**/
+#define ERR_UPER_DECODE_DIRECTORYLISTINGREQUEST_DIRECTORY_FILE_NAME_2		1131  /**/
+flag cfdpDirectoryListingRequest_Decode(cfdpDirectoryListingRequest* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define cfdpDirectoryListingRequest_REQUIRED_BYTES_FOR_ACN_ENCODING       242
+#define cfdpDirectoryListingRequest_REQUIRED_BITS_FOR_ACN_ENCODING        1936
+
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGREQUEST		1135  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGREQUEST_DIRECTORY_NAME_SIZE_UNINITIALIZED		1136  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGREQUEST_DIRECTORY_NAME_SIZE		1112  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGREQUEST_DIRECTORY_NAME		1117  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGREQUEST_DIRECTORY_FILE_NAME_SIZE_UNINITIALIZED		1137  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGREQUEST_DIRECTORY_FILE_NAME_SIZE		1122  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGREQUEST_DIRECTORY_FILE_NAME		1127  /**/
+
+flag cfdpDirectoryListingRequest_ACN_Encode(const cfdpDirectoryListingRequest* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_DIRECTORYLISTINGREQUEST		1138  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGREQUEST_DIRECTORY_NAME_SIZE		1113  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGREQUEST_DIRECTORY_NAME		1118  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGREQUEST_DIRECTORY_FILE_NAME_SIZE		1123  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGREQUEST_DIRECTORY_FILE_NAME		1128  /**/
+flag cfdpDirectoryListingRequest_ACN_Decode(cfdpDirectoryListingRequest* pVal, BitStream* pBitStrm, int* pErrCode);
+/*-- cfdpDirectoryListingResponse --------------------------------------------*/
+typedef struct {
+    cfdpListingResponseCode listing_response_code;
+    cfdpListingFileName directory_name;
+    cfdpListingFileName directory_file_name;
+
+} cfdpDirectoryListingResponse;
+
+flag cfdpDirectoryListingResponse_Equal(const cfdpDirectoryListingResponse* pVal1, const cfdpDirectoryListingResponse* pVal2);
+
+#define ERR_DIRECTORYLISTINGRESPONSE		1169  /**/
+#define ERR_DIRECTORYLISTINGRESPONSE_LISTING_RESPONSE_CODE_2		1144  /**/
+#define ERR_DIRECTORYLISTINGRESPONSE_DIRECTORY_NAME_2		1156  /**/
+#define ERR_DIRECTORYLISTINGRESPONSE_DIRECTORY_FILE_NAME_2		1166  /**/
+flag cfdpDirectoryListingResponse_IsConstraintValid(const cfdpDirectoryListingResponse* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpDirectoryListingResponse cfdpDirectoryListingResponse_constant;
+#else
+#define cfdpDirectoryListingResponse_constant {.listing_response_code = ListingResponseCode_successful, .directory_name = {.nCount = 0, .arr  = {[0 ... 120-1] = 0 }}, .directory_file_name = {.nCount = 0, .arr  = {[0 ... 120-1] = 0 }}}
+#endif
+
+void cfdpDirectoryListingResponse_Initialize(cfdpDirectoryListingResponse* pVal);
+
+#define ERR_UPER_ENCODE_DIRECTORYLISTINGRESPONSE		1170  /**/
+#define ERR_UPER_ENCODE_DIRECTORYLISTINGRESPONSE_LISTING_RESPONSE_CODE_2		1145  /**/
+#define ERR_UPER_ENCODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_NAME_2		1157  /**/
+#define ERR_UPER_ENCODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_FILE_NAME_2		1167  /**/
+#define cfdpDirectoryListingResponse_REQUIRED_BYTES_FOR_ENCODING       242
+#define cfdpDirectoryListingResponse_REQUIRED_BITS_FOR_ENCODING        1935
+
+flag cfdpDirectoryListingResponse_Encode(const cfdpDirectoryListingResponse* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_DIRECTORYLISTINGRESPONSE		1171  /**/
+#define ERR_UPER_DECODE_DIRECTORYLISTINGRESPONSE_LISTING_RESPONSE_CODE_2		1146  /**/
+#define ERR_UPER_DECODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_NAME_2		1158  /**/
+#define ERR_UPER_DECODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_FILE_NAME_2		1168  /**/
+flag cfdpDirectoryListingResponse_Decode(cfdpDirectoryListingResponse* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define cfdpDirectoryListingResponse_REQUIRED_BYTES_FOR_ACN_ENCODING       243
+#define cfdpDirectoryListingResponse_REQUIRED_BITS_FOR_ACN_ENCODING        1944
+
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGRESPONSE		1172  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGRESPONSE_LISTING_RESPONSE_CODE		1142  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGRESPONSE_SPARE		1147  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_NAME_SIZE_UNINITIALIZED		1173  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_NAME_SIZE		1149  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_NAME		1154  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_FILE_NAME_SIZE_UNINITIALIZED		1174  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_FILE_NAME_SIZE		1159  /**/
+#define ERR_ACN_ENCODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_FILE_NAME		1164  /**/
+
+flag cfdpDirectoryListingResponse_ACN_Encode(const cfdpDirectoryListingResponse* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_DIRECTORYLISTINGRESPONSE		1175  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGRESPONSE_LISTING_RESPONSE_CODE		1143  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGRESPONSE_SPARE		1148  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_NAME_SIZE		1150  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_NAME		1155  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_FILE_NAME_SIZE		1160  /**/
+#define ERR_ACN_DECODE_DIRECTORYLISTINGRESPONSE_DIRECTORY_FILE_NAME		1165  /**/
+flag cfdpDirectoryListingResponse_ACN_Decode(cfdpDirectoryListingResponse* pVal, BitStream* pBitStrm, int* pErrCode);
+/*-- cfdpMessageToUser --------------------------------------------*/
+
+typedef enum {
+    MessageToUser_NONE,
+    MessageToUser_directory_listing_request_PRESENT,
+    MessageToUser_directory_listing_response_PRESENT
+} cfdpMessageToUser_selection;
+
+typedef union {
+    cfdpDirectoryListingRequest directory_listing_request;
+    cfdpDirectoryListingResponse directory_listing_response;
+} cfdpMessageToUser_unchecked_union;
+
+typedef struct {
+    cfdpMessageToUser_selection kind;
+
+    cfdpMessageToUser_unchecked_union u;
+} cfdpMessageToUser;
+
+flag cfdpMessageToUser_Equal(const cfdpMessageToUser* pVal1, const cfdpMessageToUser* pVal2);
+
+#define ERR_MESSAGETOUSER		1186  /**/
+#define ERR_MESSAGETOUSER_DIRECTORY_LISTING_REQUEST		1176  /**/
+#define ERR_MESSAGETOUSER_DIRECTORY_LISTING_RESPONSE		1181  /**/
+flag cfdpMessageToUser_IsConstraintValid(const cfdpMessageToUser* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpMessageToUser cfdpMessageToUser_constant;
+#else
+#define cfdpMessageToUser_constant {.kind = MessageToUser_directory_listing_request_PRESENT, .u.directory_listing_request = cfdpDirectoryListingRequest_constant}
+#endif
+
+void cfdpMessageToUser_Initialize(cfdpMessageToUser* pVal);
+
+#define ERR_UPER_ENCODE_MESSAGETOUSER		1187  /**/
+#define ERR_UPER_ENCODE_MESSAGETOUSER_DIRECTORY_LISTING_REQUEST		1177  /**/
+#define ERR_UPER_ENCODE_MESSAGETOUSER_DIRECTORY_LISTING_RESPONSE		1182  /**/
+#define cfdpMessageToUser_REQUIRED_BYTES_FOR_ENCODING       242
+#define cfdpMessageToUser_REQUIRED_BITS_FOR_ENCODING        1936
+
+flag cfdpMessageToUser_Encode(const cfdpMessageToUser* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_MESSAGETOUSER		1188  /**/
+#define ERR_UPER_DECODE_MESSAGETOUSER_DIRECTORY_LISTING_REQUEST		1178  /**/
+#define ERR_UPER_DECODE_MESSAGETOUSER_DIRECTORY_LISTING_RESPONSE		1183  /**/
+flag cfdpMessageToUser_Decode(cfdpMessageToUser* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define cfdpMessageToUser_REQUIRED_BYTES_FOR_ACN_ENCODING       244
+#define cfdpMessageToUser_REQUIRED_BITS_FOR_ACN_ENCODING        1945
+
+#define ERR_ACN_ENCODE_MESSAGETOUSER		1189  /**/
+#define ERR_ACN_ENCODE_MESSAGETOUSER_DIRECTORY_LISTING_REQUEST		1179  /**/
+#define ERR_ACN_ENCODE_MESSAGETOUSER_DIRECTORY_LISTING_RESPONSE		1184  /**/
+
+flag cfdpMessageToUser_ACN_Encode(const cfdpMessageToUser* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_MESSAGETOUSER		1190  /**/
+#define ERR_ACN_DECODE_MESSAGETOUSER_DIRECTORY_LISTING_REQUEST		1180  /**/
+#define ERR_ACN_DECODE_MESSAGETOUSER_DIRECTORY_LISTING_RESPONSE		1185  /**/
+flag cfdpMessageToUser_ACN_Decode(cfdpMessageToUser* pVal, BitStream* pBitStrm, int* pErrCode);
+/*-- cfdpMessageToUserWithHeader --------------------------------------------*/
+typedef struct {
+    cfdpMessageToUser message_to_user;
+
+} cfdpMessageToUserWithHeader;
+
+flag cfdpMessageToUserWithHeader_Equal(const cfdpMessageToUserWithHeader* pVal1, const cfdpMessageToUserWithHeader* pVal2);
+
+#define ERR_MESSAGETOUSERWITHHEADER		1213  /**/
+#define ERR_MESSAGETOUSERWITHHEADER_MESSAGE_TO_USER_2		1210  /**/
+flag cfdpMessageToUserWithHeader_IsConstraintValid(const cfdpMessageToUserWithHeader* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpMessageToUserWithHeader cfdpMessageToUserWithHeader_constant;
+#else
+#define cfdpMessageToUserWithHeader_constant {.message_to_user = cfdpMessageToUser_constant}
+#endif
+
+void cfdpMessageToUserWithHeader_Initialize(cfdpMessageToUserWithHeader* pVal);
+
+#define ERR_UPER_ENCODE_MESSAGETOUSERWITHHEADER		1214  /**/
+#define ERR_UPER_ENCODE_MESSAGETOUSERWITHHEADER_MESSAGE_TO_USER_2		1211  /**/
+#define cfdpMessageToUserWithHeader_REQUIRED_BYTES_FOR_ENCODING       242
+#define cfdpMessageToUserWithHeader_REQUIRED_BITS_FOR_ENCODING        1936
+
+flag cfdpMessageToUserWithHeader_Encode(const cfdpMessageToUserWithHeader* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_MESSAGETOUSERWITHHEADER		1215  /**/
+#define ERR_UPER_DECODE_MESSAGETOUSERWITHHEADER_MESSAGE_TO_USER_2		1212  /**/
+flag cfdpMessageToUserWithHeader_Decode(cfdpMessageToUserWithHeader* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define cfdpMessageToUserWithHeader_REQUIRED_BYTES_FOR_ACN_ENCODING       248
+#define cfdpMessageToUserWithHeader_REQUIRED_BITS_FOR_ACN_ENCODING        1984
+
+#define ERR_ACN_ENCODE_MESSAGETOUSERWITHHEADER		1216  /**/
+#define ERR_ACN_ENCODE_MESSAGETOUSERWITHHEADER_MESSAGE_IDENTIFIER		1191  /**/
+#define ERR_ACN_ENCODE_MESSAGETOUSERWITHHEADER_MESSAGE_TYPE_UNINITIALIZED		1217  /**/
+#define ERR_ACN_ENCODE_MESSAGETOUSERWITHHEADER_MESSAGE_TYPE		1193  /**/
+#define ERR_ACN_ENCODE_MESSAGETOUSERWITHHEADER_MESSAGE_TO_USER		1208  /**/
+#define ERR_ACN_ENCODE_MESSAGETOUSERWITHHEADER_MESSAGE_TO_USER_DIRECTORY_LISTING_REQUEST		1198  /**/
+#define ERR_ACN_ENCODE_MESSAGETOUSERWITHHEADER_MESSAGE_TO_USER_DIRECTORY_LISTING_RESPONSE		1203  /**/
+
+flag cfdpMessageToUserWithHeader_ACN_Encode(const cfdpMessageToUserWithHeader* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_MESSAGETOUSERWITHHEADER		1218  /**/
+#define ERR_ACN_DECODE_MESSAGETOUSERWITHHEADER_MESSAGE_IDENTIFIER		1192  /**/
+#define ERR_ACN_DECODE_MESSAGETOUSERWITHHEADER_MESSAGE_TYPE		1194  /**/
+#define ERR_ACN_DECODE_MESSAGETOUSERWITHHEADER_MESSAGE_TO_USER		1209  /**/
+#define ERR_ACN_DECODE_MESSAGETOUSERWITHHEADER_MESSAGE_TO_USER_DIRECTORY_LISTING_REQUEST		1199  /**/
+#define ERR_ACN_DECODE_MESSAGETOUSERWITHHEADER_MESSAGE_TO_USER_DIRECTORY_LISTING_RESPONSE		1204  /**/
+flag cfdpMessageToUserWithHeader_ACN_Decode(cfdpMessageToUserWithHeader* pVal, BitStream* pBitStrm, int* pErrCode);
+/*-- cfdpTLV --------------------------------------------*/
+/*-- cfdpTLV_length_value --------------------------------------------*/
+/*-- cfdpTLV_length_value_message_to_user --------------------------------------------*/
+typedef struct {
+    cfdpMessageToUserWithHeader value;
+
+} cfdpTLV_length_value_message_to_user;
+
+typedef enum {
+    TLV_length_value_NONE,
+    TLV_length_value_message_to_user_PRESENT
+} cfdpTLV_length_value_selection;
+
+typedef union {
+    cfdpTLV_length_value_message_to_user message_to_user;
+} cfdpTLV_length_value_unchecked_union;
+
+typedef struct {
+    cfdpTLV_length_value_selection kind;
+
+    cfdpTLV_length_value_unchecked_union u;
+} cfdpTLV_length_value;
+typedef struct {
+    cfdpTLV_length_value length_value;
+
+} cfdpTLV;
+
+flag cfdpTLV_length_value_message_to_user_Equal(const cfdpTLV_length_value_message_to_user* pVal1, const cfdpTLV_length_value_message_to_user* pVal2);
+
+flag cfdpTLV_length_value_Equal(const cfdpTLV_length_value* pVal1, const cfdpTLV_length_value* pVal2);
+
+flag cfdpTLV_Equal(const cfdpTLV* pVal1, const cfdpTLV* pVal2);
+
+#define ERR_TLV_LENGTH_VALUE_MESSAGE_TO_USER		1256  /**/
+#define ERR_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_2		1248  /**/
+flag cfdpTLV_length_value_message_to_user_IsConstraintValid(const cfdpTLV_length_value_message_to_user* pVal, int* pErrCode);
+
+#define ERR_TLV_LENGTH_VALUE		1261  /**/
+flag cfdpTLV_length_value_IsConstraintValid(const cfdpTLV_length_value* pVal, int* pErrCode);
+
+#define ERR_TLV		1266  /**/
+flag cfdpTLV_IsConstraintValid(const cfdpTLV* pVal, int* pErrCode);
+
+#ifdef __cplusplus
+extern const cfdpTLV_length_value_message_to_user cfdpTLV_length_value_message_to_user_constant;
+#else
+#define cfdpTLV_length_value_message_to_user_constant {.value = cfdpMessageToUserWithHeader_constant}
+#endif
+#ifdef __cplusplus
+extern const cfdpTLV_length_value cfdpTLV_length_value_constant;
+#else
+#define cfdpTLV_length_value_constant {.kind = TLV_length_value_message_to_user_PRESENT, .u.message_to_user = cfdpTLV_length_value_message_to_user_constant}
+#endif
+#ifdef __cplusplus
+extern const cfdpTLV cfdpTLV_constant;
+#else
+#define cfdpTLV_constant {.length_value = cfdpTLV_length_value_constant}
+#endif
+
+void cfdpTLV_Initialize(cfdpTLV* pVal);
+
+#define ERR_UPER_ENCODE_TLV		1267  /**/
+#define ERR_UPER_ENCODE_TLV_LENGTH_VALUE		1262  /**/
+#define ERR_UPER_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER		1257  /**/
+#define ERR_UPER_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_2		1249  /**/
+#define cfdpTLV_REQUIRED_BYTES_FOR_ENCODING       243
+#define cfdpTLV_REQUIRED_BITS_FOR_ENCODING        1944
+
+flag cfdpTLV_Encode(const cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_UPER_DECODE_TLV		1268  /**/
+#define ERR_UPER_DECODE_TLV_LENGTH_VALUE		1263  /**/
+#define ERR_UPER_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER		1258  /**/
+#define ERR_UPER_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_2		1250  /**/
+flag cfdpTLV_Decode(cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode);
+
+#define cfdpTLV_REQUIRED_BYTES_FOR_ACN_ENCODING       250
+#define cfdpTLV_REQUIRED_BITS_FOR_ACN_ENCODING        2000
+
+#define ERR_ACN_ENCODE_TLV		1269  /**/
+#define ERR_ACN_ENCODE_TLV_TAG_UNINITIALIZED		1270  /**/
+#define ERR_ACN_ENCODE_TLV_TAG		1219  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE		1264  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER		1259  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE		1246  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_IDENTIFIER		1221  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TYPE_UNINITIALIZED		1255  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TYPE		1223  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TO_USER		1238  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TO_USER_DIRECTORY_LISTING_REQUEST		1228  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TO_USER_DIRECTORY_LISTING_RESPONSE		1233  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_LENGTH_UNINITIALIZED		1271  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_LENGTH		1253  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_2		1251  /**/
+#define ERR_ACN_ENCODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TYPE_UNINITIALIZED_2		1272  /**/
+
+flag cfdpTLV_ACN_Encode(const cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints);
+
+#define ERR_ACN_DECODE_TLV		1273  /**/
+#define ERR_ACN_DECODE_TLV_TAG		1220  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE		1265  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER		1260  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_LENGTH		1254  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_2		1252  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE		1247  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_IDENTIFIER		1222  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TYPE		1224  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TO_USER		1239  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TO_USER_DIRECTORY_LISTING_REQUEST		1229  /**/
+#define ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TO_USER_DIRECTORY_LISTING_RESPONSE		1234  /**/
+flag cfdpTLV_ACN_Decode(cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode);
 
 extern const asn1SccSint maxFileNameSizeLength;
+extern const asn1SccSint maxListingFileNameSizeLength;
 
 /* ================= Encoding/Decoding function prototypes =================
  * These functions are placed at the end of the file to make sure all types

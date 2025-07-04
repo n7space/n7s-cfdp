@@ -1,6 +1,8 @@
 #ifndef TRANSACTION_H
 #define TRANSACTION_H
 
+#include "messages_to_user.h"
+
 struct cfdp_core;
 struct filestore_cfg;
 
@@ -12,6 +14,8 @@ struct transaction {
 	uint64_t destination_entity_id;
 	char source_filename[MAX_FILE_NAME_SIZE];
 	char destination_filename[MAX_FILE_NAME_SIZE];
+	
+	union message_to_user messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];
 
 	uint32_t file_size;
 	uint32_t file_position;

@@ -3,6 +3,8 @@ BEGIN
 
 maxFileNameSizeLength INTEGER ::= 128
 
+maxListingFileNameSizeLength INTEGER ::= 120
+
 DirectiveCode ::= INTEGER (0..255)
 
 DirectiveSubtypeCode ::= ENUMERATED {
@@ -85,24 +87,8 @@ TypeFieldCode ::= ENUMERATED {
 }
 
 MessageType ::= ENUMERATED {
-   proxy-put-request (0),
-   proxy-message-to-user (1),
-   proxy-filestore-request (2),
-   proxy-fault-handler-override (3),
-   proxy-transmission-mode (4),
-   proxy-flow-label (5),
-   proxy-segmentation-control (6),
-   proxy-put-response (7),
-   proxy-filestore-response (8),
-   proxy-put-cancel (9),
    directory-listing-request (16),
-   directory-listing-response (17),
-   remote-status-report-request (32),
-   remote-status-report-response (33),
-   remote-suspend-request (48),
-   remote-suspend-response(49),
-   remote-resume-request (56),
-   remote-resume-response (57)
+   directory-listing-response (17)
 }
 
 PDUType ::= INTEGER (0 .. 1)
@@ -131,7 +117,39 @@ EntityId ::= OCTET STRING (SIZE(1..7))
 
 TransactionSequenceNumber ::= OCTET STRING (SIZE(1..7))
 
-Options ::= OCTET STRING (SIZE(0..32))
+ListingResponseCode ::= ENUMERATED {successful (0), unsuccessful (1)}
+
+ListingFileNameSize ::= INTEGER (0..maxListingFileNameSizeLength)
+
+ListingFileName ::= OCTET STRING (SIZE(0..maxListingFileNameSizeLength))
+
+DirectoryListingRequest ::= SEQUENCE {
+   directory-name ListingFileName,
+   directory-file-name ListingFileName
+}
+
+DirectoryListingResponse ::= SEQUENCE {
+   listing-response-code ListingResponseCode,
+   directory-name ListingFileName,
+   directory-file-name ListingFileName
+}
+
+MessageToUser ::= CHOICE {
+   directory-listing-request DirectoryListingRequest,
+   directory-listing-response DirectoryListingResponse
+}
+
+MessageToUserWithHeader ::= SEQUENCE {
+   message-to-user MessageToUser
+}
+
+TLV ::= SEQUENCE {
+   length-value CHOICE {
+      message-to-user SEQUENCE {
+         value OCTET STRING (CONTAINING MessageToUserWithHeader)
+      }
+   }
+}
 
 PDUHeader ::= SEQUENCE {
    version Version,

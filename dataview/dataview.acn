@@ -34,8 +34,46 @@ SegmentMetadataFlag                          [encoding pos-int, size 1, encode-v
 LengthOfTransactionSequenceNumber            [encoding pos-int, size 3]
 EntityId                                     []
 TransactionSequenceNumber                    []
+ListingResponseCode                          [encoding pos-int, size 1, encode-values]
    
 PDUHeader []
+
+DirectoryListingRequest [] {
+   directory-name-size                       ListingFileNameSize [encoding pos-int, size 8],
+   directory-name                            [size directory-name-size],
+   directory-file-name-size                  ListingFileNameSize [encoding pos-int, size 8],
+   directory-file-name                       [size directory-file-name-size]
+}
+
+DirectoryListingResponse [] {
+   listing-response-code                     [encoding pos-int, size 1, encode-values],
+   spare                                     NULL [pattern '0000000'B],
+   directory-name-size                       ListingFileNameSize [encoding pos-int, size 8],
+   directory-name                            [size directory-name-size],
+   directory-file-name-size                  ListingFileNameSize [encoding pos-int, size 8],
+   directory-file-name                       [size directory-file-name-size]
+}
+
+MessageToUserWithHeader [] {
+   message-identifier                        NULL [pattern '63666470'H], -- string 'cfdp' encoded as hex
+   message-type                              MessageType [encoding pos-int, size 8, encode-values],
+   message-to-user                           [determinant message-type]
+}
+
+MessageToUser [] {
+   directory-listing-request                 [],
+   directory-listing-response                []
+}
+
+TLV [] {
+   tag INTEGER [encoding pos-int, size 8],
+   length-value [] {
+      message-to-user [present-when tag == 2] {
+         length INTEGER [encoding pos-int, size 8],
+         value [size length]
+      }
+   }
+}
 
 EofPDU [] {
    condition-code                            [encoding pos-int, size 4],
