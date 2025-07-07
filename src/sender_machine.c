@@ -63,6 +63,12 @@ static void append_messages_to_user_to_metada_pdu(struct sender_machine *sender_
 					MAX_LISTING_FILE_NAME_SIZE);
 				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_name.nCount = 
 					strlen((const char *)message_to_user.message_to_user_union.directory_listing_request.directory_name);
+
+				strncpy((char *)tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_file_name.arr,
+					message_to_user.message_to_user_union.directory_listing_request.directory_file_name,
+					MAX_LISTING_FILE_NAME_SIZE);
+				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_file_name.nCount = 
+					strlen((const char *)message_to_user.message_to_user_union.directory_listing_request.directory_file_name);
 				break;
 			}
 			case DIRECTORY_LISTING_RESPONSE: {
@@ -80,6 +86,12 @@ static void append_messages_to_user_to_metada_pdu(struct sender_machine *sender_
 					MAX_LISTING_FILE_NAME_SIZE);
 				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.directory_name.nCount = 
 					strlen((const char *)message_to_user.message_to_user_union.directory_listing_response.directory_name);
+
+				strncpy((char *)tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.directory_file_name.arr,
+					message_to_user.message_to_user_union.directory_listing_response.directory_file_name,
+					MAX_LISTING_FILE_NAME_SIZE);
+				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.directory_file_name.nCount = 
+					strlen((const char *)message_to_user.message_to_user_union.directory_listing_response.directory_file_name);
 				break;
 			}
 			default: {

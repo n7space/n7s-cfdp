@@ -131,3 +131,44 @@ void test_delete_file(const char *filepath)
 		printf("Error: Delete file error\n");
 	}
 }
+
+bool test_filestore_dump_directory_listing_to_file(const char *dirpath, 
+		const char *dump_filepath)
+{
+	DIR  *dir  = NULL;
+    FILE *outf = NULL;
+    struct dirent *entry = NULL;
+    bool status = false;
+
+    dir = opendir(dirpath);
+    if (!dir) {
+		printf("Error: Failed to open a dirpath %s\n", dirpath);
+    	return false;
+	}
+
+    outf = fopen(dump_filepath, "w");
+    if (!outf){
+		printf("Error: Failed to open a dump_filepath %s\n", dump_filepath);
+    	closedir(dir);
+    	return false;
+	}
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (strcmp(entry->d_name, ".")  == 0 ||
+            strcmp(entry->d_name, "..") == 0)
+            continue;
+
+        if (fprintf(outf, "%s\n", entry->d_name) < 0) {
+			printf("Error: Failed to dump files listing\n");
+			fclose(outf);
+            closedir(dir);
+    		return false;
+        }
+    }
+
+
+    fclose(outf);
+    closedir(dir);
+	return true;
+
+}

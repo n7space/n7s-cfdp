@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 	test_transport_init_and_bind(&cfd_entity_sender);
 
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/medium.txt",
-		      "received_medium.txt");
+		      "received_medium.txt", 0, NULL);
 
 	while (!cfdp_core_is_done(&cfd_entity_sender)) {
 		usleep(1000 * 100);

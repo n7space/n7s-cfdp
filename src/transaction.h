@@ -37,4 +37,6 @@ bool transaction_is_file_send_complete(struct transaction *transaction);
 uint32_t transaction_get_messages_to_user_count(struct transaction *transaction);
 struct message_to_user transaction_get_message_to_user(struct transaction *transaction, uint32_t index);
 
+void transaction_process_messages_to_user(struct transaction *transaction);
+
 #endif
