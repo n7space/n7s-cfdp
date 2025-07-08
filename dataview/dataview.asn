@@ -87,6 +87,7 @@ TypeFieldCode ::= ENUMERATED {
 }
 
 MessageType ::= ENUMERATED {
+   originating-transaction-id (10),
    directory-listing-request (16),
    directory-listing-response (17)
 }
@@ -134,7 +135,13 @@ DirectoryListingResponse ::= SEQUENCE {
    directory-file-name ListingFileName
 }
 
+OriginatingTransactionId ::= SEQUENCE {
+   source-entity-id EntityId,
+   transaction-sequence-number TransactionSequenceNumber
+}
+
 MessageToUser ::= CHOICE {
+   originating-transaction-id OriginatingTransactionId,
    directory-listing-request DirectoryListingRequest,
    directory-listing-response DirectoryListingResponse
 }

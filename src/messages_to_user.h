@@ -19,14 +19,21 @@ struct directory_listing_response {
 	char directory_file_name[MAX_LISTING_FILE_NAME_SIZE];
 };
 
+struct originating_transaction_id {
+	uint64_t source_entity_id;
+	uint64_t seq_number;
+};
+
 enum MessageToUserType {
 	DIRECTORY_LISTING_REQUEST = 0,
-	DIRECTORY_LISTING_RESPONSE = 1
+	DIRECTORY_LISTING_RESPONSE = 1,
+	ORIGINATING_TRANSACTION_ID = 2,
 };
 
 union message_to_user_union {
     struct directory_listing_request directory_listing_request;
     struct directory_listing_response directory_listing_response;
+	struct originating_transaction_id originating_transaction_id;
 };
 
 struct message_to_user {

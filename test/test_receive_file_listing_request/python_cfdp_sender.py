@@ -30,12 +30,12 @@ transaction_id = cfdp_entity.put(
 
 sleep(2)
 
-if not os.path.isfile(destination_filename):
+if not os.path.isfile("test/files/listing_result.txt"):
     cfdp_entity.shutdown()
     udp_transport.unbind()
     sys.exit(-1)
 
-if not filecmp.cmp("test/files/" + source_filename, destination_filename):
+if os.path.getsize("test/files/listing_result.txt") == 0:
     cfdp_entity.shutdown()
     udp_transport.unbind()
     sys.exit(-1)

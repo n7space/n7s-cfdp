@@ -1,10 +1,19 @@
 #include "cfdp_core.h"
 #include "event.h"
-#include <stdio.h>
 
 #define FILE_DATA_INDICATION_BIT 0x10
 #define ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK 0x07
 #define FULL_MASK 0xff
+
+static uint64_t bytes_to_ulong(const byte *data, int size)
+{
+	uint64_t result = 0;
+	for (int i = 0; i < size && i < sizeof(uint64_t); i++) {
+		result <<= 8;
+		result |= data[i];
+	}
+	return result;
+}
 
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 		    struct transport *transport, const uint32_t entity_id,
@@ -148,6 +157,18 @@ static void add_message_to_user_to_transaction(struct cfdp_core *core, struct tr
 					(char *)tlv->length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_file_name.arr,
 					tlv->length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_file_name.nCount);
 			transaction->messages_to_user[index].message_to_user_union.directory_listing_request.directory_file_name[tlv->length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_file_name.nCount] = '\0';
+			transaction->messages_to_user_count++;
+			break;
+		}
+		case MessageToUser_originating_transaction_id_PRESENT: {
+			transaction->messages_to_user[index].message_to_user_type = ORIGINATING_TRANSACTION_ID;
+
+			transaction->messages_to_user[index].message_to_user_union.originating_transaction_id.source_entity_id =
+	    		bytes_to_ulong(tlv->length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.source_entity_id.arr,
+			    tlv->length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.source_entity_id.nCount);
+			transaction->messages_to_user[index].message_to_user_union.originating_transaction_id.seq_number =
+	    		bytes_to_ulong(tlv->length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.transaction_sequence_number.arr,
+			    tlv->length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.transaction_sequence_number.nCount);
 			transaction->messages_to_user_count++;
 			break;
 		}
@@ -383,16 +404,6 @@ void cfdp_core_thaw(struct cfdp_core *core, uint32_t destination_entity_id)
 {
 	cfdp_core_issue_link_state_procedure(core, destination_entity_id,
 					     E41_RECEIVED_THAW);
-}
-
-static uint64_t bytes_to_ulong(const byte *data, int size)
-{
-	uint64_t result = 0;
-	for (int i = 0; i < size && i < sizeof(uint64_t); i++) {
-		result <<= 8;
-		result |= data[i];
-	}
-	return result;
 }
 
 static struct event create_event_for_delivery(struct cfdp_core *core,

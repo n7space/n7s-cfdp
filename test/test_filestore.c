@@ -138,7 +138,6 @@ bool test_filestore_dump_directory_listing_to_file(const char *dirpath,
 	DIR  *dir  = NULL;
     FILE *outf = NULL;
     struct dirent *entry = NULL;
-    bool status = false;
 
     dir = opendir(dirpath);
     if (!dir) {
@@ -166,9 +165,7 @@ bool test_filestore_dump_directory_listing_to_file(const char *dirpath,
         }
     }
 
-
     fclose(outf);
     closedir(dir);
 	return true;
-
 }

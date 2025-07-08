@@ -54,6 +54,15 @@ DirectoryListingResponse [] {
    directory-file-name                       [size directory-file-name-size]
 }
 
+OriginatingTransactionId [] {
+   reserved1                                 NULL [pattern '0'B],
+   length-of-entity-ids                      LengthOfEntityIds [encoding pos-int, size 3, mapping-function cfdp-entity-len],
+   reserved2                                 NULL [pattern '0'B],
+   length-of-transaction-sequence-number     LengthOfTransactionSequenceNumber [encoding pos-int, size 3, mapping-function cfdp-entity-len],
+   source-entity-id                          [size length-of-entity-ids],
+   transaction-sequence-number               [size length-of-transaction-sequence-number]
+}
+
 MessageToUserWithHeader [] {
    message-identifier                        NULL [pattern '63666470'H], -- string 'cfdp' encoded as hex
    message-type                              MessageType [encoding pos-int, size 8, encode-values],

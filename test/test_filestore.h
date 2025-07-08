@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <errno.h>
+#include <string.h>
 
 uint64_t test_filestore_get_file_size(const char *filepath);
 

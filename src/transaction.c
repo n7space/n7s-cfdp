@@ -1,6 +1,7 @@
 #include "cfdp_core.h"
 #include "filestore.h"
 #include "transaction.h"
+#include <stdio.h>
 
 void transaction_store_data_to_file(struct transaction *transaction,
 				    const cfdpFileDataPDU *file_data_pdu)
@@ -111,8 +112,12 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 				strcpy(messages_to_user[0].message_to_user_union.directory_listing_response.directory_file_name,
 					transaction->messages_to_user[i].message_to_user_union.directory_listing_request.directory_file_name);
 
+				messages_to_user[1].message_to_user_type = ORIGINATING_TRANSACTION_ID;
+				messages_to_user[1].message_to_user_union.originating_transaction_id.source_entity_id = transaction->source_entity_id;
+				messages_to_user[1].message_to_user_union.originating_transaction_id.seq_number = transaction->seq_number;
+
 				cfdp_core_put(transaction->core, transaction->core->entity_id, ".listing",
-		      		transaction->messages_to_user[i].message_to_user_union.directory_listing_request.directory_file_name, 1, messages_to_user);
+		      		transaction->messages_to_user[i].message_to_user_union.directory_listing_request.directory_file_name, 2, messages_to_user);
 				break;
 			}
 			case DIRECTORY_LISTING_RESPONSE: {
@@ -127,6 +132,10 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 					transaction_id.seq_number = transaction->seq_number;
 					cfdp_core_unsuccessful_listing_indication(transaction->core, transaction_id);
 				}
+				break;
+			}
+			case ORIGINATING_TRANSACTION_ID: {
+				// NOOP
 				break;
 			}
 			default: {

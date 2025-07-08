@@ -102,10 +102,8 @@ int main(int argc, char *argv[])
 
 	test_transport_init_and_bind(&cfd_entity_sender);
 
-	
-
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/big.txt",
-		      "received_big.txt", 1, NULL);
+		      "received_big.txt", 0, NULL);
 
 	cfdp_core_transport_is_ready_callback(&cfd_entity_sender);
 	cfdp_core_transport_is_ready_callback(&cfd_entity_sender);

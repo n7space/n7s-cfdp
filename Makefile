@@ -59,6 +59,9 @@ clean:
 	rm -rf test/test_send_file_with_transport_not_ready/target/*
 	rm -rf test/test_send_file_listing_request/target/*
 	rm -rf test/test_receive_file_listing_request/target/*
+	rm -f files/.listing
+	rm -f files/listing_result.txt
+	rm -f .listing
 
 test-send-small-file:
 	mkdir -p build
@@ -174,22 +177,20 @@ test-send-file-listing-request:
 	-pkill python3
 	$(GCC_TEST_COMMAND) -o build/send_file_listing_request $(filter-out src/main.c, $(SOURCES)) $(SEND_FILE_LISTING_REQUEST_TEST_SOURCES) $(DATAVIEW_SOURCES) $(TEST_SOURCE)
 	chmod +x $(CFDP_PYTHON_LISTING_RECEIVER)
-	python3 $(CFDP_PYTHON_LISTING_RECEIVER) & echo $$! > $(CFDP_PYTHON_RECEIVER_PID)
+	python3 $(CFDP_PYTHON_LISTING_RECEIVER) &
 	sleep 1
 	./build/send_file_listing_request
 	sleep 1
-	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
 
 test-receive-file-listing-request:
 	mkdir -p build
 	mkdir -p test/test_receive_file_listing_request/target
 	-pkill python3
 	$(GCC_TEST_COMMAND) -o build/receive_file_listing_request $(filter-out src/main.c, $(SOURCES)) $(RECEIVE_SMALL_FILE_TEST_SOURCES) $(DATAVIEW_SOURCES) $(TEST_SOURCE)
-	./build/receive_file_listing_request & echo $$! > $(CFDP_PID)
+	./build/receive_file_listing_request &
 	sleep 1
 	chmod +x $(CFDP_PYTHON_LISTING_SENDER)
 	python3 $(CFDP_PYTHON_LISTING_SENDER)
 	sleep 1
-	kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
 
 test: clean test-send-small-file test-receive-small-file test-send-many-small-files test-receive-many-small-files test-send-medium-file test-receive-medium-file test-send-big-file test-receive-big-file test-send-file-with-transport-not-ready test-send-file-listing-request test-receive-file-listing-request

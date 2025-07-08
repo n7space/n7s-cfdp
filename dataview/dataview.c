@@ -5040,14 +5040,14 @@ flag cfdpMessageType_Equal(const cfdpMessageType* pVal1, const cfdpMessageType* 
 flag cfdpMessageType_IsConstraintValid(const cfdpMessageType* pVal, int* pErrCode)
 {
     flag ret = TRUE;
-    ret = ((((*(pVal)) == MessageType_directory_listing_request)) || (((*(pVal)) == MessageType_directory_listing_response)));
+    ret = ((((((*(pVal)) == MessageType_originating_transaction_id)) || (((*(pVal)) == MessageType_directory_listing_request)))) || (((*(pVal)) == MessageType_directory_listing_response)));
     *pErrCode = ret ? 0 :  ERR_MESSAGETYPE;
 
 	return ret;
 }
 
 #ifdef __cplusplus
-const cfdpMessageType cfdpMessageType_constant = MessageType_directory_listing_request;
+const cfdpMessageType cfdpMessageType_constant = MessageType_originating_transaction_id;
 #endif
 
 void cfdpMessageType_Initialize(cfdpMessageType* pVal)
@@ -5068,11 +5068,14 @@ flag cfdpMessageType_Encode(const cfdpMessageType* pVal, BitStream* pBitStrm, in
 	if (ret && *pErrCode == 0) {
 	    switch((*(pVal)))
 	    {
+	        case MessageType_originating_transaction_id:
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 2);
+	        	break;
 	        case MessageType_directory_listing_request:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 1);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 2);
 	        	break;
 	        case MessageType_directory_listing_response:
-	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 1);
+	            BitStream_EncodeConstraintWholeNumber(pBitStrm, 2, 0, 2);
 	        	break;
 	        default:                    /*COVERAGE_IGNORE*/
 	    	    *pErrCode = ERR_UPER_ENCODE_MESSAGETYPE; /*COVERAGE_IGNORE*/
@@ -5092,15 +5095,18 @@ flag cfdpMessageType_Decode(cfdpMessageType* pVal, BitStream* pBitStrm, int* pEr
 
 	{
 	    asn1SccSint enumIndex;
-	    ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &enumIndex, 0, 1);
+	    ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &enumIndex, 0, 2);
 	    *pErrCode = ret ? 0 : ERR_UPER_DECODE_MESSAGETYPE;
 	    if (ret) {
 	        switch(enumIndex)
 	        {
 	            case 0:
-	                (*(pVal)) = MessageType_directory_listing_request;
+	                (*(pVal)) = MessageType_originating_transaction_id;
 	                break;
 	            case 1:
+	                (*(pVal)) = MessageType_directory_listing_request;
+	                break;
+	            case 2:
 	                (*(pVal)) = MessageType_directory_listing_response;
 	                break;
 	            default:                        /*COVERAGE_IGNORE*/
@@ -5108,7 +5114,7 @@ flag cfdpMessageType_Decode(cfdpMessageType* pVal, BitStream* pBitStrm, int* pEr
 		            ret = FALSE;                /*COVERAGE_IGNORE*/
 	        }
 	    } else {
-	        (*(pVal)) = MessageType_directory_listing_request;             /*COVERAGE_IGNORE*/
+	        (*(pVal)) = MessageType_originating_transaction_id;             /*COVERAGE_IGNORE*/
 	    }
 	}
 
@@ -5124,6 +5130,9 @@ flag cfdpMessageType_ACN_Encode(const cfdpMessageType* pVal, BitStream* pBitStrm
 	ret = bCheckConstraints ? cfdpMessageType_IsConstraintValid(pVal, pErrCode) : TRUE ;
 	if (ret && *pErrCode == 0) {
 	    switch((*(pVal))) {
+	        case MessageType_originating_transaction_id:
+	            intVal_pVal = 10UL;
+	            break;
 	        case MessageType_directory_listing_request:
 	            intVal_pVal = 16UL;
 	            break;
@@ -5154,6 +5163,9 @@ flag cfdpMessageType_ACN_Decode(cfdpMessageType* pVal, BitStream* pBitStrm, int*
 	*pErrCode = ret ? 0 : ERR_ACN_DECODE_MESSAGETYPE;
 	if (ret) {
 	    switch (intVal_pVal) {
+	        case 10:
+	            (*(pVal)) = MessageType_originating_transaction_id;
+	            break;
 	        case 16:
 	            (*(pVal)) = MessageType_directory_listing_request;
 	            break;
@@ -6526,6 +6538,214 @@ flag cfdpTransactionSequenceNumber_ACN_Decode(cfdpTransactionSequenceNumber* pVa
 	ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->arr, pVal->nCount);
 
     return ret && cfdpTransactionSequenceNumber_IsConstraintValid(pVal, pErrCode);
+}
+
+
+flag cfdpOriginatingTransactionId_Equal(const cfdpOriginatingTransactionId* pVal1, const cfdpOriginatingTransactionId* pVal2)
+{
+	flag ret=TRUE;
+
+    ret = cfdpEntityId_Equal((&(pVal1->source_entity_id)), (&(pVal2->source_entity_id)));
+
+    if (ret) {
+        ret = cfdpTransactionSequenceNumber_Equal((&(pVal1->transaction_sequence_number)), (&(pVal2->transaction_sequence_number)));
+
+    }
+
+	return ret;
+
+}
+
+flag cfdpOriginatingTransactionId_IsConstraintValid(const cfdpOriginatingTransactionId* pVal, int* pErrCode)
+{
+    flag ret = TRUE;
+    ret = cfdpEntityId_IsConstraintValid((&(pVal->source_entity_id)), pErrCode);
+    if (ret) {
+        ret = cfdpTransactionSequenceNumber_IsConstraintValid((&(pVal->transaction_sequence_number)), pErrCode);
+    }   /*COVERAGE_IGNORE*/
+
+	return ret;
+}
+
+#ifdef __cplusplus
+const cfdpOriginatingTransactionId cfdpOriginatingTransactionId_constant = {.source_entity_id = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}, .transaction_sequence_number = {.nCount = 1, .arr  = {[0 ... 7-1] = 0 }}};
+#endif
+
+void cfdpOriginatingTransactionId_Initialize(cfdpOriginatingTransactionId* pVal)
+{
+	(void)pVal;
+
+
+	(*(pVal)) = (cfdpOriginatingTransactionId)cfdpOriginatingTransactionId_constant;
+}
+
+flag cfdpOriginatingTransactionId_Encode(const cfdpOriginatingTransactionId* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+
+	*pErrCode = 0;
+	ret = bCheckConstraints ? cfdpOriginatingTransactionId_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode source_entity_id */
+	    ret = cfdpEntityId_Encode((&(pVal->source_entity_id)), pBitStrm, pErrCode, FALSE);
+	    if (ret) {
+	        /*Encode transaction_sequence_number */
+	        ret = cfdpTransactionSequenceNumber_Encode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode, FALSE);
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpOriginatingTransactionId_Decode(cfdpOriginatingTransactionId* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+
+	/*Decode source_entity_id */
+	ret = cfdpEntityId_Decode((&(pVal->source_entity_id)), pBitStrm, pErrCode);
+	if (ret) {
+	    /*Decode transaction_sequence_number */
+	    ret = cfdpTransactionSequenceNumber_Decode((&(pVal->transaction_sequence_number)), pBitStrm, pErrCode);
+	}   /*COVERAGE_IGNORE*/
+
+	return ret  && cfdpOriginatingTransactionId_IsConstraintValid(pVal, pErrCode);
+}
+
+flag cfdpOriginatingTransactionId_ACN_Encode(const cfdpOriginatingTransactionId* pVal, BitStream* pBitStrm, int* pErrCode, flag bCheckConstraints)
+{
+    flag ret = TRUE;
+
+	asn1SccUint OriginatingTransactionId_length_of_entity_ids;
+	flag OriginatingTransactionId_length_of_entity_ids_is_initialized=FALSE;
+	asn1SccUint OriginatingTransactionId_length_of_transaction_sequence_number;
+	flag OriginatingTransactionId_length_of_transaction_sequence_number_is_initialized=FALSE;
+    *pErrCode = 0;
+	ret = bCheckConstraints ? cfdpOriginatingTransactionId_IsConstraintValid(pVal, pErrCode) : TRUE ;
+	if (ret && *pErrCode == 0) {
+	    /*Encode OriginatingTransactionId_reserved1 */
+	    {
+	    	static byte tmp[] = {0x00};
+	    	BitStream_AppendBits(pBitStrm, tmp, 1);
+	    }
+	    if (ret) {
+	        OriginatingTransactionId_length_of_entity_ids_is_initialized = TRUE;
+	        OriginatingTransactionId_length_of_entity_ids = pVal->source_entity_id.nCount;
+	        if (ret) {
+	            /*Encode OriginatingTransactionId_length_of_entity_ids */
+	            if (OriginatingTransactionId_length_of_entity_ids_is_initialized) {
+	                ret = TRUE;
+	                Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, cfdp_entity_len_encode(OriginatingTransactionId_length_of_entity_ids), 3);
+	            } else {
+	                *pErrCode = ERR_ACN_ENCODE_ORIGINATINGTRANSACTIONID_LENGTH_OF_ENTITY_IDS_UNINITIALIZED;         /*COVERAGE_IGNORE*/
+	                ret = FALSE;                    /*COVERAGE_IGNORE*/
+	            }
+	        }   /*COVERAGE_IGNORE*/
+	        if (ret) {
+	            /*Encode OriginatingTransactionId_reserved2 */
+	            {
+	            	static byte tmp[] = {0x00};
+	            	BitStream_AppendBits(pBitStrm, tmp, 1);
+	            }
+	            if (ret) {
+	                OriginatingTransactionId_length_of_transaction_sequence_number_is_initialized = TRUE;
+	                OriginatingTransactionId_length_of_transaction_sequence_number = pVal->transaction_sequence_number.nCount;
+	                if (ret) {
+	                    /*Encode OriginatingTransactionId_length_of_transaction_sequence_number */
+	                    if (OriginatingTransactionId_length_of_transaction_sequence_number_is_initialized) {
+	                        ret = TRUE;
+	                        Acn_Enc_Int_PositiveInteger_ConstSize(pBitStrm, cfdp_entity_len_encode(OriginatingTransactionId_length_of_transaction_sequence_number), 3);
+	                    } else {
+	                        *pErrCode = ERR_ACN_ENCODE_ORIGINATINGTRANSACTIONID_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER_UNINITIALIZED;         /*COVERAGE_IGNORE*/
+	                        ret = FALSE;                    /*COVERAGE_IGNORE*/
+	                    }
+	                }   /*COVERAGE_IGNORE*/
+	                if (ret) {
+	                    /*Encode source_entity_id */
+	                    ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->source_entity_id.arr, pVal->source_entity_id.nCount);
+	                    if (ret) {
+	                        /*Encode transaction_sequence_number */
+	                        ret = BitStream_EncodeOctetString_no_length(pBitStrm, pVal->transaction_sequence_number.arr, pVal->transaction_sequence_number.nCount);
+	                    }   /*COVERAGE_IGNORE*/
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+    } /*COVERAGE_IGNORE*/
+
+
+    return ret;
+}
+
+flag cfdpOriginatingTransactionId_ACN_Decode(cfdpOriginatingTransactionId* pVal, BitStream* pBitStrm, int* pErrCode)
+{
+    flag ret = TRUE;
+	*pErrCode = 0;
+
+	asn1SccUint OriginatingTransactionId_length_of_entity_ids;
+	asn1SccUint OriginatingTransactionId_length_of_transaction_sequence_number;
+
+	/*Decode OriginatingTransactionId_reserved1 */
+	{
+		static byte tmp[] = {0x00};
+	    flag bDecodingPatternMatches;
+		ret = BitStream_ReadBitPattern(pBitStrm, tmp, 1, &bDecodingPatternMatches);
+	    ret = ret && bDecodingPatternMatches;
+	    *pErrCode = ret ? 0 : ERR_ACN_DECODE_ORIGINATINGTRANSACTIONID_RESERVED1;
+	}
+
+	if (ret) {
+	    /*Decode OriginatingTransactionId_length_of_entity_ids */
+	    ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(OriginatingTransactionId_length_of_entity_ids)), 3);
+	    if (ret) {
+	        *(&(OriginatingTransactionId_length_of_entity_ids)) = cfdp_entity_len_decode(*(&(OriginatingTransactionId_length_of_entity_ids)));
+	    }
+
+	    *pErrCode = ret ? 0 : ERR_ACN_DECODE_ORIGINATINGTRANSACTIONID_LENGTH_OF_ENTITY_IDS;
+	    if (ret) {
+	        /*Decode OriginatingTransactionId_reserved2 */
+	        {
+	        	static byte tmp[] = {0x00};
+	            flag bDecodingPatternMatches;
+	        	ret = BitStream_ReadBitPattern(pBitStrm, tmp, 1, &bDecodingPatternMatches);
+	            ret = ret && bDecodingPatternMatches;
+	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_ORIGINATINGTRANSACTIONID_RESERVED2;
+	        }
+
+	        if (ret) {
+	            /*Decode OriginatingTransactionId_length_of_transaction_sequence_number */
+	            ret = Acn_Dec_Int_PositiveInteger_ConstSize(pBitStrm, (&(OriginatingTransactionId_length_of_transaction_sequence_number)), 3);
+	            if (ret) {
+	                *(&(OriginatingTransactionId_length_of_transaction_sequence_number)) = cfdp_entity_len_decode(*(&(OriginatingTransactionId_length_of_transaction_sequence_number)));
+	            }
+
+	            *pErrCode = ret ? 0 : ERR_ACN_DECODE_ORIGINATINGTRANSACTIONID_LENGTH_OF_TRANSACTION_SEQUENCE_NUMBER;
+	            if (ret) {
+	                /*Decode source_entity_id */
+	                ret = ((1<=OriginatingTransactionId_length_of_entity_ids) && (OriginatingTransactionId_length_of_entity_ids<=7));
+	                if (ret) {
+	                    pVal->source_entity_id.nCount = (int)OriginatingTransactionId_length_of_entity_ids;
+	                    ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->source_entity_id.arr, pVal->source_entity_id.nCount);
+	                	*pErrCode = ret ? 0 : ERR_ACN_DECODE_ORIGINATINGTRANSACTIONID_SOURCE_ENTITY_ID;
+	                }
+	                if (ret) {
+	                    /*Decode transaction_sequence_number */
+	                    ret = ((1<=OriginatingTransactionId_length_of_transaction_sequence_number) && (OriginatingTransactionId_length_of_transaction_sequence_number<=7));
+	                    if (ret) {
+	                        pVal->transaction_sequence_number.nCount = (int)OriginatingTransactionId_length_of_transaction_sequence_number;
+	                        ret = BitStream_DecodeOctetString_no_length(pBitStrm, pVal->transaction_sequence_number.arr, pVal->transaction_sequence_number.nCount);
+	                    	*pErrCode = ret ? 0 : ERR_ACN_DECODE_ORIGINATINGTRANSACTIONID_TRANSACTION_SEQUENCE_NUMBER;
+	                    }
+	                }   /*COVERAGE_IGNORE*/
+	            }   /*COVERAGE_IGNORE*/
+	        }   /*COVERAGE_IGNORE*/
+	    }   /*COVERAGE_IGNORE*/
+	}   /*COVERAGE_IGNORE*/
+
+    return ret && cfdpOriginatingTransactionId_IsConstraintValid(pVal, pErrCode);
 }
 
 
@@ -8834,6 +9054,9 @@ flag cfdpMessageToUser_Equal(const cfdpMessageToUser* pVal1, const cfdpMessageTo
     if (ret) {
     	switch(pVal1->kind)
     	{
+    	case MessageToUser_originating_transaction_id_PRESENT:
+    		ret = cfdpOriginatingTransactionId_Equal((&(pVal1->u.originating_transaction_id)), (&(pVal2->u.originating_transaction_id)));
+    		break;
     	case MessageToUser_directory_listing_request_PRESENT:
     		ret = cfdpDirectoryListingRequest_Equal((&(pVal1->u.directory_listing_request)), (&(pVal2->u.directory_listing_request)));
     		break;
@@ -8852,6 +9075,9 @@ flag cfdpMessageToUser_IsConstraintValid(const cfdpMessageToUser* pVal, int* pEr
 {
     flag ret = TRUE;
     switch (pVal->kind) {
+        case MessageToUser_originating_transaction_id_PRESENT : 
+            ret = cfdpOriginatingTransactionId_IsConstraintValid((&(pVal->u.originating_transaction_id)), pErrCode);
+            break;          
         case MessageToUser_directory_listing_request_PRESENT : 
             ret = cfdpDirectoryListingRequest_IsConstraintValid((&(pVal->u.directory_listing_request)), pErrCode);
             break;          
@@ -8867,7 +9093,7 @@ flag cfdpMessageToUser_IsConstraintValid(const cfdpMessageToUser* pVal, int* pEr
 }
 
 #ifdef __cplusplus
-const cfdpMessageToUser cfdpMessageToUser_constant = {.kind = MessageToUser_directory_listing_request_PRESENT, .u.directory_listing_request = cfdpDirectoryListingRequest_constant};
+const cfdpMessageToUser cfdpMessageToUser_constant = {.kind = MessageToUser_originating_transaction_id_PRESENT, .u.originating_transaction_id = cfdpOriginatingTransactionId_constant};
 #endif
 
 void cfdpMessageToUser_Initialize(cfdpMessageToUser* pVal)
@@ -8888,12 +9114,16 @@ flag cfdpMessageToUser_Encode(const cfdpMessageToUser* pVal, BitStream* pBitStrm
 	if (ret && *pErrCode == 0) {
 	    switch(pVal->kind)
 	    {
+	    case MessageToUser_originating_transaction_id_PRESENT:
+	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 2);
+	    	ret = cfdpOriginatingTransactionId_Encode((&(pVal->u.originating_transaction_id)), pBitStrm, pErrCode, FALSE);
+	    	break;
 	    case MessageToUser_directory_listing_request_PRESENT:
-	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 1);
+	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 2);
 	    	ret = cfdpDirectoryListingRequest_Encode((&(pVal->u.directory_listing_request)), pBitStrm, pErrCode, FALSE);
 	    	break;
 	    case MessageToUser_directory_listing_response_PRESENT:
-	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 1);
+	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 2, 0, 2);
 	    	ret = cfdpDirectoryListingResponse_Encode((&(pVal->u.directory_listing_response)), pBitStrm, pErrCode, FALSE);
 	    	break;
 	    default:                            /*COVERAGE_IGNORE*/
@@ -8913,16 +9143,20 @@ flag cfdpMessageToUser_Decode(cfdpMessageToUser* pVal, BitStream* pBitStrm, int*
 
 	asn1SccSint cfdpMessageToUser_index_tmp;
 
-	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &cfdpMessageToUser_index_tmp, 0, 1);
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &cfdpMessageToUser_index_tmp, 0, 2);
 	*pErrCode = ret ? 0 : ERR_UPER_DECODE_MESSAGETOUSER;
 	if (ret) {
 	    switch(cfdpMessageToUser_index_tmp)
 	    {
 	    case 0:
+	    	pVal->kind = MessageToUser_originating_transaction_id_PRESENT;
+	    	ret = cfdpOriginatingTransactionId_Decode((&(pVal->u.originating_transaction_id)), pBitStrm, pErrCode);
+	    	break;
+	    case 1:
 	    	pVal->kind = MessageToUser_directory_listing_request_PRESENT;
 	    	ret = cfdpDirectoryListingRequest_Decode((&(pVal->u.directory_listing_request)), pBitStrm, pErrCode);
 	    	break;
-	    case 1:
+	    case 2:
 	    	pVal->kind = MessageToUser_directory_listing_response_PRESENT;
 	    	ret = cfdpDirectoryListingResponse_Decode((&(pVal->u.directory_listing_response)), pBitStrm, pErrCode);
 	    	break;
@@ -8944,12 +9178,16 @@ flag cfdpMessageToUser_ACN_Encode(const cfdpMessageToUser* pVal, BitStream* pBit
 	if (ret && *pErrCode == 0) {
 	    switch(pVal->kind)
 	    {
+	    case MessageToUser_originating_transaction_id_PRESENT:
+	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 2);
+	    	ret = cfdpOriginatingTransactionId_ACN_Encode((&(pVal->u.originating_transaction_id)), pBitStrm, pErrCode, FALSE);
+	    	break;
 	    case MessageToUser_directory_listing_request_PRESENT:
-	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 0, 0, 1);
+	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 2);
 	    	ret = cfdpDirectoryListingRequest_ACN_Encode((&(pVal->u.directory_listing_request)), pBitStrm, pErrCode, FALSE);
 	    	break;
 	    case MessageToUser_directory_listing_response_PRESENT:
-	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 1, 0, 1);
+	    	BitStream_EncodeConstraintWholeNumber(pBitStrm, 2, 0, 2);
 	    	ret = cfdpDirectoryListingResponse_ACN_Encode((&(pVal->u.directory_listing_response)), pBitStrm, pErrCode, FALSE);
 	    	break;
 	    default: /*COVERAGE_IGNORE*/
@@ -8969,16 +9207,20 @@ flag cfdpMessageToUser_ACN_Decode(cfdpMessageToUser* pVal, BitStream* pBitStrm, 
 
 	asn1SccSint CFDP_PROTOCOL_MessageToUser_index_tmp;
 
-	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &CFDP_PROTOCOL_MessageToUser_index_tmp, 0, 1);
+	ret = BitStream_DecodeConstraintWholeNumber(pBitStrm, &CFDP_PROTOCOL_MessageToUser_index_tmp, 0, 2);
 	*pErrCode = ret ? 0 : ERR_ACN_DECODE_MESSAGETOUSER;
 	if (ret) {
 	    switch(CFDP_PROTOCOL_MessageToUser_index_tmp)
 	    {
 	    case 0:
+	    	pVal->kind = MessageToUser_originating_transaction_id_PRESENT;
+	    	ret = cfdpOriginatingTransactionId_ACN_Decode((&(pVal->u.originating_transaction_id)), pBitStrm, pErrCode);
+	    	break;
+	    case 1:
 	    	pVal->kind = MessageToUser_directory_listing_request_PRESENT;
 	    	ret = cfdpDirectoryListingRequest_ACN_Decode((&(pVal->u.directory_listing_request)), pBitStrm, pErrCode);
 	    	break;
-	    case 1:
+	    case 2:
 	    	pVal->kind = MessageToUser_directory_listing_response_PRESENT;
 	    	ret = cfdpDirectoryListingResponse_ACN_Decode((&(pVal->u.directory_listing_response)), pBitStrm, pErrCode);
 	    	break;
@@ -9067,6 +9309,10 @@ flag cfdpMessageToUserWithHeader_ACN_Encode(const cfdpMessageToUserWithHeader* p
 	    }
 	    if (ret) {
 	        switch (pVal->message_to_user.kind) {
+	            case MessageToUser_originating_transaction_id_PRESENT:
+	                MessageToUserWithHeader_message_type_is_initialized = TRUE;
+	            	MessageToUserWithHeader_message_type = MessageType_originating_transaction_id;
+	                break;
 	            case MessageToUser_directory_listing_request_PRESENT:
 	                MessageToUserWithHeader_message_type_is_initialized = TRUE;
 	            	MessageToUserWithHeader_message_type = MessageType_directory_listing_request;
@@ -9083,6 +9329,9 @@ flag cfdpMessageToUserWithHeader_ACN_Encode(const cfdpMessageToUserWithHeader* p
 	            if (MessageToUserWithHeader_message_type_is_initialized) {
 	                ret = TRUE;
 	                switch(MessageToUserWithHeader_message_type) {
+	                    case MessageType_originating_transaction_id:
+	                        intVal_MessageToUserWithHeader_message_type = 10UL;
+	                        break;
 	                    case MessageType_directory_listing_request:
 	                        intVal_MessageToUserWithHeader_message_type = 16UL;
 	                        break;
@@ -9105,6 +9354,9 @@ flag cfdpMessageToUserWithHeader_ACN_Encode(const cfdpMessageToUserWithHeader* p
 	            /*Encode message_to_user */
 	            switch(pVal->message_to_user.kind)
 	            {
+	                case MessageToUser_originating_transaction_id_PRESENT:
+	                	ret = cfdpOriginatingTransactionId_ACN_Encode((&(pVal->message_to_user.u.originating_transaction_id)), pBitStrm, pErrCode, FALSE);
+	                	break;
 	                case MessageToUser_directory_listing_request_PRESENT:
 	                	ret = cfdpDirectoryListingRequest_ACN_Encode((&(pVal->message_to_user.u.directory_listing_request)), pBitStrm, pErrCode, FALSE);
 	                	break;
@@ -9146,6 +9398,9 @@ flag cfdpMessageToUserWithHeader_ACN_Decode(cfdpMessageToUserWithHeader* pVal, B
 	    *pErrCode = ret ? 0 : ERR_ACN_DECODE_MESSAGETOUSERWITHHEADER_MESSAGE_TYPE;
 	    if (ret) {
 	        switch (intVal_MessageToUserWithHeader_message_type) {
+	            case 10:
+	                MessageToUserWithHeader_message_type = MessageType_originating_transaction_id;
+	                break;
 	            case 16:
 	                MessageToUserWithHeader_message_type = MessageType_directory_listing_request;
 	                break;
@@ -9161,6 +9416,10 @@ flag cfdpMessageToUserWithHeader_ACN_Decode(cfdpMessageToUserWithHeader* pVal, B
 	        /*Decode message_to_user */
 	        switch(MessageToUserWithHeader_message_type)
 	        {
+	            case MessageType_originating_transaction_id:
+	            	pVal->message_to_user.kind = MessageToUser_originating_transaction_id_PRESENT;
+	            	ret = cfdpOriginatingTransactionId_ACN_Decode((&(pVal->message_to_user.u.originating_transaction_id)), pBitStrm, pErrCode);
+	            	break;
 	            case MessageType_directory_listing_request:
 	            	pVal->message_to_user.kind = MessageToUser_directory_listing_request_PRESENT;
 	            	ret = cfdpDirectoryListingRequest_ACN_Decode((&(pVal->message_to_user.u.directory_listing_request)), pBitStrm, pErrCode);
@@ -9292,7 +9551,7 @@ flag cfdpTLV_Encode(const cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode, fla
 	    		ret = cfdpMessageToUserWithHeader_Encode((&(pVal->length_value.u.message_to_user.value)), &bitStrm, pErrCode, FALSE);
 	    		if (ret) {
 	    			int nCount = bitStrm.currentBit == 0 ? bitStrm.currentByte : (bitStrm.currentByte + 1);
-	    			ret = BitStream_EncodeOctetString(pBitStrm, arr, nCount, 2, 242);
+	    			ret = BitStream_EncodeOctetString(pBitStrm, arr, nCount, 2, 243);
 	    		}
 	    	}
 	    	break;
@@ -9329,7 +9588,7 @@ flag cfdpTLV_Decode(cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode)
 	    		BitStream bitStrm;
 	    		BitStream_Init(&bitStrm, arr, sizeof(arr));
 	    		int nCount;
-	    		ret = BitStream_DecodeOctetString(pBitStrm, arr, &nCount, 2, 242);
+	    		ret = BitStream_DecodeOctetString(pBitStrm, arr, &nCount, 2, 243);
 	    		if (ret) {
 	    			ret = cfdpMessageToUserWithHeader_Decode((&(pVal->length_value.u.message_to_user.value)), &bitStrm, pErrCode);
 	    		}
@@ -9397,6 +9656,10 @@ flag cfdpTLV_ACN_Encode(const cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode,
 	        	        if (ret) {
 	        	            if (pVal->length_value.kind == TLV_length_value_message_to_user_PRESENT) {
 	        	                switch (pVal->length_value.u.message_to_user.value.message_to_user.kind) {
+	        	                    case MessageToUser_originating_transaction_id_PRESENT:
+	        	                        TLV_length_value_message_to_user_value_message_type_is_initialized = TRUE;
+	        	                    	TLV_length_value_message_to_user_value_message_type = MessageType_originating_transaction_id;
+	        	                        break;
 	        	                    case MessageToUser_directory_listing_request_PRESENT:
 	        	                        TLV_length_value_message_to_user_value_message_type_is_initialized = TRUE;
 	        	                    	TLV_length_value_message_to_user_value_message_type = MessageType_directory_listing_request;
@@ -9414,6 +9677,9 @@ flag cfdpTLV_ACN_Encode(const cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode,
 	        	                if (TLV_length_value_message_to_user_value_message_type_is_initialized) {
 	        	                    ret = TRUE;
 	        	                    switch(TLV_length_value_message_to_user_value_message_type) {
+	        	                        case MessageType_originating_transaction_id:
+	        	                            intVal_TLV_length_value_message_to_user_value_message_type = 10UL;
+	        	                            break;
 	        	                        case MessageType_directory_listing_request:
 	        	                            intVal_TLV_length_value_message_to_user_value_message_type = 16UL;
 	        	                            break;
@@ -9436,6 +9702,9 @@ flag cfdpTLV_ACN_Encode(const cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode,
 	        	                /*Encode message_to_user */
 	        	                switch(pVal->length_value.u.message_to_user.value.message_to_user.kind)
 	        	                {
+	        	                    case MessageToUser_originating_transaction_id_PRESENT:
+	        	                    	ret = cfdpOriginatingTransactionId_ACN_Encode((&(pVal->length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id)), pBitStrm, pErrCode, FALSE);
+	        	                    	break;
 	        	                    case MessageToUser_directory_listing_request_PRESENT:
 	        	                    	ret = cfdpDirectoryListingRequest_ACN_Encode((&(pVal->length_value.u.message_to_user.value.message_to_user.u.directory_listing_request)), pBitStrm, pErrCode, FALSE);
 	        	                    	break;
@@ -9535,6 +9804,9 @@ flag cfdpTLV_ACN_Decode(cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode)
 	                            *pErrCode = ret ? 0 : ERR_ACN_DECODE_TLV_LENGTH_VALUE_MESSAGE_TO_USER_VALUE_MESSAGE_TYPE;
 	                            if (ret) {
 	                                switch (intVal_TLV_length_value_message_to_user_value_message_type) {
+	                                    case 10:
+	                                        TLV_length_value_message_to_user_value_message_type = MessageType_originating_transaction_id;
+	                                        break;
 	                                    case 16:
 	                                        TLV_length_value_message_to_user_value_message_type = MessageType_directory_listing_request;
 	                                        break;
@@ -9550,6 +9822,10 @@ flag cfdpTLV_ACN_Decode(cfdpTLV* pVal, BitStream* pBitStrm, int* pErrCode)
 	                                /*Decode message_to_user */
 	                                switch(TLV_length_value_message_to_user_value_message_type)
 	                                {
+	                                    case MessageType_originating_transaction_id:
+	                                    	pVal->length_value.u.message_to_user.value.message_to_user.kind = MessageToUser_originating_transaction_id_PRESENT;
+	                                    	ret = cfdpOriginatingTransactionId_ACN_Decode((&(pVal->length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id)), pBitStrm, pErrCode);
+	                                    	break;
 	                                    case MessageType_directory_listing_request:
 	                                    	pVal->length_value.u.message_to_user.value.message_to_user.kind = MessageToUser_directory_listing_request_PRESENT;
 	                                    	ret = cfdpDirectoryListingRequest_ACN_Decode((&(pVal->length_value.u.message_to_user.value.message_to_user.u.directory_listing_request)), pBitStrm, pErrCode);

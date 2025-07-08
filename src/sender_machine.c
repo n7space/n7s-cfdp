@@ -94,6 +94,17 @@ static void append_messages_to_user_to_metada_pdu(struct sender_machine *sender_
 					strlen((const char *)message_to_user.message_to_user_union.directory_listing_response.directory_file_name);
 				break;
 			}
+			case ORIGINATING_TRANSACTION_ID: {
+				tlv.length_value.u.message_to_user.value.message_to_user.kind = MessageToUser_originating_transaction_id_PRESENT;
+
+				uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
+				   tlv.length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.source_entity_id.arr,
+				   &tlv.length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.source_entity_id.nCount);
+				uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
+				   tlv.length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.transaction_sequence_number.arr,
+				   &tlv.length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.transaction_sequence_number.nCount);
+				break;
+			}
 			default: {
 				if (sender_machine->core->cfdp_core_error_callback !=
 			    	NULL) {
