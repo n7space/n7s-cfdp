@@ -8,7 +8,8 @@ void transaction_store_data_to_file(struct transaction *transaction,
 {
 	transaction->filestore->filestore_write(
 	    transaction->destination_filename, file_data_pdu->segment_offset,
-	    (const char *)file_data_pdu->file_data.arr, file_data_pdu->file_data.nCount);
+	    (const char *)file_data_pdu->file_data.arr,
+	    file_data_pdu->file_data.nCount);
 }
 
 uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
@@ -90,62 +91,106 @@ uint32_t transaction_get_messages_to_user_count(struct transaction *transaction)
 	return transaction->messages_to_user_count;
 }
 
-struct message_to_user transaction_get_message_to_user(struct transaction *transaction, uint32_t index)
+struct message_to_user
+transaction_get_message_to_user(struct transaction *transaction, uint32_t index)
 {
 	return transaction->messages_to_user[index];
 }
 
 void transaction_process_messages_to_user(struct transaction *transaction)
 {
-	for(int i = 0; i < transaction->messages_to_user_count; i++){
-	
-		switch(transaction->messages_to_user[i].message_to_user_type){
-			case DIRECTORY_LISTING_REQUEST: {
-				bool result = transaction->filestore->filestore_dump_directory_listing_to_file(transaction->messages_to_user[i].message_to_user_union.directory_listing_request.directory_name,
-					".listing");
+	for (int i = 0; i < transaction->messages_to_user_count; i++) {
 
-				struct message_to_user messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];
+		switch (transaction->messages_to_user[i].message_to_user_type) {
+		case DIRECTORY_LISTING_REQUEST: {
+			bool result =
+			    transaction->filestore
+				->filestore_dump_directory_listing_to_file(
+				    transaction->messages_to_user[i]
+					.message_to_user_union
+					.directory_listing_request
+					.directory_name,
+				    ".listing");
 
-				messages_to_user[0].message_to_user_type = DIRECTORY_LISTING_RESPONSE;
-				messages_to_user[0].message_to_user_union.directory_listing_response.listing_response_code = result ? LISTING_SUCCESSFUL : LISTING_UNSUCCESSFUL;
-				strcpy(messages_to_user[0].message_to_user_union.directory_listing_response.directory_name, transaction->messages_to_user[i].message_to_user_union.directory_listing_request.directory_name);
-				strcpy(messages_to_user[0].message_to_user_union.directory_listing_response.directory_file_name,
-					transaction->messages_to_user[i].message_to_user_union.directory_listing_request.directory_file_name);
+			struct message_to_user
+			    messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];
 
-				messages_to_user[1].message_to_user_type = ORIGINATING_TRANSACTION_ID;
-				messages_to_user[1].message_to_user_union.originating_transaction_id.source_entity_id = transaction->source_entity_id;
-				messages_to_user[1].message_to_user_union.originating_transaction_id.seq_number = transaction->seq_number;
+			messages_to_user[0].message_to_user_type =
+			    DIRECTORY_LISTING_RESPONSE;
+			messages_to_user[0]
+			    .message_to_user_union.directory_listing_response
+			    .listing_response_code =
+			    result ? LISTING_SUCCESSFUL : LISTING_UNSUCCESSFUL;
+			strcpy(messages_to_user[0]
+				   .message_to_user_union
+				   .directory_listing_response.directory_name,
+			       transaction->messages_to_user[i]
+				   .message_to_user_union
+				   .directory_listing_request.directory_name);
+			strcpy(
+			    messages_to_user[0]
+				.message_to_user_union
+				.directory_listing_response.directory_file_name,
+			    transaction->messages_to_user[i]
+				.message_to_user_union.directory_listing_request
+				.directory_file_name);
 
-				cfdp_core_put(transaction->core, transaction->core->entity_id, ".listing",
-		      		transaction->messages_to_user[i].message_to_user_union.directory_listing_request.directory_file_name, 2, messages_to_user);
-				break;
+			messages_to_user[1].message_to_user_type =
+			    ORIGINATING_TRANSACTION_ID;
+			messages_to_user[1]
+			    .message_to_user_union.originating_transaction_id
+			    .source_entity_id = transaction->source_entity_id;
+			messages_to_user[1]
+			    .message_to_user_union.originating_transaction_id
+			    .seq_number = transaction->seq_number;
+
+			cfdp_core_put(
+			    transaction->core, transaction->core->entity_id,
+			    ".listing",
+			    transaction->messages_to_user[i]
+				.message_to_user_union.directory_listing_request
+				.directory_file_name,
+			    2, messages_to_user);
+			break;
+		}
+		case DIRECTORY_LISTING_RESPONSE: {
+			if (transaction->messages_to_user[i]
+				.message_to_user_union
+				.directory_listing_response
+				.listing_response_code == LISTING_SUCCESSFUL) {
+				struct transaction_id transaction_id;
+				transaction_id.source_entity_id =
+				    transaction->source_entity_id;
+				transaction_id.seq_number =
+				    transaction->seq_number;
+				cfdp_core_successful_listing_indication(
+				    transaction->core, transaction_id);
+			} else if (transaction->messages_to_user[i]
+				       .message_to_user_union
+				       .directory_listing_response
+				       .listing_response_code ==
+				   LISTING_UNSUCCESSFUL) {
+				struct transaction_id transaction_id;
+				transaction_id.source_entity_id =
+				    transaction->source_entity_id;
+				transaction_id.seq_number =
+				    transaction->seq_number;
+				cfdp_core_unsuccessful_listing_indication(
+				    transaction->core, transaction_id);
 			}
-			case DIRECTORY_LISTING_RESPONSE: {
-				if(transaction->messages_to_user[i].message_to_user_union.directory_listing_response.listing_response_code == LISTING_SUCCESSFUL){
-					struct transaction_id transaction_id;
-					transaction_id.source_entity_id = transaction->source_entity_id;
-					transaction_id.seq_number = transaction->seq_number;
-					cfdp_core_successful_listing_indication(transaction->core, transaction_id);
-				} else if(transaction->messages_to_user[i].message_to_user_union.directory_listing_response.listing_response_code == LISTING_UNSUCCESSFUL){
-					struct transaction_id transaction_id;
-					transaction_id.source_entity_id = transaction->source_entity_id;
-					transaction_id.seq_number = transaction->seq_number;
-					cfdp_core_unsuccessful_listing_indication(transaction->core, transaction_id);
-				}
-				break;
+			break;
+		}
+		case ORIGINATING_TRANSACTION_ID: {
+			// NOOP
+			break;
+		}
+		default: {
+			if (transaction->core->cfdp_core_error_callback !=
+			    NULL) {
+				transaction->core->cfdp_core_error_callback(
+				    transaction->core, UNSUPPORTED_ACTION, 0);
 			}
-			case ORIGINATING_TRANSACTION_ID: {
-				// NOOP
-				break;
-			}
-			default: {
-				if (transaction->core->cfdp_core_error_callback !=
-			    	NULL) {
-					transaction->core->cfdp_core_error_callback(
-				    	transaction->core, UNSUPPORTED_ACTION,
-				    	0);
-				}
-			}
+		}
 		}
 	}
 }

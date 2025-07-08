@@ -32,9 +32,11 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 }
 
 void test_timer_restart(const int timeout,
-			      		void expired(struct receiver_timer *)){}
+			void expired(struct receiver_timer *))
+{
+}
 
-void test_timer_stop(){}
+void test_timer_stop() {}
 
 int main(int argc, char *argv[])
 {
@@ -65,10 +67,15 @@ int main(int argc, char *argv[])
 
 	messages_to_user[0].message_to_user_type = DIRECTORY_LISTING_REQUEST;
 
-	strcpy(messages_to_user[0].message_to_user_union.directory_listing_request.directory_name, "../../files");
+	strcpy(
+	    messages_to_user[0]
+		.message_to_user_union.directory_listing_request.directory_name,
+	    "../../files");
 
-	strcpy(messages_to_user[0].message_to_user_union.directory_listing_request.directory_file_name,
-		"test/test_send_file_listing_request/target/listing_result.txt");
+	strcpy(messages_to_user[0]
+		   .message_to_user_union.directory_listing_request
+		   .directory_file_name,
+	       "test/test_send_file_listing_request/target/listing_result.txt");
 
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/small1.txt",
 		      "received_small1.txt", 1, messages_to_user);
@@ -81,7 +88,8 @@ int main(int argc, char *argv[])
 	test_transport_close();
 
 	if (!does_file_exist_and_is_not_empty(
-		"test/test_send_file_listing_request/target/listing_result.txt")) {
+		"test/test_send_file_listing_request/target/"
+		"listing_result.txt")) {
 		return -1;
 	}
 

@@ -45,82 +45,147 @@ static cfdpPDUHeader create_pdu_header(struct sender_machine *sender_machine)
 	return header;
 }
 
-static void append_messages_to_user_to_metada_pdu(struct sender_machine *sender_machine, BitStream *bit_stream)
+static void
+append_messages_to_user_to_metada_pdu(struct sender_machine *sender_machine,
+				      BitStream *bit_stream)
 {
-	const int message_to_user_count = transaction_get_messages_to_user_count(&sender_machine->transaction);
+	const int message_to_user_count =
+	    transaction_get_messages_to_user_count(
+		&sender_machine->transaction);
 
-	for(int i = 0; i < message_to_user_count; i++){
-		struct message_to_user message_to_user = transaction_get_message_to_user(&sender_machine->transaction, i);
+	for (int i = 0; i < message_to_user_count; i++) {
+		struct message_to_user message_to_user =
+		    transaction_get_message_to_user(
+			&sender_machine->transaction, i);
 		cfdpTLV tlv;
-		tlv.length_value.kind = TLV_length_value_message_to_user_PRESENT;
+		tlv.length_value.kind =
+		    TLV_length_value_message_to_user_PRESENT;
 
-		switch(message_to_user.message_to_user_type) {
-			case DIRECTORY_LISTING_REQUEST: {
-				tlv.length_value.u.message_to_user.value.message_to_user.kind = MessageToUser_directory_listing_request_PRESENT;
+		switch (message_to_user.message_to_user_type) {
+		case DIRECTORY_LISTING_REQUEST: {
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .kind =
+			    MessageToUser_directory_listing_request_PRESENT;
 
-				strncpy((char *)tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_name.arr,
-					message_to_user.message_to_user_union.directory_listing_request.directory_name,
-					MAX_LISTING_FILE_NAME_SIZE);
-				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_name.nCount = 
-					strlen((const char *)message_to_user.message_to_user_union.directory_listing_request.directory_name);
+			strncpy((char *)tlv.length_value.u.message_to_user.value
+				    .message_to_user.u.directory_listing_request
+				    .directory_name.arr,
+				message_to_user.message_to_user_union
+				    .directory_listing_request.directory_name,
+				MAX_LISTING_FILE_NAME_SIZE);
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .u.directory_listing_request.directory_name
+			    .nCount = strlen(
+			    (const char *)message_to_user.message_to_user_union
+				.directory_listing_request.directory_name);
 
-				strncpy((char *)tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_file_name.arr,
-					message_to_user.message_to_user_union.directory_listing_request.directory_file_name,
-					MAX_LISTING_FILE_NAME_SIZE);
-				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_request.directory_file_name.nCount = 
-					strlen((const char *)message_to_user.message_to_user_union.directory_listing_request.directory_file_name);
-				break;
+			strncpy(
+			    (char *)tlv.length_value.u.message_to_user.value
+				.message_to_user.u.directory_listing_request
+				.directory_file_name.arr,
+			    message_to_user.message_to_user_union
+				.directory_listing_request.directory_file_name,
+			    MAX_LISTING_FILE_NAME_SIZE);
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .u.directory_listing_request.directory_file_name
+			    .nCount = strlen(
+			    (const char *)message_to_user.message_to_user_union
+				.directory_listing_request.directory_file_name);
+			break;
+		}
+		case DIRECTORY_LISTING_RESPONSE: {
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .kind =
+			    MessageToUser_directory_listing_response_PRESENT;
+
+			if (message_to_user.message_to_user_union
+				.directory_listing_response
+				.listing_response_code == LISTING_SUCCESSFUL) {
+				tlv.length_value.u.message_to_user.value
+				    .message_to_user.u
+				    .directory_listing_response
+				    .listing_response_code =
+				    cfdpListingResponseCode_successful;
+			} else if (message_to_user.message_to_user_union
+				       .directory_listing_response
+				       .listing_response_code ==
+				   LISTING_UNSUCCESSFUL) {
+				tlv.length_value.u.message_to_user.value
+				    .message_to_user.u
+				    .directory_listing_response
+				    .listing_response_code =
+				    cfdpListingResponseCode_unsuccessful;
 			}
-			case DIRECTORY_LISTING_RESPONSE: {
-				tlv.length_value.u.message_to_user.value.message_to_user.kind = MessageToUser_directory_listing_response_PRESENT;
 
-				if(message_to_user.message_to_user_union.directory_listing_response.listing_response_code == LISTING_SUCCESSFUL){
-					tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.listing_response_code = cfdpListingResponseCode_successful;
-				}
-				else if (message_to_user.message_to_user_union.directory_listing_response.listing_response_code == LISTING_UNSUCCESSFUL) {
-					tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.listing_response_code = cfdpListingResponseCode_unsuccessful;
-				}
+			strncpy(
+			    (char *)tlv.length_value.u.message_to_user.value
+				.message_to_user.u.directory_listing_response
+				.directory_name.arr,
+			    message_to_user.message_to_user_union
+				.directory_listing_response.directory_name,
+			    MAX_LISTING_FILE_NAME_SIZE);
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .u.directory_listing_response.directory_name
+			    .nCount = strlen(
+			    (const char *)message_to_user.message_to_user_union
+				.directory_listing_response.directory_name);
 
-				strncpy((char *)tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.directory_name.arr,
-					message_to_user.message_to_user_union.directory_listing_response.directory_name,
-					MAX_LISTING_FILE_NAME_SIZE);
-				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.directory_name.nCount = 
-					strlen((const char *)message_to_user.message_to_user_union.directory_listing_response.directory_name);
+			strncpy(
+			    (char *)tlv.length_value.u.message_to_user.value
+				.message_to_user.u.directory_listing_response
+				.directory_file_name.arr,
+			    message_to_user.message_to_user_union
+				.directory_listing_response.directory_file_name,
+			    MAX_LISTING_FILE_NAME_SIZE);
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .u.directory_listing_response.directory_file_name
+			    .nCount = strlen(
+			    (const char *)message_to_user.message_to_user_union
+				.directory_listing_response
+				.directory_file_name);
+			break;
+		}
+		case ORIGINATING_TRANSACTION_ID: {
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .kind =
+			    MessageToUser_originating_transaction_id_PRESENT;
 
-				strncpy((char *)tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.directory_file_name.arr,
-					message_to_user.message_to_user_union.directory_listing_response.directory_file_name,
-					MAX_LISTING_FILE_NAME_SIZE);
-				tlv.length_value.u.message_to_user.value.message_to_user.u.directory_listing_response.directory_file_name.nCount = 
-					strlen((const char *)message_to_user.message_to_user_union.directory_listing_response.directory_file_name);
-				break;
-			}
-			case ORIGINATING_TRANSACTION_ID: {
-				tlv.length_value.u.message_to_user.value.message_to_user.kind = MessageToUser_originating_transaction_id_PRESENT;
-
-				uint64_to_bytes_big_endian(sender_machine->transaction.source_entity_id,
-				   tlv.length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.source_entity_id.arr,
-				   &tlv.length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.source_entity_id.nCount);
-				uint64_to_bytes_big_endian(sender_machine->transaction.seq_number,
-				   tlv.length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.transaction_sequence_number.arr,
-				   &tlv.length_value.u.message_to_user.value.message_to_user.u.originating_transaction_id.transaction_sequence_number.nCount);
-				break;
-			}
-			default: {
-				if (sender_machine->core->cfdp_core_error_callback !=
-			    	NULL) {
-					sender_machine->core->cfdp_core_error_callback(
+			uint64_to_bytes_big_endian(
+			    sender_machine->transaction.source_entity_id,
+			    tlv.length_value.u.message_to_user.value
+				.message_to_user.u.originating_transaction_id
+				.source_entity_id.arr,
+			    &tlv.length_value.u.message_to_user.value
+				 .message_to_user.u.originating_transaction_id
+				 .source_entity_id.nCount);
+			uint64_to_bytes_big_endian(
+			    sender_machine->transaction.seq_number,
+			    tlv.length_value.u.message_to_user.value
+				.message_to_user.u.originating_transaction_id
+				.transaction_sequence_number.arr,
+			    &tlv.length_value.u.message_to_user.value
+				 .message_to_user.u.originating_transaction_id
+				 .transaction_sequence_number.nCount);
+			break;
+		}
+		default: {
+			if (sender_machine->core->cfdp_core_error_callback !=
+			    NULL) {
+				sender_machine->core->cfdp_core_error_callback(
 				    sender_machine->core, UNSUPPORTED_ACTION,
 				    0);
-				}
-				return;
 			}
+			return;
+		}
 		}
 
 		int error_code;
 		if (!cfdpTLV_ACN_Encode(&tlv, bit_stream, &error_code, true)) {
-			if (sender_machine->core->cfdp_core_error_callback != NULL) {
+			if (sender_machine->core->cfdp_core_error_callback !=
+			    NULL) {
 				sender_machine->core->cfdp_core_error_callback(
-			    sender_machine->core, ASN1SCC_ERROR, error_code);
+				    sender_machine->core, ASN1SCC_ERROR,
+				    error_code);
 			}
 			return;
 		}
@@ -193,7 +258,7 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	}
 
 	append_messages_to_user_to_metada_pdu(sender_machine, &bit_stream);
-	
+
 	sender_machine->core->transport->transport_send_pdu(
 	    bit_stream.buf, bit_stream.currentByte);
 }
@@ -208,8 +273,8 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
-	if (!transaction_get_file_segment(&sender_machine->transaction, (char *)data,
-					  &length)) {
+	if (!transaction_get_file_segment(&sender_machine->transaction,
+					  (char *)data, &length)) {
 		if (sender_machine->core->cfdp_core_error_callback != NULL) {
 			sender_machine->core->cfdp_core_error_callback(
 			    sender_machine->core, SEGMENTATION_ERROR, 0);
@@ -217,7 +282,8 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		return;
 	}
 	file_data_pdu.file_data.nCount = length;
-	strncpy((char *)file_data_pdu.file_data.arr, (const char *)data, length);
+	strncpy((char *)file_data_pdu.file_data.arr, (const char *)data,
+		length);
 
 	pdu.pdu_header = header;
 	pdu.payload.kind = PayloadData_file_data_PRESENT;
@@ -353,29 +419,28 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 				break;
 
 			if (!sender_machine->core->transport
-				->transport_is_ready()) {
+				 ->transport_is_ready()) {
 				break;
 			}
-			
+
 			if (transaction_is_file_send_complete(
 				&sender_machine->transaction)) {
 				sender_machine_send_eof(sender_machine);
 				cfdp_core_eof_sent_indication(
-					sender_machine->core,
-					sender_machine->transaction_id);
+				    sender_machine->core,
+				    sender_machine->transaction_id);
 				cfdp_core_finished_indication(
-					sender_machine->core,
-					sender_machine->transaction_id);
+				    sender_machine->core,
+				    sender_machine->transaction_id);
 				sender_machine_close(sender_machine);
 				return;
-			}
-			else{
+			} else {
 				sender_machine_send_file_data(sender_machine);
 			}
 
 			cfdp_core_issue_request(sender_machine->core,
-					sender_machine->transaction_id,
-					E1_SEND_FILE_DATA);
+						sender_machine->transaction_id,
+						E1_SEND_FILE_DATA);
 
 			break;
 		}

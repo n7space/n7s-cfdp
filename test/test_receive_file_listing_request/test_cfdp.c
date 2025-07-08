@@ -21,9 +21,11 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 }
 
 void test_timer_restart(const int timeout,
-			      		void expired(struct receiver_timer *)){}
+			void expired(struct receiver_timer *))
+{
+}
 
-void test_timer_stop(){}
+void test_timer_stop() {}
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +37,7 @@ int main(int argc, char *argv[])
 	filestore.filestore_calculate_checksum =
 	    test_filestore_calculate_checksum;
 	filestore.filestore_dump_directory_listing_to_file =
-		test_filestore_dump_directory_listing_to_file;
+	    test_filestore_dump_directory_listing_to_file;
 
 	struct transport transport;
 	transport.transport_send_pdu = test_transport_send_pdu;

@@ -3,10 +3,7 @@
 
 #include "constants.h"
 
-enum ListingResponseCode {
-	LISTING_SUCCESSFUL = 0,
-	LISTING_UNSUCCESSFUL = 1
-};
+enum ListingResponseCode { LISTING_SUCCESSFUL = 0, LISTING_UNSUCCESSFUL = 1 };
 
 struct directory_listing_request {
 	char directory_name[MAX_LISTING_FILE_NAME_SIZE];
@@ -14,7 +11,7 @@ struct directory_listing_request {
 };
 
 struct directory_listing_response {
-    enum ListingResponseCode listing_response_code;
+	enum ListingResponseCode listing_response_code;
 	char directory_name[MAX_LISTING_FILE_NAME_SIZE];
 	char directory_file_name[MAX_LISTING_FILE_NAME_SIZE];
 };
@@ -31,13 +28,13 @@ enum MessageToUserType {
 };
 
 union message_to_user_union {
-    struct directory_listing_request directory_listing_request;
-    struct directory_listing_response directory_listing_response;
+	struct directory_listing_request directory_listing_request;
+	struct directory_listing_response directory_listing_response;
 	struct originating_transaction_id originating_transaction_id;
 };
 
 struct message_to_user {
-    enum MessageToUserType message_to_user_type;
+	enum MessageToUserType message_to_user_type;
 	union message_to_user_union message_to_user_union;
 };
 

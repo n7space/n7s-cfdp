@@ -132,40 +132,41 @@ void test_delete_file(const char *filepath)
 	}
 }
 
-bool test_filestore_dump_directory_listing_to_file(const char *dirpath, 
-		const char *dump_filepath)
+bool test_filestore_dump_directory_listing_to_file(const char *dirpath,
+						   const char *dump_filepath)
 {
-	DIR  *dir  = NULL;
-    FILE *outf = NULL;
-    struct dirent *entry = NULL;
+	DIR *dir = NULL;
+	FILE *outf = NULL;
+	struct dirent *entry = NULL;
 
-    dir = opendir(dirpath);
-    if (!dir) {
+	dir = opendir(dirpath);
+	if (!dir) {
 		printf("Error: Failed to open a dirpath %s\n", dirpath);
-    	return false;
+		return false;
 	}
 
-    outf = fopen(dump_filepath, "w");
-    if (!outf){
-		printf("Error: Failed to open a dump_filepath %s\n", dump_filepath);
-    	closedir(dir);
-    	return false;
+	outf = fopen(dump_filepath, "w");
+	if (!outf) {
+		printf("Error: Failed to open a dump_filepath %s\n",
+		       dump_filepath);
+		closedir(dir);
+		return false;
 	}
 
-    while ((entry = readdir(dir)) != NULL) {
-        if (strcmp(entry->d_name, ".")  == 0 ||
-            strcmp(entry->d_name, "..") == 0)
-            continue;
+	while ((entry = readdir(dir)) != NULL) {
+		if (strcmp(entry->d_name, ".") == 0 ||
+		    strcmp(entry->d_name, "..") == 0)
+			continue;
 
-        if (fprintf(outf, "%s\n", entry->d_name) < 0) {
+		if (fprintf(outf, "%s\n", entry->d_name) < 0) {
 			printf("Error: Failed to dump files listing\n");
 			fclose(outf);
-            closedir(dir);
-    		return false;
-        }
-    }
+			closedir(dir);
+			return false;
+		}
+	}
 
-    fclose(outf);
-    closedir(dir);
+	fclose(outf);
+	closedir(dir);
 	return true;
 }
