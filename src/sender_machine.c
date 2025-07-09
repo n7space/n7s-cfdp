@@ -47,11 +47,11 @@ static void
 append_messages_to_user_to_metada_pdu(struct sender_machine *sender_machine,
 				      BitStream *bit_stream)
 {
-	const int message_to_user_count =
+	const uint32_t message_to_user_count =
 	    transaction_get_messages_to_user_count(
 		&sender_machine->transaction);
 
-	for (int i = 0; i < message_to_user_count; i++) {
+	for (uint32_t i = 0; i < message_to_user_count; i++) {
 		struct message_to_user message_to_user =
 		    transaction_get_message_to_user(
 			&sender_machine->transaction, i);
@@ -307,15 +307,15 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	// It was then decided to leave FileData octet string with default
 	// determinant generated before octet string (2 bytes). It needs to be
 	// removed after asn1scc encode
-	const int determinant_size = 2;
-	int determinant_index = bit_stream.currentByte - length - 1;
+	const uint32_t determinant_size = 2;
+	uint32_t determinant_index = bit_stream.currentByte - length - 1;
 	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	memset(modified_buf, 0x0, (size_t)size);
 	memcpy(modified_buf, buf, determinant_index - 1);
 	memcpy(modified_buf + determinant_index - 1,
 	       buf + determinant_index + 1, length);
 
-	for (int i = 0; i < determinant_size; i++) {
+	for (uint32_t i = 0; i < determinant_size; i++) {
 		if (--modified_buf[2] == 0xFF) {
 			modified_buf[1]--;
 		}

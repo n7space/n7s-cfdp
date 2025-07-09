@@ -101,7 +101,7 @@ transaction_get_message_to_user(struct transaction *transaction, uint32_t index)
 
 void transaction_process_messages_to_user(struct transaction *transaction)
 {
-	for (int i = 0; i < transaction->messages_to_user_count; i++) {
+	for (uint32_t i = 0; i < transaction->messages_to_user_count; i++) {
 
 		switch (transaction->messages_to_user[i].message_to_user_type) {
 		case DIRECTORY_LISTING_REQUEST: {
