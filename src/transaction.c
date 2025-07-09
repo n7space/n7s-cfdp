@@ -1,7 +1,9 @@
 #include "cfdp_core.h"
 #include "filestore.h"
 #include "transaction.h"
-#include <stdio.h>
+
+#define MESSAGES_TO_USER_COUNT_ON_FILE_LISTING_RESPONSE 2
+const char listing_filename[] = ".listing";
 
 void transaction_store_data_to_file(struct transaction *transaction,
 				    const cfdpFileDataPDU *file_data_pdu)
@@ -110,7 +112,7 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 					.message_to_user_union
 					.directory_listing_request
 					.directory_name,
-				    ".listing");
+				    listing_filename);
 
 			struct message_to_user
 			    messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];
@@ -146,11 +148,11 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 
 			cfdp_core_put(
 			    transaction->core, transaction->core->entity_id,
-			    ".listing",
+			    listing_filename,
 			    transaction->messages_to_user[i]
 				.message_to_user_union.directory_listing_request
 				.directory_file_name,
-			    2, messages_to_user);
+			    MESSAGES_TO_USER_COUNT_ON_FILE_LISTING_RESPONSE, messages_to_user);
 			break;
 		}
 		case DIRECTORY_LISTING_RESPONSE: {

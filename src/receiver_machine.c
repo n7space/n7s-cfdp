@@ -2,7 +2,6 @@
 #include "event.h"
 #include "receiver_machine.h"
 #include <assert.h>
-#include <stdio.h>
 
 void receiver_machine_init(struct receiver_machine *receiver_machine,
 			   struct transaction transaction)

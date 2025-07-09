@@ -44,10 +44,10 @@ void cfdp_core_issue_request(struct cfdp_core *core,
 // CFDP service requests
 
 struct transaction_id cfdp_core_put(
-    struct cfdp_core *core, uint32_t destination_entity_id,
-    char *source_filename, char *destination_filename,
-    const int messages_to_user_count,
-    struct message_to_user messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER]);
+    struct cfdp_core *core, const uint32_t destination_entity_id,
+    const char *source_filename, const char *destination_filename,
+    const uint32_t messages_to_user_count,
+    struct message_to_user *messages_to_user);
 
 void cfdp_core_cancel(struct cfdp_core *core,
 		      struct transaction_id transaction_id);

@@ -7,6 +7,15 @@ from time import sleep
 from cfdp.transport.udp import UdpTransport
 from cfdp.filestore import NativeFileStore
 
+listing_content = """big.txt
+small2.txt
+listing_result.txt
+small3.txt
+.listing
+medium.txt
+small1.txt
+"""
+
 udp_transport = UdpTransport(routing={"*": [("127.0.0.1", 5111)]})
 udp_transport.bind("127.0.0.1", 5222)
 source_filename = "/small1.txt"
@@ -35,7 +44,7 @@ if not os.path.isfile("test/files/listing_result.txt"):
     udp_transport.unbind()
     sys.exit(-1)
 
-if os.path.getsize("test/files/listing_result.txt") == 0:
+if open("test/files/listing_result.txt").read() != listing_content:
     cfdp_entity.shutdown()
     udp_transport.unbind()
     sys.exit(-1)

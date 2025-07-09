@@ -4,15 +4,38 @@
 #include <stdio.h>
 #include <unistd.h>
 
-bool does_file_exist_and_is_not_empty(const char *fname)
+#define FILE_BUFFER_SIZE 4096
+
+bool file_exists(const char *fname)
 {
 	FILE *file;
 	if ((file = fopen(fname, "r"))) {
-		int character = fgetc(file);
 		fclose(file);
-		return character != EOF;
+		return true;
 	}
 	return false;
+}
+
+bool search_string_in_file(const char *filename, const char *search_str) 
+{
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        perror("Error: Failed to open file\n");
+        return -1;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long filesize = ftell(file);
+    rewind(file);
+
+    char buffer[FILE_BUFFER_SIZE];
+
+    fread(buffer, sizeof(char), filesize, file);
+    buffer[filesize] = '\0';
+
+    fclose(file);
+
+    return (strstr(buffer, search_str) != NULL) ? true : false;
 }
 
 void indication_callback(struct cfdp_core *core,
@@ -87,9 +110,20 @@ int main(int argc, char *argv[])
 	sleep(2);
 	test_transport_close();
 
-	if (!does_file_exist_and_is_not_empty(
-		"test/test_send_file_listing_request/target/"
-		"listing_result.txt")) {
+	if (!file_exists(
+		"test/test_send_file_listing_request/target/listing_result.txt")) {
+		return -1;
+	}
+
+	if (!search_string_in_file(
+		"test/test_send_file_listing_request/target/listing_result.txt",
+		"type,path,size,timestamp")) {
+		return -1;
+	}
+
+	if (!search_string_in_file(
+		"test/test_send_file_listing_request/target/listing_result.txt",
+		"f,/../../files/small2.txt,23")) {
 		return -1;
 	}
 

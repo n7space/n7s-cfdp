@@ -4,11 +4,13 @@
 #define FILE_DATA_INDICATION_BIT 0x10
 #define ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK 0x07
 #define FULL_MASK 0xff
+#define HEADER_FIXED_PART_SIZE 5
+#define METADATA_PDU_FIXED_PART_SIZE 7
 
-static uint64_t bytes_to_ulong(const byte *data, int size)
+static uint64_t bytes_to_ulong(const byte *data, uint32_t size)
 {
 	uint64_t result = 0;
-	for (int i = 0; i < size && i < sizeof(uint64_t); i++) {
+	for (uint32_t i = 0; i < size && i < sizeof(uint64_t); i++) {
 		result <<= 8;
 		result |= data[i];
 	}
@@ -73,7 +75,7 @@ static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
 static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
     unsigned char *buf, long *count)
 {
-	const int determinant_size = 2;
+	const uint32_t determinant_size = 2;
 
 	if (*count < 1) {
 		return;
@@ -85,21 +87,21 @@ static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
 		return;
 	}
 
-	const int length_of_entity_id =
+	const uint32_t length_of_entity_id =
 	    ((buf[3] >> 4) &
 	     ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) +
 	    1;
-	const int length_of_transaction_sequence_number =
+	const uint32_t length_of_transaction_sequence_number =
 	    (buf[3] & ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) +
 	    1;
 
-	const int header_with_segment_offset_size =
+	const uint32_t header_with_segment_offset_size =
 	    8 + 2 * length_of_entity_id + length_of_transaction_sequence_number;
 
-	const int file_data_size = *count - header_with_segment_offset_size;
+	const uint32_t file_data_size = *count - header_with_segment_offset_size;
 
-	for (int i = 0; i < determinant_size; i++) {
-		for (int j = *count + i;
+	for (uint32_t i = 0; i < determinant_size; i++) {
+		for (uint32_t j = *count + i;
 		     j > header_with_segment_offset_size - 1 + i; --j) {
 			buf[j] = buf[j - 1];
 		}
@@ -110,7 +112,7 @@ static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
 	buf[header_with_segment_offset_size] =
 	    (unsigned char)((file_data_size >> 8) & FULL_MASK);
 
-	for (int i = 0; i < determinant_size; i++) {
+	for (uint32_t i = 0; i < determinant_size; i++) {
 		if (++buf[2] == 0x00) {
 			buf[1]++;
 		}
@@ -121,7 +123,7 @@ static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
 
 static void add_message_to_user_to_transaction(struct cfdp_core *core,
 					       struct transaction *transaction,
-					       cfdpTLV *tlv, int index)
+					       cfdpTLV *tlv, uint32_t index)
 {
 
 	switch (
@@ -252,6 +254,45 @@ static void add_message_to_user_to_transaction(struct cfdp_core *core,
 	}
 }
 
+static void decode_tlv_from_metadata_pdu(struct cfdp_core *core, 
+										 struct transaction *transaction, 
+										 const cfdpCfdpPDU *pdu, 
+										 BitStream *bit_stream, 
+										 long count)
+{
+	const uint32_t header_with_directive_code_size =
+		    HEADER_FIXED_PART_SIZE + 2 * pdu->pdu_header.source_entity_id.nCount +
+		    pdu->pdu_header.transaction_sequence_number.nCount;
+		const uint32_t metadata_pdu_size =
+		    METADATA_PDU_FIXED_PART_SIZE +
+		    pdu->payload.u.file_directive.file_directive_pdu.u
+			.metadata_pdu.source_file_name.nCount +
+		    pdu->payload.u.file_directive.file_directive_pdu.u
+			.metadata_pdu.destination_file_name.nCount;
+
+		bit_stream->currentByte =
+		    header_with_directive_code_size + metadata_pdu_size;
+		bit_stream->currentBit = 0;
+
+		for (uint32_t i = 0; i < MAX_NUMBER_OF_MESSAGES_TO_USER; i++) {
+			if (bit_stream->currentByte < count) {
+				int32_t error_code = 0;
+				cfdpTLV tlv;
+				if (!cfdpTLV_ACN_Decode(&tlv, bit_stream,
+							&error_code)) {
+					core->cfdp_core_error_callback(
+					    core, ASN1SCC_ERROR, error_code);
+					return;
+				}
+
+				add_message_to_user_to_transaction(
+				    core, transaction, &tlv, i);
+			} else {
+				break;
+			}
+		}
+}
+
 void cfdp_core_issue_request(struct cfdp_core *core,
 			     struct transaction_id transaction_id,
 			     enum EventType event_type)
@@ -270,10 +311,10 @@ void cfdp_core_issue_request(struct cfdp_core *core,
 }
 
 struct transaction_id cfdp_core_put(
-    struct cfdp_core *core, uint32_t destination_entity_id,
-    char *source_filename, char *destination_filename,
-    const int messages_to_user_count,
-    struct message_to_user messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER])
+    struct cfdp_core *core, const uint32_t destination_entity_id,
+    const char *source_filename, const char *destination_filename,
+    const uint32_t messages_to_user_count,
+    struct message_to_user *messages_to_user)
 {
 	core->transaction_sequence_number++;
 
@@ -285,7 +326,7 @@ struct transaction_id cfdp_core_put(
 	    .destination_entity_id = destination_entity_id,
 	    .messages_to_user_count = messages_to_user_count};
 
-	for (int i = 0; i < messages_to_user_count; i++) {
+	for (uint32_t i = 0; i < messages_to_user_count; i++) {
 		transaction.messages_to_user[i] = messages_to_user[i];
 	}
 
@@ -577,37 +618,7 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	    pdu->payload.u.file_directive.file_directive_pdu.kind ==
 		FileDirectivePDU_metadata_pdu_PRESENT) {
 
-		const int header_with_directive_code_size =
-		    5 + 2 * pdu->pdu_header.source_entity_id.nCount +
-		    pdu->pdu_header.transaction_sequence_number.nCount;
-		const int metadata_pdu_size =
-		    7 +
-		    pdu->payload.u.file_directive.file_directive_pdu.u
-			.metadata_pdu.source_file_name.nCount +
-		    pdu->payload.u.file_directive.file_directive_pdu.u
-			.metadata_pdu.destination_file_name.nCount;
-
-		bit_stream->currentByte =
-		    header_with_directive_code_size + metadata_pdu_size;
-		bit_stream->currentBit = 0;
-
-		for (int i = 0; i < MAX_NUMBER_OF_MESSAGES_TO_USER; i++) {
-			if (bit_stream->currentByte < count) {
-				int error_code = 0;
-				cfdpTLV tlv;
-				if (!cfdpTLV_ACN_Decode(&tlv, bit_stream,
-							&error_code)) {
-					core->cfdp_core_error_callback(
-					    core, ASN1SCC_ERROR, error_code);
-					return;
-				}
-
-				add_message_to_user_to_transaction(
-				    core, &transaction, &tlv, i);
-			} else {
-				break;
-			}
-		}
+		decode_tlv_from_metadata_pdu(core, &transaction, pdu, bit_stream, count);
 
 		strncpy(
 		    transaction.source_filename,
@@ -653,7 +664,7 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 	BitStream_AttachBuffer(&bit_stream, buf, count);
 
 	cfdpCfdpPDU pdu;
-	int error_code = 0;
+	int32_t error_code = 0;
 	if (!cfdpCfdpPDU_ACN_Decode(&pdu, &bit_stream, &error_code)) {
 		core->cfdp_core_error_callback(core, ASN1SCC_ERROR, error_code);
 		return;
