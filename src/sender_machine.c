@@ -43,9 +43,8 @@ static cfdpPDUHeader create_pdu_header(struct sender_machine *sender_machine)
 	return header;
 }
 
-static void
-append_messages_to_user_to_bit_stream_with_metada_pdu(struct sender_machine *sender_machine,
-				      BitStream *bit_stream)
+static void append_messages_to_user_to_bit_stream_with_metada_pdu(
+    struct sender_machine *sender_machine, BitStream *bit_stream)
 {
 	const uint32_t message_to_user_count =
 	    transaction_get_messages_to_user_count(
@@ -255,7 +254,8 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 		return;
 	}
 
-	append_messages_to_user_to_bit_stream_with_metada_pdu(sender_machine, &bit_stream);
+	append_messages_to_user_to_bit_stream_with_metada_pdu(sender_machine,
+							      &bit_stream);
 
 	sender_machine->core->transport->transport_send_pdu(
 	    bit_stream.buf, bit_stream.currentByte);
