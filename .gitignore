@@ -1,3 +1,4 @@
+.vscode
 build/
 test/test_send_small_file/target/*
 test/test_receive_small_file/target/*
