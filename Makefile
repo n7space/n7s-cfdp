@@ -59,8 +59,8 @@ clean:
 	rm -rf test/test_send_file_with_transport_not_ready/target/*
 	rm -rf test/test_send_file_listing_request/target/*
 	rm -rf test/test_receive_file_listing_request/target/*
-	rm -f files/.listing
-	rm -f files/listing_result.txt
+	rm -f test/files/.listing
+	rm -f test/files/listing_result.txt
 	rm -f .listing
 
 test-send-small-file:

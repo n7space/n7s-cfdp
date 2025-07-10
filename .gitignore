@@ -9,5 +9,5 @@ test/test_send_big_file/target/*
 test/test_receive_big_file/target/*
 *.pid
 *.listing
-test/files/listing_result.txt
+*listing_result.txt
 

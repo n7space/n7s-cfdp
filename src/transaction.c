@@ -47,6 +47,10 @@ bool transaction_is_file_send_complete(struct transaction *transaction)
 
 uint32_t transaction_get_file_size(struct transaction *transaction)
 {
+	if(transaction->source_filename[0] == '\0'){
+		return 0;
+	}
+
 	transaction->file_size =
 	    transaction->filestore->filestore_get_file_size(
 		transaction->source_filename);
@@ -56,6 +60,10 @@ uint32_t transaction_get_file_size(struct transaction *transaction)
 
 uint32_t transaction_get_file_checksum(struct transaction *transaction)
 {
+	if(transaction->source_filename[0] == '\0'){
+		return 0;
+	}
+
 	if (transaction->core->checksum_type == CHECKSUM_TYPE_NONE) {
 		return 0;
 	}
@@ -113,6 +121,8 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 					.directory_listing_request
 					.directory_name,
 				    listing_filename);
+			
+			//dodać tu buffor i w nim storować listing
 
 			struct message_to_user
 			    messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];

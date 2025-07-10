@@ -100,8 +100,8 @@ int main(int argc, char *argv[])
 		   .directory_file_name,
 	       "test/test_send_file_listing_request/target/listing_result.txt");
 
-	cfdp_core_put(&cfd_entity_sender, 13, "test/files/small1.txt",
-		      "received_small1.txt", 1, messages_to_user);
+	cfdp_core_put(&cfd_entity_sender, 13, "",
+		      "", 1, messages_to_user);
 
 	while (!cfdp_core_is_done(&cfd_entity_sender)) {
 		usleep(1000 * 100);

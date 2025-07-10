@@ -3,6 +3,7 @@
 #include "event.h"
 #include "sender_machine.h"
 #include <string.h>
+#include <stdio.h>
 
 static void uint64_to_bytes_big_endian(uint64_t data, byte *result, int *size)
 {
@@ -385,6 +386,7 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 				    E0_ENTERED_STATE);
 			} else {
 				sender_machine_send_eof(sender_machine);
+				sender_machine_close(sender_machine);
 				cfdp_core_eof_sent_indication(
 				    sender_machine->core,
 				    sender_machine->transaction_id);
