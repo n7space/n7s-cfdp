@@ -34,12 +34,8 @@ int main(int argc, char *argv[])
 	filestore.filestore_get_file_size = test_filestore_get_file_size;
 	filestore.filestore_read = test_filestore_read_file;
 	filestore.filestore_write = test_filestore_write_to_file;
-	filestore.filestore_calculate_checksum =
-	    test_filestore_calculate_checksum;
 	filestore.filestore_dump_directory_listing =
 	    test_filestore_dump_directory_listing;
-	filestore.filestore_calculate_data_checksum =
-	    test_filestore_calculate_data_checksum;
 
 	struct transport transport;
 	transport.transport_send_pdu = test_transport_send_pdu;

@@ -52,79 +52,6 @@ void test_filestore_write_to_file(const char *filepath, uint32_t offset,
 	fclose(file);
 }
 
-uint32_t
-test_filestore_calculate_checksum(const char *filepath,
-				  const enum ChecksumType checksum_type)
-{
-	if (checksum_type != CHECKSUM_TYPE_MODULAR) {
-		return 0;
-	}
-
-	FILE *file = fopen(filepath, "rb");
-	if (file == NULL) {
-		printf("Error: Could not open file %s\n", filepath);
-		return 0;
-	}
-
-	fseek(file, 0, SEEK_END);
-	long file_size = ftell(file);
-	fseek(file, 0, SEEK_SET);
-
-	uint32_t checksum = 0;
-	uint8_t buffer[4];
-	long x = 0;
-
-	while (x < file_size) {
-		size_t bytes_to_read = 4;
-		if (x > file_size - 4) {
-			bytes_to_read = file_size % 4;
-		}
-
-		fseek(file, x, SEEK_SET);
-		size_t read_bytes = fread(buffer, 1, bytes_to_read, file);
-		uint32_t value = 0;
-
-		for (size_t i = 0; i < read_bytes; ++i) {
-			value |= (uint32_t)buffer[i] << ((3 - i) * 8);
-		}
-
-		checksum += value;
-		x += 4;
-	}
-
-	return checksum;
-}
-
-void test_filestore_copy_file(const char *src_path, const char *dest_path)
-{
-	FILE *src = fopen(src_path, "rb");
-	if (!src) {
-		printf("Error: Failed to open source file %s\n", src_path);
-		return;
-	}
-
-	FILE *dest = fopen(dest_path, "wb");
-	if (!dest) {
-		printf("Error: Failed to open destination file%s\n", dest_path);
-		fclose(src);
-		return;
-	}
-
-	char buffer[4096];
-	size_t bytes;
-	while ((bytes = fread(buffer, 1, sizeof(buffer), src)) > 0) {
-		if (fwrite(buffer, 1, bytes, dest) != bytes) {
-			printf("Error: Write error");
-			fclose(src);
-			fclose(dest);
-			return;
-		}
-	}
-
-	fclose(src);
-	fclose(dest);
-}
-
 void test_delete_file(const char *filepath)
 {
 	if (remove(filepath) != 0) {
@@ -160,32 +87,4 @@ bool test_filestore_dump_directory_listing(
 	listing_data[offset] = '\0';
     closedir(dir);
     return true;
-}
-
-uint32_t test_filestore_calculate_data_checksum(
-	const char *listing_data, uint32_t length, const enum ChecksumType checksum_type)
-{
-	if (checksum_type != CHECKSUM_TYPE_MODULAR) {
-		return 0;
-	}
-
-	uint32_t checksum = 0;
-    size_t offset = 0;
-
-    while (offset < length) {
-        size_t bytes_to_read = 4;
-        if (offset > length - 4) {
-            bytes_to_read = length % 4;
-        }
-
-        uint32_t value = 0;
-        for (size_t i = 0; i < bytes_to_read; ++i) {
-            value |= (uint32_t)listing_data[offset + i] << ((3 - i) * 8);
-        }
-
-        checksum += value;
-        offset += 4;
-    }
-
-	return checksum;
 }

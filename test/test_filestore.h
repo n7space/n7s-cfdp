@@ -17,17 +17,11 @@ void test_filestore_read_file(const char *filepath, uint32_t offset, char *data,
 void test_filestore_write_to_file(const char *filepath, uint32_t offset,
 				  const char *data, const uint32_t length);
 
-uint32_t
-test_filestore_calculate_checksum(const char *filepath,
-				  const enum ChecksumType checksum_type);
-
 void test_filestore_copy_file(const char *src_path, const char *dest_path);
 
 void test_delete_file(const char *filepath);
 
 bool test_filestore_dump_directory_listing(
 	    const char *dirpath, char *listing_data, uint32_t length);
-uint32_t test_filestore_calculate_data_checksum(
-	const char *listing_data, uint32_t length, const enum ChecksumType checksum_type);
 
 #endif
