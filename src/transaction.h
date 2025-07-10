@@ -15,6 +15,9 @@ struct transaction {
 	char source_filename[MAX_FILE_NAME_SIZE];
 	char destination_filename[MAX_FILE_NAME_SIZE];
 
+	uint32_t virtual_source_file_size;
+	char *virtual_source_file_data;
+
 	uint32_t messages_to_user_count;
 	struct message_to_user messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];
 

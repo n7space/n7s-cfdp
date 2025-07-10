@@ -132,41 +132,60 @@ void test_delete_file(const char *filepath)
 	}
 }
 
-bool test_filestore_dump_directory_listing_to_file(const char *dirpath,
-						   const char *dump_filepath)
+bool test_filestore_dump_directory_listing(
+	    const char *dirpath, char *listing_data, uint32_t length)
 {
-	DIR *dir = NULL;
-	FILE *outf = NULL;
-	struct dirent *entry = NULL;
+	DIR *dir = opendir(dirpath);
+    if (!dir) {
+        snprintf(listing_data, length, "Error opening directory: %s\n", strerror(errno));
+        return false;
+    }
 
-	dir = opendir(dirpath);
-	if (!dir) {
-		printf("Error: Failed to open a dirpath %s\n", dirpath);
-		return false;
-	}
+    struct dirent *entry;
+    size_t offset = 0;
 
-	outf = fopen(dump_filepath, "w");
-	if (!outf) {
-		printf("Error: Failed to open a dump_filepath %s\n",
-		       dump_filepath);
-		closedir(dir);
-		return false;
-	}
-
-	while ((entry = readdir(dir)) != NULL) {
+    while ((entry = readdir(dir)) != NULL) {
 		if (strcmp(entry->d_name, ".") == 0 ||
 		    strcmp(entry->d_name, "..") == 0)
 			continue;
 
-		if (fprintf(outf, "%s\n", entry->d_name) < 0) {
-			printf("Error: Failed to dump files listing\n");
-			fclose(outf);
-			closedir(dir);
-			return false;
-		}
+        int written = snprintf(listing_data + offset, length - offset, "%s\n", entry->d_name);
+        if (written < 0 || (size_t)written >= length - offset) {
+            // Buffer full or error
+            closedir(dir);
+            return false;
+        }
+        offset += written;
+    }
+	listing_data[offset] = '\0';
+    closedir(dir);
+    return true;
+}
+
+uint32_t test_filestore_calculate_data_checksum(
+	const char *listing_data, uint32_t length, const enum ChecksumType checksum_type)
+{
+	if (checksum_type != CHECKSUM_TYPE_MODULAR) {
+		return 0;
 	}
 
-	fclose(outf);
-	closedir(dir);
-	return true;
+	uint32_t checksum = 0;
+    size_t offset = 0;
+
+    while (offset < length) {
+        size_t bytes_to_read = 4;
+        if (offset > length - 4) {
+            bytes_to_read = length % 4;
+        }
+
+        uint32_t value = 0;
+        for (size_t i = 0; i < bytes_to_read; ++i) {
+            value |= (uint32_t)listing_data[offset + i] << ((3 - i) * 8);
+        }
+
+        checksum += value;
+        offset += 4;
+    }
+
+	return checksum;
 }

@@ -24,6 +24,9 @@ struct cfdp_core {
 	enum ChecksumType checksum_type;
 	uint32_t inactivity_timeout;
 
+	uint32_t virtual_source_file_size;
+	char *virtual_source_file_data;
+
 	void (*cfdp_core_indication_callback)(
 	    struct cfdp_core *core, const enum IndicationType indication_type,
 	    const struct transaction_id transaction_id);

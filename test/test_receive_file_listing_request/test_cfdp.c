@@ -36,8 +36,10 @@ int main(int argc, char *argv[])
 	filestore.filestore_write = test_filestore_write_to_file;
 	filestore.filestore_calculate_checksum =
 	    test_filestore_calculate_checksum;
-	filestore.filestore_dump_directory_listing_to_file =
-	    test_filestore_dump_directory_listing_to_file;
+	filestore.filestore_dump_directory_listing =
+	    test_filestore_dump_directory_listing;
+	filestore.filestore_calculate_data_checksum =
+	    test_filestore_calculate_data_checksum;
 
 	struct transport transport;
 	transport.transport_send_pdu = test_transport_send_pdu;

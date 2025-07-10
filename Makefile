@@ -19,7 +19,7 @@ SEND_BIG_FILE_TEST_SOURCES := $(wildcard test/test_send_big_file/*.c)
 RECEIVE_BIG_FILE_TEST_SOURCES := $(wildcard test/test_receive_big_file/*.c)
 SEND_BIG_FILE_TEST_WITH_TRANSPORT_NOT_READY_SOURCES := $(wildcard test/test_send_file_with_transport_not_ready/*.c)
 SEND_FILE_LISTING_REQUEST_TEST_SOURCES := $(wildcard test/test_send_file_listing_request/*.c)
-RECEIVE_SMALL_FILE_TEST_SOURCES := $(wildcard test/test_receive_file_listing_request/*.c)
+RECEIVE_FILE_LISTING_REQUEST_SOURCES := $(wildcard test/test_receive_file_listing_request/*.c)
 TEST_SOURCE := test/test_filestore.c test/test_transport.c
 
 CFDP_PYTHON_RECEIVER := test/test_send_small_file/python_cfdp_receiver.py
@@ -186,7 +186,7 @@ test-receive-file-listing-request:
 	mkdir -p build
 	mkdir -p test/test_receive_file_listing_request/target
 	-pkill python3
-	$(GCC_TEST_COMMAND) -o build/receive_file_listing_request $(filter-out src/main.c, $(SOURCES)) $(RECEIVE_SMALL_FILE_TEST_SOURCES) $(DATAVIEW_SOURCES) $(TEST_SOURCE)
+	$(GCC_TEST_COMMAND) -o build/receive_file_listing_request $(filter-out src/main.c, $(SOURCES)) $(RECEIVE_FILE_LISTING_REQUEST_SOURCES) $(DATAVIEW_SOURCES) $(TEST_SOURCE)
 	./build/receive_file_listing_request &
 	sleep 1
 	chmod +x $(CFDP_PYTHON_LISTING_SENDER)

@@ -7,6 +7,10 @@ test/test_send_medium_file/target/*
 test/test_receive_medium_file/target/*
 test/test_send_big_file/target/*
 test/test_receive_big_file/target/*
+test/test_send_file_with_transport_not_ready/target/*
+test/test_receive_file_listing_request/target/*
+test/test_send_file_listing_request/target/*
+
 *.pid
 *.listing
 *listing_result.txt

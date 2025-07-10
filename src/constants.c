@@ -1,5 +1,7 @@
 #include "constants.h"
 
+const char VIRTUAL_LISTING_FILENAME[9] = ".listing";
+
 // Map Condition Codes to Default Fault Handler Actions
 const enum FaultHandlerAction DEFAULT_FAULT_HANDLER_ACTIONS [16] = {
 	FAULT_HANDLER_IGNORE,

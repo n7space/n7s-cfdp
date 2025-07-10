@@ -23,8 +23,10 @@ struct filestore_cfg {
 	uint32_t (*filestore_calculate_checksum)(
 	    const char *filepath, const enum ChecksumType checksum_type);
 
-	bool (*filestore_dump_directory_listing_to_file)(
-	    const char *dirpath, const char *dump_filepath);
+	bool (*filestore_dump_directory_listing)(
+	    const char *dirpath, char *listing_data, uint32_t length);
+	uint32_t (*filestore_calculate_data_checksum)(
+	    const char *listing_data, uint32_t length, const enum ChecksumType checksum_type);
 
 	void *file_ptr;
 };

@@ -32,6 +32,12 @@ void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 	core->filestore = filestore;
 	core->transport = transport;
 	core->transaction_sequence_number = 0;
+
+	// TODO improve stack allocation
+	char virtual_source_file_buffer[VIRTUAL_SOURCE_FILE_BUFFER_SIZE];
+
+	core->virtual_source_file_size = 0;
+	core->virtual_source_file_data = virtual_source_file_buffer;
 }
 
 static bool cfdp_core_is_request_to_sender(struct cfdp_core *core,
@@ -338,6 +344,15 @@ struct transaction_id cfdp_core_put(
 		MAX_FILE_NAME_SIZE);
 	transaction.destination_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
 
+	if(strcmp(VIRTUAL_LISTING_FILENAME, transaction.source_filename) == 0){
+		transaction.virtual_source_file_size = core->virtual_source_file_size;
+		transaction.virtual_source_file_data = core->virtual_source_file_data;
+	}
+	else{
+		transaction.virtual_source_file_size = 0;
+		transaction.virtual_source_file_data = NULL;
+	}
+
 	if (core->sender[0].state != COMPLETED) {
 		// TODO handle sender busy
 	}
@@ -613,6 +628,9 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	    bytes_to_ulong(pdu->pdu_header.destination_entity_id.arr,
 			   pdu->pdu_header.destination_entity_id.nCount);
 	transaction.messages_to_user_count = 0;
+
+	transaction.virtual_source_file_size = 0;
+	transaction.virtual_source_file_data = NULL;
 
 	if (pdu->payload.kind == PayloadData_file_directive_PRESENT &&
 	    pdu->payload.u.file_directive.file_directive_pdu.kind ==

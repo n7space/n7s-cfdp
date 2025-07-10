@@ -3,7 +3,6 @@
 #include "event.h"
 #include "sender_machine.h"
 #include <string.h>
-#include <stdio.h>
 
 static void uint64_to_bytes_big_endian(uint64_t data, byte *result, int *size)
 {

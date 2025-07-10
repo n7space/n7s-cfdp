@@ -3,7 +3,6 @@
 #include "transaction.h"
 
 #define MESSAGES_TO_USER_COUNT_ON_FILE_LISTING_RESPONSE 2
-const char listing_filename[] = ".listing";
 
 void transaction_store_data_to_file(struct transaction *transaction,
 				    const cfdpFileDataPDU *file_data_pdu)
@@ -51,6 +50,11 @@ uint32_t transaction_get_file_size(struct transaction *transaction)
 		return 0;
 	}
 
+	if(strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) == 0){
+		transaction->file_size = transaction->virtual_source_file_size;
+		return transaction->virtual_source_file_size;
+	}
+
 	transaction->file_size =
 	    transaction->filestore->filestore_get_file_size(
 		transaction->source_filename);
@@ -68,9 +72,18 @@ uint32_t transaction_get_file_checksum(struct transaction *transaction)
 		return 0;
 	}
 
-	uint32_t checksum =
-	    transaction->filestore->filestore_calculate_checksum(
-		transaction->source_filename, transaction->core->checksum_type);
+	uint32_t checksum;
+
+	if(strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) == 0){
+		checksum =
+	    	transaction->filestore->filestore_calculate_data_checksum(
+			transaction->virtual_source_file_data, transaction->virtual_source_file_size, transaction->core->checksum_type);
+	}
+	else{
+		checksum =
+	    	transaction->filestore->filestore_calculate_checksum(
+			transaction->source_filename, transaction->core->checksum_type);
+	}
 
 	return checksum;
 }
@@ -86,6 +99,12 @@ bool transaction_get_file_segment(struct transaction *transaction,
 			      FILE_SEGMENT_LEN
 			  ? FILE_SEGMENT_LEN
 			  : transaction->file_size - transaction->file_position;
+
+	if(strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) == 0){
+		memcpy(out_data, transaction->virtual_source_file_data + transaction->file_position, *out_length);
+		transaction->file_position += *out_length;
+		return true;
+	}
 
 	transaction->filestore->filestore_read(transaction->source_filename,
 					       transaction->file_position,
@@ -115,14 +134,14 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 		case DIRECTORY_LISTING_REQUEST: {
 			bool result =
 			    transaction->filestore
-				->filestore_dump_directory_listing_to_file(
+				->filestore_dump_directory_listing(
 				    transaction->messages_to_user[i]
 					.message_to_user_union
 					.directory_listing_request
 					.directory_name,
-				    listing_filename);
-			
-			//dodać tu buffor i w nim storować listing
+				    transaction->core->virtual_source_file_data,
+					VIRTUAL_SOURCE_FILE_BUFFER_SIZE);
+			transaction->core->virtual_source_file_size = strlen(transaction->core->virtual_source_file_data);
 
 			struct message_to_user
 			    messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];
@@ -158,7 +177,7 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 
 			cfdp_core_put(
 			    transaction->core, transaction->core->entity_id,
-			    listing_filename,
+			    VIRTUAL_LISTING_FILENAME,
 			    transaction->messages_to_user[i]
 				.message_to_user_union.directory_listing_request
 				.directory_file_name,
