@@ -1,5 +1,6 @@
 #include "constants.h"
 
+// Implementation specific filename
 const char VIRTUAL_LISTING_FILENAME[9] = ".listing";
 
 // Map Condition Codes to Default Fault Handler Actions

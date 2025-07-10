@@ -104,7 +104,8 @@ static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
 	const uint32_t header_with_segment_offset_size =
 	    8 + 2 * length_of_entity_id + length_of_transaction_sequence_number;
 
-	const uint32_t file_data_size = *count - header_with_segment_offset_size;
+	const uint32_t file_data_size =
+	    *count - header_with_segment_offset_size;
 
 	for (uint32_t i = 0; i < determinant_size; i++) {
 		for (uint32_t j = *count + i;
@@ -260,43 +261,46 @@ static void add_message_to_user_to_transaction(struct cfdp_core *core,
 	}
 }
 
-static void decode_tlv_from_metadata_pdu(struct cfdp_core *core, 
-										 struct transaction *transaction, 
-										 const cfdpCfdpPDU *pdu, 
-										 BitStream *bit_stream, 
-										 long count)
+static void decode_tlv_from_metadata_pdu(
+    struct cfdp_core *core, struct transaction *transaction,
+    const cfdpCfdpPDU *pdu,
+    BitStream *bit_stream_with_raw_data_messages_to_user,
+    long size_of_pdu_raw_data)
 {
 	const uint32_t header_with_directive_code_size =
-		    HEADER_FIXED_PART_SIZE + 2 * pdu->pdu_header.source_entity_id.nCount +
-		    pdu->pdu_header.transaction_sequence_number.nCount;
-		const uint32_t metadata_pdu_size =
-		    METADATA_PDU_FIXED_PART_SIZE +
-		    pdu->payload.u.file_directive.file_directive_pdu.u
-			.metadata_pdu.source_file_name.nCount +
-		    pdu->payload.u.file_directive.file_directive_pdu.u
-			.metadata_pdu.destination_file_name.nCount;
+	    HEADER_FIXED_PART_SIZE + pdu->pdu_header.source_entity_id.nCount +
+	    pdu->pdu_header.destination_entity_id.nCount +
+	    pdu->pdu_header.transaction_sequence_number.nCount;
+	const uint32_t metadata_pdu_size =
+	    METADATA_PDU_FIXED_PART_SIZE +
+	    pdu->payload.u.file_directive.file_directive_pdu.u.metadata_pdu
+		.source_file_name.nCount +
+	    pdu->payload.u.file_directive.file_directive_pdu.u.metadata_pdu
+		.destination_file_name.nCount;
 
-		bit_stream->currentByte =
-		    header_with_directive_code_size + metadata_pdu_size;
-		bit_stream->currentBit = 0;
+	bit_stream_with_raw_data_messages_to_user->currentByte =
+	    header_with_directive_code_size + metadata_pdu_size;
+	bit_stream_with_raw_data_messages_to_user->currentBit = 0;
 
-		for (uint32_t i = 0; i < MAX_NUMBER_OF_MESSAGES_TO_USER; i++) {
-			if (bit_stream->currentByte < count) {
-				int32_t error_code = 0;
-				cfdpTLV tlv;
-				if (!cfdpTLV_ACN_Decode(&tlv, bit_stream,
-							&error_code)) {
-					core->cfdp_core_error_callback(
-					    core, ASN1SCC_ERROR, error_code);
-					return;
-				}
-
-				add_message_to_user_to_transaction(
-				    core, transaction, &tlv, i);
-			} else {
-				break;
+	for (uint32_t i = 0; i < MAX_NUMBER_OF_MESSAGES_TO_USER; i++) {
+		if (bit_stream_with_raw_data_messages_to_user->currentByte <
+		    size_of_pdu_raw_data) {
+			int32_t error_code = 0;
+			cfdpTLV tlv;
+			if (!cfdpTLV_ACN_Decode(
+				&tlv, bit_stream_with_raw_data_messages_to_user,
+				&error_code)) {
+				core->cfdp_core_error_callback(
+				    core, ASN1SCC_ERROR, error_code);
+				return;
 			}
+
+			add_message_to_user_to_transaction(core, transaction,
+							   &tlv, i);
+		} else {
+			break;
 		}
+	}
 }
 
 void cfdp_core_issue_request(struct cfdp_core *core,
@@ -316,11 +320,12 @@ void cfdp_core_issue_request(struct cfdp_core *core,
 	}
 }
 
-struct transaction_id cfdp_core_put(
-    struct cfdp_core *core, const uint32_t destination_entity_id,
-    const char *source_filename, const char *destination_filename,
-    const uint32_t messages_to_user_count,
-    struct message_to_user *messages_to_user)
+struct transaction_id cfdp_core_put(struct cfdp_core *core,
+				    const uint32_t destination_entity_id,
+				    const char *source_filename,
+				    const char *destination_filename,
+				    const uint32_t messages_to_user_count,
+				    struct message_to_user *messages_to_user)
 {
 	core->transaction_sequence_number++;
 
@@ -344,11 +349,13 @@ struct transaction_id cfdp_core_put(
 		MAX_FILE_NAME_SIZE);
 	transaction.destination_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
 
-	if(strcmp(VIRTUAL_LISTING_FILENAME, transaction.source_filename) == 0){
-		transaction.virtual_source_file_size = core->virtual_source_file_size;
-		transaction.virtual_source_file_data = core->virtual_source_file_data;
-	}
-	else{
+	if (strcmp(VIRTUAL_LISTING_FILENAME, transaction.source_filename) ==
+	    0) {
+		transaction.virtual_source_file_size =
+		    core->virtual_source_file_size;
+		transaction.virtual_source_file_data =
+		    core->virtual_source_file_data;
+	} else {
 		transaction.virtual_source_file_size = 0;
 		transaction.virtual_source_file_data = NULL;
 	}
@@ -590,10 +597,10 @@ static void deliver_pdu_to_receiver_machine(struct cfdp_core *core,
 	receiver_machine_update_state(&core->receiver[0], &event, pdu);
 }
 
-static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
-					       const cfdpCfdpPDU *pdu,
-					       BitStream *bit_stream,
-					       long count)
+static void handle_pdu_to_new_receiver_machine(
+    struct cfdp_core *core, const cfdpCfdpPDU *pdu,
+    BitStream *bit_stream_with_raw_data_messages_to_user,
+    long size_of_pdu_raw_data)
 {
 	if (pdu->pdu_header.direction == cfdpDirection_toward_sender) {
 		// Class 2 specific PDU unsupported
@@ -636,7 +643,10 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	    pdu->payload.u.file_directive.file_directive_pdu.kind ==
 		FileDirectivePDU_metadata_pdu_PRESENT) {
 
-		decode_tlv_from_metadata_pdu(core, &transaction, pdu, bit_stream, count);
+		decode_tlv_from_metadata_pdu(
+		    core, &transaction, pdu,
+		    bit_stream_with_raw_data_messages_to_user,
+		    size_of_pdu_raw_data);
 
 		strncpy(
 		    transaction.source_filename,

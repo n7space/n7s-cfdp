@@ -104,8 +104,7 @@ int main(int argc, char *argv[])
 
 	if (compare_files(
 		"test/files/small1.txt",
-		"test/test_send_small_file/target/received_small1.txt") !=
-	    0) {
+		"test/test_send_small_file/target/received_small1.txt") != 0) {
 		return -1;
 	}
 

@@ -21,9 +21,11 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 }
 
 void test_timer_restart(const int timeout,
-			      		void expired(struct receiver_timer *)){}
+			void expired(struct receiver_timer *))
+{
+}
 
-void test_timer_stop(){}
+void test_timer_stop() {}
 
 int main(int argc, char *argv[])
 {

@@ -50,6 +50,8 @@ enum ErrorType { ASN1SCC_ERROR, UNSUPPORTED_ACTION, SEGMENTATION_ERROR };
 	(cfdpListingFileName_REQUIRED_BYTES_FOR_ACN_ENCODING - 1)
 #define MAX_NUMBER_OF_SENDER_MACHINES 1
 #define MAX_NUMBER_OF_RECEIVER_MACHINES 1
+
+// two messages are a necessery minimum for handling of file listing
 #define MAX_NUMBER_OF_MESSAGES_TO_USER 2
 
 #define PDU_BUFFER_SIZE                                                        \

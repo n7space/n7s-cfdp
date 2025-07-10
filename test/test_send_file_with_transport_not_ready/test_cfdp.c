@@ -67,11 +67,11 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 	printf("cfdp error type=%d error_code = %d\n", error_type, error_code);
 }
 
-bool transport_is_ready() 
+bool transport_is_ready()
 {
 	static int count = 0;
 	count++;
-	if(count < 4 && count != 1){
+	if (count < 4 && count != 1) {
 		printf("transport is not ready\n");
 		return false;
 	}
@@ -112,15 +112,14 @@ int main(int argc, char *argv[])
 	sleep(1);
 	test_transport_close();
 
-	if (!file_exists(
-		"test/test_send_file_with_transport_not_ready/target/received_big.txt")) {
+	if (!file_exists("test/test_send_file_with_transport_not_ready/target/"
+			 "received_big.txt")) {
 		return -1;
 	}
 
-	if (compare_files(
-		"test/files/big.txt",
-		"test/test_send_file_with_transport_not_ready/target/received_big.txt") !=
-	    0) {
+	if (compare_files("test/files/big.txt",
+			  "test/test_send_file_with_transport_not_ready/target/"
+			  "received_big.txt") != 0) {
 		return -1;
 	}
 

@@ -97,14 +97,12 @@ int main(int argc, char *argv[])
 	sleep(1);
 	test_transport_close();
 
-	if (!file_exists(
-		"test/test_send_big_file/target/received_big.txt")) {
+	if (!file_exists("test/test_send_big_file/target/received_big.txt")) {
 		return -1;
 	}
 
-	if (compare_files(
-		"test/files/big.txt",
-		"test/test_send_big_file/target/received_big.txt") !=
+	if (compare_files("test/files/big.txt",
+			  "test/test_send_big_file/target/received_big.txt") !=
 	    0) {
 		return -1;
 	}

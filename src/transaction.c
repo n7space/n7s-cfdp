@@ -4,41 +4,43 @@
 
 #define MESSAGES_TO_USER_COUNT_ON_FILE_LISTING_RESPONSE 2
 
-static uint32_t calucate_data_checksum(const char *data, uint32_t length, enum ChecksumType checksum_type)
+static uint32_t calucate_data_checksum(const char *data, uint32_t length,
+				       enum ChecksumType checksum_type)
 {
 	if (checksum_type != CHECKSUM_TYPE_MODULAR) {
 		return 0;
 	}
 
 	uint32_t checksum = 0;
-    size_t offset = 0;
+	size_t offset = 0;
 
-    while (offset < length) {
-        size_t bytes_to_read = 4;
-        if (offset > length - 4) {
-            bytes_to_read = length % 4;
-        }
+	while (offset < length) {
+		size_t bytes_to_read = 4;
+		if (offset > length - 4) {
+			bytes_to_read = length % 4;
+		}
 
-        uint32_t value = 0;
-        for (size_t i = 0; i < bytes_to_read; ++i) {
-            value |= (uint32_t)data[offset + i] << ((3 - i) * 8);
-        }
+		uint32_t value = 0;
+		for (size_t i = 0; i < bytes_to_read; ++i) {
+			value |= (uint32_t)data[offset + i] << ((3 - i) * 8);
+		}
 
-        checksum += value;
-        offset += 4;
-    }
+		checksum += value;
+		offset += 4;
+	}
 
 	return checksum;
 }
 
-static uint32_t calucate_file_checksum(struct filestore_cfg *filestore, const char *filepath, enum ChecksumType checksum_type)
+static uint32_t calucate_file_checksum(struct filestore_cfg *filestore,
+				       const char *filepath,
+				       enum ChecksumType checksum_type)
 {
 	if (checksum_type != CHECKSUM_TYPE_MODULAR) {
 		return 0;
 	}
 
-	uint32_t file_size =
-	    filestore->filestore_get_file_size(filepath);
+	uint32_t file_size = filestore->filestore_get_file_size(filepath);
 
 	uint32_t offset = 0;
 	uint32_t checksum = 0;
@@ -50,8 +52,8 @@ static uint32_t calucate_file_checksum(struct filestore_cfg *filestore, const ch
 			bytes_to_read = file_size % 4;
 		}
 
-		filestore->filestore_read(filepath, offset,
-					       buffer, bytes_to_read);
+		filestore->filestore_read(filepath, offset, buffer,
+					  bytes_to_read);
 		offset += bytes_to_read;
 		uint32_t value = 0;
 
@@ -77,8 +79,8 @@ void transaction_store_data_to_file(struct transaction *transaction,
 uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
 {
 	return calucate_file_checksum(transaction->filestore,
-		transaction->destination_filename,
-		transaction->core->checksum_type);
+				      transaction->destination_filename,
+				      transaction->core->checksum_type);
 }
 
 void transaction_delete_stored_file(struct transaction *transaction)
@@ -100,11 +102,12 @@ bool transaction_is_file_send_complete(struct transaction *transaction)
 
 uint32_t transaction_get_file_size(struct transaction *transaction)
 {
-	if(transaction->source_filename[0] == '\0'){
+	if (transaction->source_filename[0] == '\0') {
 		return 0;
 	}
 
-	if(strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) == 0){
+	if (strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) ==
+	    0) {
 		transaction->file_size = transaction->virtual_source_file_size;
 		return transaction->virtual_source_file_size;
 	}
@@ -118,17 +121,20 @@ uint32_t transaction_get_file_size(struct transaction *transaction)
 
 uint32_t transaction_get_file_checksum(struct transaction *transaction)
 {
-	if(transaction->source_filename[0] == '\0'){
+	if (transaction->source_filename[0] == '\0') {
 		return 0;
 	}
 
-	if(strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) == 0){
-	    return calucate_data_checksum(
-			transaction->virtual_source_file_data, transaction->virtual_source_file_size, transaction->core->checksum_type);
-	}
-	else{
-	    return calucate_file_checksum(transaction->filestore,
-			transaction->source_filename, transaction->core->checksum_type);
+	if (strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) ==
+	    0) {
+		return calucate_data_checksum(
+		    transaction->virtual_source_file_data,
+		    transaction->virtual_source_file_size,
+		    transaction->core->checksum_type);
+	} else {
+		return calucate_file_checksum(transaction->filestore,
+					      transaction->source_filename,
+					      transaction->core->checksum_type);
 	}
 }
 
@@ -144,8 +150,12 @@ bool transaction_get_file_segment(struct transaction *transaction,
 			  ? FILE_SEGMENT_LEN
 			  : transaction->file_size - transaction->file_position;
 
-	if(strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) == 0){
-		memcpy(out_data, transaction->virtual_source_file_data + transaction->file_position, *out_length);
+	if (strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) ==
+	    0) {
+		memcpy(out_data,
+		       transaction->virtual_source_file_data +
+			   transaction->file_position,
+		       *out_length);
 		transaction->file_position += *out_length;
 		return true;
 	}
@@ -184,8 +194,9 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 					.directory_listing_request
 					.directory_name,
 				    transaction->core->virtual_source_file_data,
-					VIRTUAL_SOURCE_FILE_BUFFER_SIZE);
-			transaction->core->virtual_source_file_size = strlen(transaction->core->virtual_source_file_data);
+				    VIRTUAL_SOURCE_FILE_BUFFER_SIZE);
+			transaction->core->virtual_source_file_size =
+			    strlen(transaction->core->virtual_source_file_data);
 
 			struct message_to_user
 			    messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];
@@ -219,13 +230,25 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 			    .message_to_user_union.originating_transaction_id
 			    .seq_number = transaction->seq_number;
 
-			cfdp_core_put(
-			    transaction->core, transaction->core->entity_id,
-			    VIRTUAL_LISTING_FILENAME,
-			    transaction->messages_to_user[i]
-				.message_to_user_union.directory_listing_request
-				.directory_file_name,
-			    MESSAGES_TO_USER_COUNT_ON_FILE_LISTING_RESPONSE, messages_to_user);
+			if (result) {
+				cfdp_core_put(
+				    transaction->core,
+				    transaction->core->entity_id,
+				    VIRTUAL_LISTING_FILENAME,
+				    transaction->messages_to_user[i]
+					.message_to_user_union
+					.directory_listing_request
+					.directory_file_name,
+				    MESSAGES_TO_USER_COUNT_ON_FILE_LISTING_RESPONSE,
+				    messages_to_user);
+			} else {
+				cfdp_core_put(
+				    transaction->core,
+				    transaction->core->entity_id, "", "",
+				    MESSAGES_TO_USER_COUNT_ON_FILE_LISTING_RESPONSE,
+				    messages_to_user);
+			}
+
 			break;
 		}
 		case DIRECTORY_LISTING_RESPONSE: {

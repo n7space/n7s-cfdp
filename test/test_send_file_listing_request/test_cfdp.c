@@ -16,26 +16,26 @@ bool file_exists(const char *fname)
 	return false;
 }
 
-bool search_string_in_file(const char *filename, const char *search_str) 
+bool search_string_in_file(const char *filename, const char *search_str)
 {
-    FILE *file = fopen(filename, "rb");
-    if (file == NULL) {
-        perror("Error: Failed to open file\n");
-        return -1;
-    }
+	FILE *file = fopen(filename, "rb");
+	if (file == NULL) {
+		perror("Error: Failed to open file\n");
+		return -1;
+	}
 
-    fseek(file, 0, SEEK_END);
-    long filesize = ftell(file);
-    rewind(file);
+	fseek(file, 0, SEEK_END);
+	long filesize = ftell(file);
+	rewind(file);
 
-    char buffer[FILE_BUFFER_SIZE];
+	char buffer[FILE_BUFFER_SIZE];
 
-    fread(buffer, sizeof(char), filesize, file);
-    buffer[filesize] = '\0';
+	fread(buffer, sizeof(char), filesize, file);
+	buffer[filesize] = '\0';
 
-    fclose(file);
+	fclose(file);
 
-    return (strstr(buffer, search_str) != NULL) ? true : false;
+	return (strstr(buffer, search_str) != NULL) ? true : false;
 }
 
 void indication_callback(struct cfdp_core *core,
@@ -97,8 +97,7 @@ int main(int argc, char *argv[])
 		   .directory_file_name,
 	       "test/test_send_file_listing_request/target/listing_result.txt");
 
-	cfdp_core_put(&cfd_entity_sender, 13, "",
-		      "", 1, messages_to_user);
+	cfdp_core_put(&cfd_entity_sender, 13, "", "", 1, messages_to_user);
 
 	while (!cfdp_core_is_done(&cfd_entity_sender)) {
 		usleep(1000 * 100);
@@ -107,8 +106,8 @@ int main(int argc, char *argv[])
 	sleep(2);
 	test_transport_close();
 
-	if (!file_exists(
-		"test/test_send_file_listing_request/target/listing_result.txt")) {
+	if (!file_exists("test/test_send_file_listing_request/target/"
+			 "listing_result.txt")) {
 		return -1;
 	}
 
