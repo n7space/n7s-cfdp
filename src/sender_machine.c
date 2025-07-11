@@ -2,8 +2,6 @@
 #include "dataview.h"
 #include "event.h"
 #include "sender_machine.h"
-
-#include <stdio.h>
 #include <string.h>
 
 static void uint64_to_bytes_big_endian(uint64_t data, byte *result, int *size)
@@ -43,6 +41,152 @@ static cfdpPDUHeader create_pdu_header(struct sender_machine *sender_machine)
 				   &header.transaction_sequence_number.nCount);
 
 	return header;
+}
+
+static void append_messages_to_user_to_bit_stream_with_metada_pdu(
+    struct sender_machine *sender_machine, BitStream *bit_stream)
+{
+	const uint32_t message_to_user_count =
+	    transaction_get_messages_to_user_count(
+		&sender_machine->transaction);
+
+	for (uint32_t i = 0; i < message_to_user_count; i++) {
+		struct message_to_user message_to_user =
+		    transaction_get_message_to_user(
+			&sender_machine->transaction, i);
+		cfdpTLV tlv;
+		tlv.length_value.kind =
+		    TLV_length_value_message_to_user_PRESENT;
+
+		switch (message_to_user.message_to_user_type) {
+		case DIRECTORY_LISTING_REQUEST: {
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .kind =
+			    MessageToUser_directory_listing_request_PRESENT;
+
+			strncpy((char *)tlv.length_value.u.message_to_user.value
+				    .message_to_user.u.directory_listing_request
+				    .directory_name.arr,
+				message_to_user.message_to_user_union
+				    .directory_listing_request.directory_name,
+				MAX_LISTING_FILE_NAME_SIZE);
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .u.directory_listing_request.directory_name
+			    .nCount = strlen(
+			    (const char *)message_to_user.message_to_user_union
+				.directory_listing_request.directory_name);
+
+			strncpy(
+			    (char *)tlv.length_value.u.message_to_user.value
+				.message_to_user.u.directory_listing_request
+				.directory_file_name.arr,
+			    message_to_user.message_to_user_union
+				.directory_listing_request.directory_file_name,
+			    MAX_LISTING_FILE_NAME_SIZE);
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .u.directory_listing_request.directory_file_name
+			    .nCount = strlen(
+			    (const char *)message_to_user.message_to_user_union
+				.directory_listing_request.directory_file_name);
+			break;
+		}
+		case DIRECTORY_LISTING_RESPONSE: {
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .kind =
+			    MessageToUser_directory_listing_response_PRESENT;
+
+			if (message_to_user.message_to_user_union
+				.directory_listing_response
+				.listing_response_code == LISTING_SUCCESSFUL) {
+				tlv.length_value.u.message_to_user.value
+				    .message_to_user.u
+				    .directory_listing_response
+				    .listing_response_code =
+				    cfdpListingResponseCode_successful;
+			} else if (message_to_user.message_to_user_union
+				       .directory_listing_response
+				       .listing_response_code ==
+				   LISTING_UNSUCCESSFUL) {
+				tlv.length_value.u.message_to_user.value
+				    .message_to_user.u
+				    .directory_listing_response
+				    .listing_response_code =
+				    cfdpListingResponseCode_unsuccessful;
+			}
+
+			strncpy(
+			    (char *)tlv.length_value.u.message_to_user.value
+				.message_to_user.u.directory_listing_response
+				.directory_name.arr,
+			    message_to_user.message_to_user_union
+				.directory_listing_response.directory_name,
+			    MAX_LISTING_FILE_NAME_SIZE);
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .u.directory_listing_response.directory_name
+			    .nCount = strlen(
+			    (const char *)message_to_user.message_to_user_union
+				.directory_listing_response.directory_name);
+
+			strncpy(
+			    (char *)tlv.length_value.u.message_to_user.value
+				.message_to_user.u.directory_listing_response
+				.directory_file_name.arr,
+			    message_to_user.message_to_user_union
+				.directory_listing_response.directory_file_name,
+			    MAX_LISTING_FILE_NAME_SIZE);
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .u.directory_listing_response.directory_file_name
+			    .nCount = strlen(
+			    (const char *)message_to_user.message_to_user_union
+				.directory_listing_response
+				.directory_file_name);
+			break;
+		}
+		case ORIGINATING_TRANSACTION_ID: {
+			tlv.length_value.u.message_to_user.value.message_to_user
+			    .kind =
+			    MessageToUser_originating_transaction_id_PRESENT;
+
+			uint64_to_bytes_big_endian(
+			    sender_machine->transaction.source_entity_id,
+			    tlv.length_value.u.message_to_user.value
+				.message_to_user.u.originating_transaction_id
+				.source_entity_id.arr,
+			    &tlv.length_value.u.message_to_user.value
+				 .message_to_user.u.originating_transaction_id
+				 .source_entity_id.nCount);
+			uint64_to_bytes_big_endian(
+			    sender_machine->transaction.seq_number,
+			    tlv.length_value.u.message_to_user.value
+				.message_to_user.u.originating_transaction_id
+				.transaction_sequence_number.arr,
+			    &tlv.length_value.u.message_to_user.value
+				 .message_to_user.u.originating_transaction_id
+				 .transaction_sequence_number.nCount);
+			break;
+		}
+		default: {
+			if (sender_machine->core->cfdp_core_error_callback !=
+			    NULL) {
+				sender_machine->core->cfdp_core_error_callback(
+				    sender_machine->core, UNSUPPORTED_ACTION,
+				    0);
+			}
+			return;
+		}
+		}
+
+		int error_code;
+		if (!cfdpTLV_ACN_Encode(&tlv, bit_stream, &error_code, true)) {
+			if (sender_machine->core->cfdp_core_error_callback !=
+			    NULL) {
+				sender_machine->core->cfdp_core_error_callback(
+				    sender_machine->core, ASN1SCC_ERROR,
+				    error_code);
+			}
+			return;
+		}
+	}
 }
 
 void sender_machine_init(struct sender_machine *sender_machine,
@@ -95,9 +239,9 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	pdu.payload.u.file_directive.file_directive_pdu.u.metadata_pdu =
 	    metadata_pdu;
 
-	unsigned char buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
+	unsigned char buf[PDU_BUFFER_SIZE];
 	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
-	memset(buf, 0x0, (size_t)size);
+	memset(buf, 0x0, (size_t)PDU_BUFFER_SIZE);
 	BitStream bit_stream;
 	BitStream_AttachBuffer(&bit_stream, buf, size);
 	int error_code;
@@ -109,6 +253,9 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 		}
 		return;
 	}
+
+	append_messages_to_user_to_bit_stream_with_metada_pdu(sender_machine,
+							      &bit_stream);
 
 	sender_machine->core->transport->transport_send_pdu(
 	    bit_stream.buf, bit_stream.currentByte);
@@ -124,8 +271,8 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
-	if (!transaction_get_file_segment(&sender_machine->transaction, (char *)data,
-					  &length)) {
+	if (!transaction_get_file_segment(&sender_machine->transaction,
+					  (char *)data, &length)) {
 		if (sender_machine->core->cfdp_core_error_callback != NULL) {
 			sender_machine->core->cfdp_core_error_callback(
 			    sender_machine->core, SEGMENTATION_ERROR, 0);
@@ -133,7 +280,8 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		return;
 	}
 	file_data_pdu.file_data.nCount = length;
-	strncpy((char *)file_data_pdu.file_data.arr, (const char *)data, length);
+	strncpy((char *)file_data_pdu.file_data.arr, (const char *)data,
+		length);
 
 	pdu.pdu_header = header;
 	pdu.payload.kind = PayloadData_file_data_PRESENT;
@@ -159,15 +307,15 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	// It was then decided to leave FileData octet string with default
 	// determinant generated before octet string (2 bytes). It needs to be
 	// removed after asn1scc encode
-	const int determinant_size = 2;
-	int determinant_index = bit_stream.currentByte - length - 1;
+	const uint32_t determinant_size = 2;
+	uint32_t determinant_index = bit_stream.currentByte - length - 1;
 	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
 	memset(modified_buf, 0x0, (size_t)size);
 	memcpy(modified_buf, buf, determinant_index - 1);
 	memcpy(modified_buf + determinant_index - 1,
 	       buf + determinant_index + 1, length);
 
-	for (int i = 0; i < determinant_size; i++) {
+	for (uint32_t i = 0; i < determinant_size; i++) {
 		if (--modified_buf[2] == 0xFF) {
 			modified_buf[1]--;
 		}
@@ -237,6 +385,7 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 				    E0_ENTERED_STATE);
 			} else {
 				sender_machine_send_eof(sender_machine);
+				sender_machine_close(sender_machine);
 				cfdp_core_eof_sent_indication(
 				    sender_machine->core,
 				    sender_machine->transaction_id);
@@ -269,29 +418,28 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 				break;
 
 			if (!sender_machine->core->transport
-				->transport_is_ready()) {
+				 ->transport_is_ready()) {
 				break;
 			}
-			
+
 			if (transaction_is_file_send_complete(
 				&sender_machine->transaction)) {
 				sender_machine_send_eof(sender_machine);
 				cfdp_core_eof_sent_indication(
-					sender_machine->core,
-					sender_machine->transaction_id);
+				    sender_machine->core,
+				    sender_machine->transaction_id);
 				cfdp_core_finished_indication(
-					sender_machine->core,
-					sender_machine->transaction_id);
+				    sender_machine->core,
+				    sender_machine->transaction_id);
 				sender_machine_close(sender_machine);
 				return;
-			}
-			else{
+			} else {
 				sender_machine_send_file_data(sender_machine);
 			}
 
 			cfdp_core_issue_request(sender_machine->core,
-					sender_machine->transaction_id,
-					E1_SEND_FILE_DATA);
+						sender_machine->transaction_id,
+						E1_SEND_FILE_DATA);
 
 			break;
 		}

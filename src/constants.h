@@ -33,7 +33,9 @@ enum IndicationType {
 	ABANDONED_INDICATION,
 	SUSPENDED_INDICATION,
 	RESUMED_INDICATION,
-	FAULT_INDICATION
+	FAULT_INDICATION,
+	SUCCESSFUL_LISTING_INDICATION,
+	UNSUCCESSFUL_LISTING_INDICATION
 };
 
 enum ChecksumType { CHECKSUM_TYPE_MODULAR = 0, CHECKSUM_TYPE_NONE = 15 };
@@ -44,10 +46,23 @@ enum ErrorType { ASN1SCC_ERROR, UNSUPPORTED_ACTION, SEGMENTATION_ERROR };
 #define DIRECTIVE_CODE_FINISHED 0x05
 
 #define MAX_FILE_NAME_SIZE (cfdpFileName_REQUIRED_BYTES_FOR_ACN_ENCODING - 1)
+#define MAX_LISTING_FILE_NAME_SIZE                                             \
+	(cfdpListingFileName_REQUIRED_BYTES_FOR_ACN_ENCODING - 1)
 #define MAX_NUMBER_OF_SENDER_MACHINES 1
 #define MAX_NUMBER_OF_RECEIVER_MACHINES 1
 
+// two messages are a necessery minimum for handling of file listing
+#define MAX_NUMBER_OF_MESSAGES_TO_USER 2
+
+#define PDU_BUFFER_SIZE                                                        \
+	(cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING +                         \
+	 (MAX_NUMBER_OF_MESSAGES_TO_USER *                                     \
+	  cfdpTLV_REQUIRED_BYTES_FOR_ACN_ENCODING))
+
 #define FILE_SEGMENT_LEN (cfdpFileData_REQUIRED_BYTES_FOR_ACN_ENCODING - 2)
+
+#define VIRTUAL_SOURCE_FILE_BUFFER_SIZE 1024
+extern const char VIRTUAL_LISTING_FILENAME[9];
 
 extern const enum FaultHandlerAction DEFAULT_FAULT_HANDLER_ACTIONS[16];
 

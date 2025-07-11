@@ -2,7 +2,6 @@
 #include "event.h"
 #include "receiver_machine.h"
 #include <assert.h>
-#include <stdio.h>
 
 void receiver_machine_init(struct receiver_machine *receiver_machine,
 			   struct transaction transaction)
@@ -58,6 +57,8 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			cfdp_core_metadata_received_indication(
 			    receiver_machine->core,
 			    receiver_machine->transaction_id);
+			transaction_process_messages_to_user(
+			    &receiver_machine->transaction);
 			receiver_machine->state = WAIT_FOR_EOF;
 			break;
 		}

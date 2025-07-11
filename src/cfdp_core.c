@@ -1,10 +1,21 @@
 #include "cfdp_core.h"
 #include "event.h"
-#include <stdio.h>
 
 #define FILE_DATA_INDICATION_BIT 0x10
 #define ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK 0x07
 #define FULL_MASK 0xff
+#define HEADER_FIXED_PART_SIZE 5
+#define METADATA_PDU_FIXED_PART_SIZE 7
+
+static uint64_t bytes_to_ulong(const byte *data, uint32_t size)
+{
+	uint64_t result = 0;
+	for (uint32_t i = 0; i < size && i < sizeof(uint64_t); i++) {
+		result <<= 8;
+		result |= data[i];
+	}
+	return result;
+}
 
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 		    struct transport *transport, const uint32_t entity_id,
@@ -21,6 +32,12 @@ void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 	core->filestore = filestore;
 	core->transport = transport;
 	core->transaction_sequence_number = 0;
+
+	// TODO improve stack allocation
+	char virtual_source_file_buffer[VIRTUAL_SOURCE_FILE_BUFFER_SIZE];
+
+	core->virtual_source_file_size = 0;
+	core->virtual_source_file_data = virtual_source_file_buffer;
 }
 
 static bool cfdp_core_is_request_to_sender(struct cfdp_core *core,
@@ -64,7 +81,7 @@ static void cfdp_core_issue_link_state_procedure(struct cfdp_core *core,
 static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
     unsigned char *buf, long *count)
 {
-	const int determinant_size = 2;
+	const uint32_t determinant_size = 2;
 
 	if (*count < 1) {
 		return;
@@ -76,21 +93,22 @@ static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
 		return;
 	}
 
-	const int length_of_entity_id =
+	const uint32_t length_of_entity_id =
 	    ((buf[3] >> 4) &
 	     ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) +
 	    1;
-	const int length_of_transaction_sequence_number =
+	const uint32_t length_of_transaction_sequence_number =
 	    (buf[3] & ENTITY_ID_AND_TRANSACTION_SEQUENCE_NUMBER_LENGTH_MASK) +
 	    1;
 
-	const int header_with_segment_offset_size =
+	const uint32_t header_with_segment_offset_size =
 	    8 + 2 * length_of_entity_id + length_of_transaction_sequence_number;
 
-	const int file_data_size = *count - header_with_segment_offset_size;
+	const uint32_t file_data_size =
+	    *count - header_with_segment_offset_size;
 
-	for (int i = 0; i < determinant_size; i++) {
-		for (int j = *count + i;
+	for (uint32_t i = 0; i < determinant_size; i++) {
+		for (uint32_t j = *count + i;
 		     j > header_with_segment_offset_size - 1 + i; --j) {
 			buf[j] = buf[j - 1];
 		}
@@ -101,13 +119,188 @@ static void add_determinant_of_file_data_octet_string_in_encoded_bit_stream(
 	buf[header_with_segment_offset_size] =
 	    (unsigned char)((file_data_size >> 8) & FULL_MASK);
 
-	for (int i = 0; i < determinant_size; i++) {
+	for (uint32_t i = 0; i < determinant_size; i++) {
 		if (++buf[2] == 0x00) {
 			buf[1]++;
 		}
 	}
 
 	*count = *count + determinant_size;
+}
+
+static void add_message_to_user_to_transaction(struct cfdp_core *core,
+					       struct transaction *transaction,
+					       cfdpTLV *tlv, uint32_t index)
+{
+
+	switch (
+	    tlv->length_value.u.message_to_user.value.message_to_user.kind) {
+
+	case MessageToUser_directory_listing_request_PRESENT: {
+		transaction->messages_to_user[index].message_to_user_type =
+		    DIRECTORY_LISTING_REQUEST;
+
+		strncpy(
+		    transaction->messages_to_user[index]
+			.message_to_user_union.directory_listing_request
+			.directory_name,
+		    (char *)tlv->length_value.u.message_to_user.value
+			.message_to_user.u.directory_listing_request
+			.directory_name.arr,
+		    tlv->length_value.u.message_to_user.value.message_to_user.u
+			.directory_listing_request.directory_name.nCount);
+		transaction->messages_to_user[index]
+		    .message_to_user_union.directory_listing_request
+		    .directory_name[tlv->length_value.u.message_to_user.value
+					.message_to_user.u
+					.directory_listing_request
+					.directory_name.nCount] = '\0';
+
+		strncpy(
+		    transaction->messages_to_user[index]
+			.message_to_user_union.directory_listing_request
+			.directory_file_name,
+		    (char *)tlv->length_value.u.message_to_user.value
+			.message_to_user.u.directory_listing_request
+			.directory_file_name.arr,
+		    tlv->length_value.u.message_to_user.value.message_to_user.u
+			.directory_listing_request.directory_file_name.nCount);
+		transaction->messages_to_user[index]
+		    .message_to_user_union.directory_listing_request
+		    .directory_file_name[tlv->length_value.u.message_to_user
+					     .value.message_to_user.u
+					     .directory_listing_request
+					     .directory_file_name.nCount] =
+		    '\0';
+		transaction->messages_to_user_count++;
+		break;
+	}
+	case MessageToUser_directory_listing_response_PRESENT: {
+		transaction->messages_to_user[index].message_to_user_type =
+		    DIRECTORY_LISTING_RESPONSE;
+
+		if (tlv->length_value.u.message_to_user.value.message_to_user.u
+			.directory_listing_response.listing_response_code ==
+		    cfdpListingResponseCode_successful) {
+			transaction->messages_to_user[index]
+			    .message_to_user_union.directory_listing_response
+			    .listing_response_code = LISTING_SUCCESSFUL;
+		} else if (tlv->length_value.u.message_to_user.value
+			       .message_to_user.u.directory_listing_response
+			       .listing_response_code ==
+			   cfdpListingResponseCode_unsuccessful) {
+			transaction->messages_to_user[index]
+			    .message_to_user_union.directory_listing_response
+			    .listing_response_code = LISTING_UNSUCCESSFUL;
+		}
+
+		strncpy(
+		    transaction->messages_to_user[index]
+			.message_to_user_union.directory_listing_request
+			.directory_name,
+		    (char *)tlv->length_value.u.message_to_user.value
+			.message_to_user.u.directory_listing_request
+			.directory_name.arr,
+		    tlv->length_value.u.message_to_user.value.message_to_user.u
+			.directory_listing_request.directory_name.nCount);
+		transaction->messages_to_user[index]
+		    .message_to_user_union.directory_listing_request
+		    .directory_name[tlv->length_value.u.message_to_user.value
+					.message_to_user.u
+					.directory_listing_request
+					.directory_name.nCount] = '\0';
+
+		strncpy(
+		    transaction->messages_to_user[index]
+			.message_to_user_union.directory_listing_request
+			.directory_file_name,
+		    (char *)tlv->length_value.u.message_to_user.value
+			.message_to_user.u.directory_listing_request
+			.directory_file_name.arr,
+		    tlv->length_value.u.message_to_user.value.message_to_user.u
+			.directory_listing_request.directory_file_name.nCount);
+		transaction->messages_to_user[index]
+		    .message_to_user_union.directory_listing_request
+		    .directory_file_name[tlv->length_value.u.message_to_user
+					     .value.message_to_user.u
+					     .directory_listing_request
+					     .directory_file_name.nCount] =
+		    '\0';
+		transaction->messages_to_user_count++;
+		break;
+	}
+	case MessageToUser_originating_transaction_id_PRESENT: {
+		transaction->messages_to_user[index].message_to_user_type =
+		    ORIGINATING_TRANSACTION_ID;
+
+		transaction->messages_to_user[index]
+		    .message_to_user_union.originating_transaction_id
+		    .source_entity_id = bytes_to_ulong(
+		    tlv->length_value.u.message_to_user.value.message_to_user.u
+			.originating_transaction_id.source_entity_id.arr,
+		    tlv->length_value.u.message_to_user.value.message_to_user.u
+			.originating_transaction_id.source_entity_id.nCount);
+		transaction->messages_to_user[index]
+		    .message_to_user_union.originating_transaction_id
+		    .seq_number = bytes_to_ulong(
+		    tlv->length_value.u.message_to_user.value.message_to_user.u
+			.originating_transaction_id.transaction_sequence_number
+			.arr,
+		    tlv->length_value.u.message_to_user.value.message_to_user.u
+			.originating_transaction_id.transaction_sequence_number
+			.nCount);
+		transaction->messages_to_user_count++;
+		break;
+	}
+	default: {
+		if (core->cfdp_core_error_callback != NULL) {
+			core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION,
+						       0);
+		}
+	}
+	}
+}
+
+static void decode_tlv_from_metadata_pdu(
+    struct cfdp_core *core, struct transaction *transaction,
+    const cfdpCfdpPDU *pdu,
+    BitStream *bit_stream_with_raw_data_messages_to_user,
+    long size_of_pdu_raw_data)
+{
+	const uint32_t header_with_directive_code_size =
+	    HEADER_FIXED_PART_SIZE + pdu->pdu_header.source_entity_id.nCount +
+	    pdu->pdu_header.destination_entity_id.nCount +
+	    pdu->pdu_header.transaction_sequence_number.nCount;
+	const uint32_t metadata_pdu_size =
+	    METADATA_PDU_FIXED_PART_SIZE +
+	    pdu->payload.u.file_directive.file_directive_pdu.u.metadata_pdu
+		.source_file_name.nCount +
+	    pdu->payload.u.file_directive.file_directive_pdu.u.metadata_pdu
+		.destination_file_name.nCount;
+
+	bit_stream_with_raw_data_messages_to_user->currentByte =
+	    header_with_directive_code_size + metadata_pdu_size;
+	bit_stream_with_raw_data_messages_to_user->currentBit = 0;
+
+	for (uint32_t i = 0; i < MAX_NUMBER_OF_MESSAGES_TO_USER; i++) {
+		if (bit_stream_with_raw_data_messages_to_user->currentByte <
+		    size_of_pdu_raw_data) {
+			int32_t error_code = 0;
+			cfdpTLV tlv;
+			if (!cfdpTLV_ACN_Decode(
+				&tlv, bit_stream_with_raw_data_messages_to_user,
+				&error_code)) {
+				core->cfdp_core_error_callback(
+				    core, ASN1SCC_ERROR, error_code);
+				return;
+			}
+
+			add_message_to_user_to_transaction(core, transaction,
+							   &tlv, i);
+		} else {
+			break;
+		}
+	}
 }
 
 void cfdp_core_issue_request(struct cfdp_core *core,
@@ -128,9 +321,11 @@ void cfdp_core_issue_request(struct cfdp_core *core,
 }
 
 struct transaction_id cfdp_core_put(struct cfdp_core *core,
-				    uint32_t destination_entity_id,
-				    char *source_filename,
-				    char *destination_filename)
+				    const uint32_t destination_entity_id,
+				    const char *source_filename,
+				    const char *destination_filename,
+				    const uint32_t messages_to_user_count,
+				    struct message_to_user *messages_to_user)
 {
 	core->transaction_sequence_number++;
 
@@ -140,7 +335,11 @@ struct transaction_id cfdp_core_put(struct cfdp_core *core,
 	    .source_entity_id = core->entity_id,
 	    .seq_number = core->transaction_sequence_number,
 	    .destination_entity_id = destination_entity_id,
-	};
+	    .messages_to_user_count = messages_to_user_count};
+
+	for (uint32_t i = 0; i < messages_to_user_count; i++) {
+		transaction.messages_to_user[i] = messages_to_user[i];
+	}
 
 	strncpy(transaction.source_filename, source_filename,
 		MAX_FILE_NAME_SIZE);
@@ -149,6 +348,17 @@ struct transaction_id cfdp_core_put(struct cfdp_core *core,
 	strncpy(transaction.destination_filename, destination_filename,
 		MAX_FILE_NAME_SIZE);
 	transaction.destination_filename[MAX_FILE_NAME_SIZE - 1] = '\0';
+
+	if (strcmp(VIRTUAL_LISTING_FILENAME, transaction.source_filename) ==
+	    0) {
+		transaction.virtual_source_file_size =
+		    core->virtual_source_file_size;
+		transaction.virtual_source_file_data =
+		    core->virtual_source_file_data;
+	} else {
+		transaction.virtual_source_file_size = 0;
+		transaction.virtual_source_file_data = NULL;
+	}
 
 	if (core->sender[0].state != COMPLETED) {
 		// TODO handle sender busy
@@ -296,6 +506,24 @@ void cfdp_core_fault_indication(struct cfdp_core *core,
 	}
 }
 
+void cfdp_core_successful_listing_indication(
+    struct cfdp_core *core, struct transaction_id transaction_id)
+{
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(
+		    core, SUCCESSFUL_LISTING_INDICATION, transaction_id);
+	}
+}
+
+void cfdp_core_unsuccessful_listing_indication(
+    struct cfdp_core *core, struct transaction_id transaction_id)
+{
+	if (core->cfdp_core_indication_callback != NULL) {
+		core->cfdp_core_indication_callback(
+		    core, UNSUCCESSFUL_LISTING_INDICATION, transaction_id);
+	}
+}
+
 void cfdp_core_freeze(struct cfdp_core *core, uint32_t destination_entity_id)
 {
 	cfdp_core_issue_link_state_procedure(core, destination_entity_id,
@@ -306,16 +534,6 @@ void cfdp_core_thaw(struct cfdp_core *core, uint32_t destination_entity_id)
 {
 	cfdp_core_issue_link_state_procedure(core, destination_entity_id,
 					     E41_RECEIVED_THAW);
-}
-
-static uint64_t bytes_to_ulong(const byte *data, int size)
-{
-	uint64_t result = 0;
-	for (int i = 0; i < size && i < sizeof(uint64_t); i++) {
-		result <<= 8;
-		result |= data[i];
-	}
-	return result;
 }
 
 static struct event create_event_for_delivery(struct cfdp_core *core,
@@ -379,8 +597,10 @@ static void deliver_pdu_to_receiver_machine(struct cfdp_core *core,
 	receiver_machine_update_state(&core->receiver[0], &event, pdu);
 }
 
-static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
-					       const cfdpCfdpPDU *pdu)
+static void handle_pdu_to_new_receiver_machine(
+    struct cfdp_core *core, const cfdpCfdpPDU *pdu,
+    BitStream *bit_stream_with_raw_data_messages_to_user,
+    long size_of_pdu_raw_data)
 {
 	if (pdu->pdu_header.direction == cfdpDirection_toward_sender) {
 		// Class 2 specific PDU unsupported
@@ -414,10 +634,20 @@ static void handle_pdu_to_new_receiver_machine(struct cfdp_core *core,
 	transaction.destination_entity_id =
 	    bytes_to_ulong(pdu->pdu_header.destination_entity_id.arr,
 			   pdu->pdu_header.destination_entity_id.nCount);
+	transaction.messages_to_user_count = 0;
+
+	transaction.virtual_source_file_size = 0;
+	transaction.virtual_source_file_data = NULL;
 
 	if (pdu->payload.kind == PayloadData_file_directive_PRESENT &&
 	    pdu->payload.u.file_directive.file_directive_pdu.kind ==
 		FileDirectivePDU_metadata_pdu_PRESENT) {
+
+		decode_tlv_from_metadata_pdu(
+		    core, &transaction, pdu,
+		    bit_stream_with_raw_data_messages_to_user,
+		    size_of_pdu_raw_data);
+
 		strncpy(
 		    transaction.source_filename,
 		    (const char *)pdu->payload.u.file_directive
@@ -462,9 +692,14 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 	BitStream_AttachBuffer(&bit_stream, buf, count);
 
 	cfdpCfdpPDU pdu;
-	int error_code = 0;
+	int32_t error_code = 0;
 	if (!cfdpCfdpPDU_ACN_Decode(&pdu, &bit_stream, &error_code)) {
 		core->cfdp_core_error_callback(core, ASN1SCC_ERROR, error_code);
+		return;
+	}
+
+	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {
+		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}
 
@@ -474,11 +709,9 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 		    &(pdu.payload.u.file_data.file_data_pdu);
 		file_data_pdu->file_data
 		    .arr[file_data_pdu->file_data.nCount - 1] = buf[count - 1];
-	}
-
-	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {
-		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
-		return;
+	} else if (pdu.payload.kind == PayloadData_file_directive_PRESENT &&
+		   pdu.payload.u.file_directive.file_directive_pdu.kind ==
+		       FileDirectivePDU_metadata_pdu_PRESENT) {
 	}
 
 	struct transaction_id transaction_id;
@@ -503,7 +736,7 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 		}
 	}
 
-	handle_pdu_to_new_receiver_machine(core, &pdu);
+	handle_pdu_to_new_receiver_machine(core, &pdu, &bit_stream, count);
 }
 
 void cfdp_core_run_fault_handler(struct cfdp_core *core,

@@ -71,12 +71,9 @@ int main(int argc, char *argv[])
 {
 
 	struct filestore_cfg filestore;
-	filestore.filestore_replace_file = test_filestore_copy_file;
 	filestore.filestore_get_file_size = test_filestore_get_file_size;
 	filestore.filestore_read = test_filestore_read_file;
 	filestore.filestore_write = test_filestore_write_to_file;
-	filestore.filestore_calculate_checksum =
-	    test_filestore_calculate_checksum;
 
 	struct transport transport;
 	transport.transport_send_pdu = test_transport_send_pdu;
@@ -92,21 +89,21 @@ int main(int argc, char *argv[])
 	test_transport_init_and_bind(&cfd_entity_sender);
 
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/small1.txt",
-		      "received_small1.txt");
+		      "received_small1.txt", 0, NULL);
 
 	while (!cfdp_core_is_done(&cfd_entity_sender)) {
 		usleep(1000 * 100);
 	}
 
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/small2.txt",
-		      "received_small2.txt");
+		      "received_small2.txt", 0, NULL);
 
 	while (!cfdp_core_is_done(&cfd_entity_sender)) {
 		usleep(1000 * 100);
 	}
 
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/small3.txt",
-		      "received_small3.txt");
+		      "received_small3.txt", 0, NULL);
 
 	while (!cfdp_core_is_done(&cfd_entity_sender)) {
 		usleep(1000 * 100);

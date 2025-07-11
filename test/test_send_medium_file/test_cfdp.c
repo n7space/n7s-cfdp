@@ -70,12 +70,9 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 int main(int argc, char *argv[])
 {
 	struct filestore_cfg filestore;
-	filestore.filestore_replace_file = test_filestore_copy_file;
 	filestore.filestore_get_file_size = test_filestore_get_file_size;
 	filestore.filestore_read = test_filestore_read_file;
 	filestore.filestore_write = test_filestore_write_to_file;
-	filestore.filestore_calculate_checksum =
-	    test_filestore_calculate_checksum;
 
 	struct transport transport;
 	transport.transport_send_pdu = test_transport_send_pdu;
@@ -91,7 +88,7 @@ int main(int argc, char *argv[])
 	test_transport_init_and_bind(&cfd_entity_sender);
 
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/medium.txt",
-		      "received_medium.txt");
+		      "received_medium.txt", 0, NULL);
 
 	while (!cfdp_core_is_done(&cfd_entity_sender)) {
 		usleep(1000 * 100);
@@ -107,8 +104,7 @@ int main(int argc, char *argv[])
 
 	if (compare_files(
 		"test/files/medium.txt",
-		"test/test_send_medium_file/target/received_medium.txt") !=
-	    0) {
+		"test/test_send_medium_file/target/received_medium.txt") != 0) {
 		return -1;
 	}
 

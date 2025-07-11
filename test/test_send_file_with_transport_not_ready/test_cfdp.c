@@ -67,11 +67,11 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 	printf("cfdp error type=%d error_code = %d\n", error_type, error_code);
 }
 
-bool transport_is_ready() 
+bool transport_is_ready()
 {
 	static int count = 0;
 	count++;
-	if(count < 4 && count != 1){
+	if (count < 4 && count != 1) {
 		printf("transport is not ready\n");
 		return false;
 	}
@@ -82,12 +82,9 @@ bool transport_is_ready()
 int main(int argc, char *argv[])
 {
 	struct filestore_cfg filestore;
-	filestore.filestore_replace_file = test_filestore_copy_file;
 	filestore.filestore_get_file_size = test_filestore_get_file_size;
 	filestore.filestore_read = test_filestore_read_file;
 	filestore.filestore_write = test_filestore_write_to_file;
-	filestore.filestore_calculate_checksum =
-	    test_filestore_calculate_checksum;
 
 	struct transport transport;
 	transport.transport_send_pdu = test_transport_send_pdu;
@@ -103,7 +100,7 @@ int main(int argc, char *argv[])
 	test_transport_init_and_bind(&cfd_entity_sender);
 
 	cfdp_core_put(&cfd_entity_sender, 13, "test/files/big.txt",
-		      "received_big.txt");
+		      "received_big.txt", 0, NULL);
 
 	cfdp_core_transport_is_ready_callback(&cfd_entity_sender);
 	cfdp_core_transport_is_ready_callback(&cfd_entity_sender);
@@ -115,15 +112,14 @@ int main(int argc, char *argv[])
 	sleep(1);
 	test_transport_close();
 
-	if (!file_exists(
-		"test/test_send_file_with_transport_not_ready/target/received_big.txt")) {
+	if (!file_exists("test/test_send_file_with_transport_not_ready/target/"
+			 "received_big.txt")) {
 		return -1;
 	}
 
-	if (compare_files(
-		"test/files/big.txt",
-		"test/test_send_file_with_transport_not_ready/target/received_big.txt") !=
-	    0) {
+	if (compare_files("test/files/big.txt",
+			  "test/test_send_file_with_transport_not_ready/target/"
+			  "received_big.txt") != 0) {
 		return -1;
 	}
 
