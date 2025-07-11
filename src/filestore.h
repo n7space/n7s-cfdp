@@ -11,9 +11,9 @@ struct filestore_cfg {
 	void (*filestore_read)(const char *filepath, uint32_t offset,
 			       char *data, const uint32_t length);
 	void (*filestore_write)(const char *filepath, uint32_t offset,
-				const char *data, const uint32_t length);
+				const uint8_t *data, const uint32_t length);
 	bool (*filestore_dump_directory_listing)(const char *dirpath,
-						 char *listing_data,
+						 uint8_t *listing_data,
 						 uint32_t length);
 
 	void *file_ptr;

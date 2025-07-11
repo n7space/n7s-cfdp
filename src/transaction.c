@@ -4,7 +4,7 @@
 
 #define MESSAGES_TO_USER_COUNT_ON_FILE_LISTING_RESPONSE 2
 
-static uint32_t calucate_data_checksum(const char *data, uint32_t length,
+static uint32_t calucate_data_checksum(const uint8_t *data, uint32_t length,
 				       enum ChecksumType checksum_type)
 {
 	if (checksum_type != CHECKSUM_TYPE_MODULAR) {
@@ -72,7 +72,7 @@ void transaction_store_data_to_file(struct transaction *transaction,
 {
 	transaction->filestore->filestore_write(
 	    transaction->destination_filename, file_data_pdu->segment_offset,
-	    (const char *)file_data_pdu->file_data.arr,
+	    (const uint8_t *)file_data_pdu->file_data.arr,
 	    file_data_pdu->file_data.nCount);
 }
 
@@ -146,8 +146,8 @@ bool transaction_get_file_segment(struct transaction *transaction,
 	}
 
 	*out_length = transaction->file_size - transaction->file_position >
-			      FILE_SEGMENT_LEN
-			  ? FILE_SEGMENT_LEN
+			      FILE_SEGMENT_BUFFER_SIZE
+			  ? FILE_SEGMENT_BUFFER_SIZE
 			  : transaction->file_size - transaction->file_position;
 
 	if (strcmp(VIRTUAL_LISTING_FILENAME, transaction->source_filename) ==
@@ -195,8 +195,9 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 					.directory_name,
 				    transaction->core->virtual_source_file_data,
 				    VIRTUAL_SOURCE_FILE_BUFFER_SIZE);
-			transaction->core->virtual_source_file_size =
-			    strlen(transaction->core->virtual_source_file_data);
+			transaction->core->virtual_source_file_size = strlen(
+			    (char *)
+				transaction->core->virtual_source_file_data);
 
 			struct message_to_user
 			    messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];
