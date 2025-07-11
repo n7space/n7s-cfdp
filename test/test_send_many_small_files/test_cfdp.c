@@ -69,6 +69,7 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 
 int main(int argc, char *argv[])
 {
+	CFDP_DATA_BUFFER(cfdp_data_buffer);
 
 	struct filestore_cfg filestore;
 	filestore.filestore_get_file_size = test_filestore_get_file_size;
@@ -82,7 +83,7 @@ int main(int argc, char *argv[])
 	struct cfdp_core cfd_entity_sender;
 
 	cfdp_core_init(&cfd_entity_sender, &filestore, &transport, 6,
-		       CHECKSUM_TYPE_MODULAR, 30);
+		       CHECKSUM_TYPE_MODULAR, 30, cfdp_data_buffer);
 	cfd_entity_sender.cfdp_core_indication_callback = indication_callback;
 	cfd_entity_sender.cfdp_core_error_callback = error_callback;
 

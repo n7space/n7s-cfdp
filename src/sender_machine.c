@@ -242,7 +242,8 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	long size = PDU_BUFFER_SIZE;
 	memset(sender_machine->core->pdu_buffer, 0x0, (size_t)PDU_BUFFER_SIZE);
 	BitStream bit_stream;
-	BitStream_AttachBuffer(&bit_stream, sender_machine->core->pdu_buffer, size);
+	BitStream_AttachBuffer(&bit_stream, sender_machine->core->pdu_buffer,
+			       size);
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
@@ -269,8 +270,10 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
-	if (!transaction_get_file_segment(&sender_machine->transaction,
-					  (char *)sender_machine->core->file_segment_data_buffer, &length)) {
+	if (!transaction_get_file_segment(
+		&sender_machine->transaction,
+		(char *)sender_machine->core->file_segment_data_buffer,
+		&length)) {
 		if (sender_machine->core->cfdp_core_error_callback != NULL) {
 			sender_machine->core->cfdp_core_error_callback(
 			    sender_machine->core, SEGMENTATION_ERROR, 0);
@@ -278,7 +281,8 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		return;
 	}
 	file_data_pdu.file_data.nCount = length;
-	strncpy((char *)file_data_pdu.file_data.arr, (const char *)sender_machine->core->file_segment_data_buffer,
+	strncpy((char *)file_data_pdu.file_data.arr,
+		(const char *)sender_machine->core->file_segment_data_buffer,
 		length);
 
 	pdu.pdu_header = header;
@@ -288,7 +292,8 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	long size = PDU_BUFFER_SIZE;
 	memset(sender_machine->core->pdu_buffer, 0x0, (size_t)size);
 	BitStream bit_stream;
-	BitStream_AttachBuffer(&bit_stream, sender_machine->core->pdu_buffer, size);
+	BitStream_AttachBuffer(&bit_stream, sender_machine->core->pdu_buffer,
+			       size);
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
@@ -307,9 +312,11 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	const uint32_t determinant_size = 2;
 	uint32_t determinant_index = bit_stream.currentByte - length - 1;
 	memset(sender_machine->core->modified_pdu_buffer, 0x0, (size_t)size);
-	memcpy(sender_machine->core->modified_pdu_buffer, sender_machine->core->pdu_buffer, determinant_index - 1);
-	memcpy(sender_machine->core->modified_pdu_buffer + determinant_index - 1,
-	       sender_machine->core->pdu_buffer + determinant_index + 1, length);
+	memcpy(sender_machine->core->modified_pdu_buffer,
+	       sender_machine->core->pdu_buffer, determinant_index - 1);
+	memcpy(
+	    sender_machine->core->modified_pdu_buffer + determinant_index - 1,
+	    sender_machine->core->pdu_buffer + determinant_index + 1, length);
 
 	for (uint32_t i = 0; i < determinant_size; i++) {
 		if (--sender_machine->core->modified_pdu_buffer[2] == 0xFF) {
@@ -318,7 +325,8 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	}
 
 	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->core->modified_pdu_buffer, bit_stream.currentByte - determinant_size);
+	    sender_machine->core->modified_pdu_buffer,
+	    bit_stream.currentByte - determinant_size);
 }
 
 void sender_machine_send_eof(struct sender_machine *sender_machine)
@@ -342,7 +350,8 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	long size = PDU_BUFFER_SIZE;
 	memset(sender_machine->core->pdu_buffer, 0x0, (size_t)size);
 	BitStream bit_stream;
-	BitStream_AttachBuffer(&bit_stream, sender_machine->core->pdu_buffer, size);
+	BitStream_AttachBuffer(&bit_stream, sender_machine->core->pdu_buffer,
+			       size);
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {

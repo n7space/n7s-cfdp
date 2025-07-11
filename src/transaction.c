@@ -195,8 +195,9 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 					.directory_name,
 				    transaction->core->virtual_source_file_data,
 				    VIRTUAL_SOURCE_FILE_BUFFER_SIZE);
-			transaction->core->virtual_source_file_size =
-			    strlen((char*)transaction->core->virtual_source_file_data);
+			transaction->core->virtual_source_file_size = strlen(
+			    (char *)
+				transaction->core->virtual_source_file_data);
 
 			struct message_to_user
 			    messages_to_user[MAX_NUMBER_OF_MESSAGES_TO_USER];
