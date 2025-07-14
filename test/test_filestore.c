@@ -34,7 +34,7 @@ void test_filestore_read_file(const char *filepath, uint32_t offset, char *data,
 }
 
 void test_filestore_write_to_file(const char *filepath, uint32_t offset,
-				  const char *data, const uint32_t length)
+				  const uint8_t *data, const uint32_t length)
 {
 	FILE *file = fopen(filepath, "a");
 	if (file == NULL) {
@@ -60,11 +60,11 @@ void test_delete_file(const char *filepath)
 }
 
 bool test_filestore_dump_directory_listing(
-	    const char *dirpath, char *listing_data, uint32_t length)
+	    const char *dirpath, uint8_t *listing_data, uint32_t length)
 {
 	DIR *dir = opendir(dirpath);
     if (!dir) {
-        snprintf(listing_data, length, "Error opening directory: %s\n", strerror(errno));
+        snprintf((char *)listing_data, length, "Error opening directory: %s\n", strerror(errno));
         return false;
     }
 
@@ -76,7 +76,7 @@ bool test_filestore_dump_directory_listing(
 		    strcmp(entry->d_name, "..") == 0)
 			continue;
 
-        int written = snprintf(listing_data + offset, length - offset, "%s\n", entry->d_name);
+        int written = snprintf((char *)(listing_data + offset), length - offset, "%s\n", entry->d_name);
         if (written < 0 || (size_t)written >= length - offset) {
             // Buffer full or error
             closedir(dir);

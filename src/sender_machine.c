@@ -239,11 +239,11 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 	pdu.payload.u.file_directive.file_directive_pdu.u.metadata_pdu =
 	    metadata_pdu;
 
-	unsigned char buf[PDU_BUFFER_SIZE];
-	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
-	memset(buf, 0x0, (size_t)PDU_BUFFER_SIZE);
+	long size = PDU_BUFFER_SIZE;
+	memset(sender_machine->core->pdu_buffer, 0x0, (size_t)PDU_BUFFER_SIZE);
 	BitStream bit_stream;
-	BitStream_AttachBuffer(&bit_stream, buf, size);
+	BitStream_AttachBuffer(&bit_stream, sender_machine->core->pdu_buffer,
+			       size);
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
@@ -266,13 +266,14 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	cfdpCfdpPDU pdu;
 	cfdpPDUHeader header = create_pdu_header(sender_machine);
 	cfdpFileDataPDU file_data_pdu;
-	byte data[FILE_SEGMENT_LEN];
 	uint32_t length;
 
 	file_data_pdu.segment_offset =
 	    sender_machine->transaction.file_position;
-	if (!transaction_get_file_segment(&sender_machine->transaction,
-					  (char *)data, &length)) {
+	if (!transaction_get_file_segment(
+		&sender_machine->transaction,
+		(char *)sender_machine->core->file_segment_data_buffer,
+		&length)) {
 		if (sender_machine->core->cfdp_core_error_callback != NULL) {
 			sender_machine->core->cfdp_core_error_callback(
 			    sender_machine->core, SEGMENTATION_ERROR, 0);
@@ -280,18 +281,19 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		return;
 	}
 	file_data_pdu.file_data.nCount = length;
-	strncpy((char *)file_data_pdu.file_data.arr, (const char *)data,
+	strncpy((char *)file_data_pdu.file_data.arr,
+		(const char *)sender_machine->core->file_segment_data_buffer,
 		length);
 
 	pdu.pdu_header = header;
 	pdu.payload.kind = PayloadData_file_data_PRESENT;
 	pdu.payload.u.file_data.file_data_pdu = file_data_pdu;
 
-	unsigned char buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
-	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
-	memset(buf, 0x0, (size_t)size);
+	long size = PDU_BUFFER_SIZE;
+	memset(sender_machine->core->pdu_buffer, 0x0, (size_t)size);
 	BitStream bit_stream;
-	BitStream_AttachBuffer(&bit_stream, buf, size);
+	BitStream_AttachBuffer(&bit_stream, sender_machine->core->pdu_buffer,
+			       size);
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
@@ -309,20 +311,22 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	// removed after asn1scc encode
 	const uint32_t determinant_size = 2;
 	uint32_t determinant_index = bit_stream.currentByte - length - 1;
-	unsigned char modified_buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
-	memset(modified_buf, 0x0, (size_t)size);
-	memcpy(modified_buf, buf, determinant_index - 1);
-	memcpy(modified_buf + determinant_index - 1,
-	       buf + determinant_index + 1, length);
+	memset(sender_machine->core->modified_pdu_buffer, 0x0, (size_t)size);
+	memcpy(sender_machine->core->modified_pdu_buffer,
+	       sender_machine->core->pdu_buffer, determinant_index - 1);
+	memcpy(
+	    sender_machine->core->modified_pdu_buffer + determinant_index - 1,
+	    sender_machine->core->pdu_buffer + determinant_index + 1, length);
 
 	for (uint32_t i = 0; i < determinant_size; i++) {
-		if (--modified_buf[2] == 0xFF) {
-			modified_buf[1]--;
+		if (--sender_machine->core->modified_pdu_buffer[2] == 0xFF) {
+			sender_machine->core->modified_pdu_buffer[1]--;
 		}
 	}
 
 	sender_machine->core->transport->transport_send_pdu(
-	    modified_buf, bit_stream.currentByte - determinant_size);
+	    sender_machine->core->modified_pdu_buffer,
+	    bit_stream.currentByte - determinant_size);
 }
 
 void sender_machine_send_eof(struct sender_machine *sender_machine)
@@ -343,11 +347,11 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	    FileDirectivePDU_eof_pdu_PRESENT;
 	pdu.payload.u.file_directive.file_directive_pdu.u.eof_pdu = eof_pdu;
 
-	unsigned char buf[cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING];
-	long size = cfdpCfdpPDU_REQUIRED_BYTES_FOR_ACN_ENCODING;
-	memset(buf, 0x0, (size_t)size);
+	long size = PDU_BUFFER_SIZE;
+	memset(sender_machine->core->pdu_buffer, 0x0, (size_t)size);
 	BitStream bit_stream;
-	BitStream_AttachBuffer(&bit_stream, buf, size);
+	BitStream_AttachBuffer(&bit_stream, sender_machine->core->pdu_buffer,
+			       size);
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
