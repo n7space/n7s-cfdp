@@ -32,6 +32,8 @@ struct cfdp_core {
 	uint8_t *pdu_buffer;
 	uint8_t *modified_pdu_buffer;
 
+	void *user_data;
+
 	void (*cfdp_core_indication_callback)(
 	    struct cfdp_core *core, const enum IndicationType indication_type,
 	    const struct transaction_id transaction_id);
@@ -43,8 +45,8 @@ struct cfdp_core {
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 		    struct transport *transport, const uint32_t entity_id,
 		    const enum ChecksumType checksum_type,
-		    const uint32_t inactivity_timeout,
-			uint8_t *data_buffer);
+		    const uint32_t inactivity_timeout, uint8_t *data_buffer,
+		    void *user_data);
 
 void cfdp_core_issue_request(struct cfdp_core *core,
 			     struct transaction_id transaction_id,

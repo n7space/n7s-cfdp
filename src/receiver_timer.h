@@ -8,11 +8,11 @@ struct cfdp_core;
 struct receiver_timer {
 	struct cfdp_core *core;
 	struct transaction_id transaction_id;
-	int timeout;
+	uint8_t timeout;
 
-	void (*timer_restart)(const int timeout,
+	void (*timer_restart)(void *user_data, const uint8_t timeout,
 			      void expired(struct receiver_timer *));
-	void (*timer_stop)();
+	void (*timer_stop)(void *user_data);
 };
 
 void receiver_timer_restart(struct receiver_timer *timer);

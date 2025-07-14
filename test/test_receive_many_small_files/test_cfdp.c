@@ -20,12 +20,12 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 	printf("cfdp error type=%d error_code = %d\n", error_type, error_code);
 }
 
-void test_timer_restart(const int timeout,
+void test_timer_restart(void *user_data, const uint8_t timeout,
 			void expired(struct receiver_timer *))
 {
 }
 
-void test_timer_stop() {}
+void test_timer_stop(void *user_data) {}
 
 int main(int argc, char *argv[])
 {
@@ -44,9 +44,10 @@ int main(int argc, char *argv[])
 	struct cfdp_core cfd_entity_sender;
 
 	cfdp_core_init(&cfd_entity_sender, &filestore, &transport, 6,
-		       CHECKSUM_TYPE_MODULAR, 30, cfdp_data_buffer);
+		       CHECKSUM_TYPE_MODULAR, 30, cfdp_data_buffer, NULL);
 	cfd_entity_sender.cfdp_core_indication_callback = indication_callback;
 	cfd_entity_sender.cfdp_core_error_callback = error_callback;
+	cfd_entity_sender.receiver[0].timer.core = &cfd_entity_sender;
 	cfd_entity_sender.receiver[0].timer.timer_restart = test_timer_restart;
 	cfd_entity_sender.receiver[0].timer.timer_stop = test_timer_stop;
 

@@ -32,7 +32,7 @@ static uint32_t calucate_data_checksum(const uint8_t *data, uint32_t length,
 	return checksum;
 }
 
-static uint32_t calucate_file_checksum(struct filestore_cfg *filestore,
+static uint32_t calucate_file_checksum(struct transaction *transaction,
 				       const char *filepath,
 				       enum ChecksumType checksum_type)
 {
@@ -40,7 +40,8 @@ static uint32_t calucate_file_checksum(struct filestore_cfg *filestore,
 		return 0;
 	}
 
-	uint32_t file_size = filestore->filestore_get_file_size(filepath);
+	uint32_t file_size = transaction->filestore->filestore_get_file_size(
+	    transaction->core->user_data, filepath);
 
 	uint32_t offset = 0;
 	uint32_t checksum = 0;
@@ -52,8 +53,9 @@ static uint32_t calucate_file_checksum(struct filestore_cfg *filestore,
 			bytes_to_read = file_size % 4;
 		}
 
-		filestore->filestore_read(filepath, offset, buffer,
-					  bytes_to_read);
+		transaction->filestore->filestore_read(
+		    transaction->core->user_data, filepath, offset, buffer,
+		    bytes_to_read);
 		offset += bytes_to_read;
 		uint32_t value = 0;
 
@@ -71,14 +73,15 @@ void transaction_store_data_to_file(struct transaction *transaction,
 				    const cfdpFileDataPDU *file_data_pdu)
 {
 	transaction->filestore->filestore_write(
-	    transaction->destination_filename, file_data_pdu->segment_offset,
+	    transaction->core->user_data, transaction->destination_filename,
+	    file_data_pdu->segment_offset,
 	    (const uint8_t *)file_data_pdu->file_data.arr,
 	    file_data_pdu->file_data.nCount);
 }
 
 uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
 {
-	return calucate_file_checksum(transaction->filestore,
+	return calucate_file_checksum(transaction,
 				      transaction->destination_filename,
 				      transaction->core->checksum_type);
 }
@@ -86,7 +89,7 @@ uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
 void transaction_delete_stored_file(struct transaction *transaction)
 {
 	transaction->filestore->filestore_delete_file(
-	    transaction->destination_filename);
+	    transaction->core->user_data, transaction->destination_filename);
 }
 
 bool transaction_is_file_transfer_in_progress(struct transaction *transaction)
@@ -114,7 +117,7 @@ uint32_t transaction_get_file_size(struct transaction *transaction)
 
 	transaction->file_size =
 	    transaction->filestore->filestore_get_file_size(
-		transaction->source_filename);
+		transaction->core->user_data, transaction->source_filename);
 
 	return transaction->file_size;
 }
@@ -132,7 +135,7 @@ uint32_t transaction_get_file_checksum(struct transaction *transaction)
 		    transaction->virtual_source_file_size,
 		    transaction->core->checksum_type);
 	} else {
-		return calucate_file_checksum(transaction->filestore,
+		return calucate_file_checksum(transaction,
 					      transaction->source_filename,
 					      transaction->core->checksum_type);
 	}
@@ -160,9 +163,9 @@ bool transaction_get_file_segment(struct transaction *transaction,
 		return true;
 	}
 
-	transaction->filestore->filestore_read(transaction->source_filename,
-					       transaction->file_position,
-					       out_data, *out_length);
+	transaction->filestore->filestore_read(
+	    transaction->core->user_data, transaction->source_filename,
+	    transaction->file_position, out_data, *out_length);
 
 	transaction->file_position += *out_length;
 
@@ -189,6 +192,7 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 			bool result =
 			    transaction->filestore
 				->filestore_dump_directory_listing(
+				    transaction->core->user_data,
 				    transaction->messages_to_user[i]
 					.message_to_user_union
 					.directory_listing_request

@@ -20,7 +20,8 @@ static uint64_t bytes_to_ulong(const byte *data, uint32_t size)
 void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 		    struct transport *transport, const uint32_t entity_id,
 		    const enum ChecksumType checksum_type,
-		    const uint32_t inactivity_timeout, uint8_t *data_buffer)
+		    const uint32_t inactivity_timeout, uint8_t *data_buffer,
+		    void *user_data)
 {
 	core->sender[0].core = core;
 	core->sender[0].state = COMPLETED;
@@ -43,6 +44,8 @@ void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 	core->pdu_buffer = core->data_buffer + PDU_BUFFER_OFFSET;
 	core->modified_pdu_buffer =
 	    core->data_buffer + MODIFIED_PDU_BUFFER_OFFSET;
+
+	core->user_data = user_data;
 }
 
 static bool cfdp_core_is_request_to_sender(struct cfdp_core *core,
@@ -740,7 +743,6 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 			return;
 		}
 	}
-
 	handle_pdu_to_new_receiver_machine(core, &pdu, &bit_stream, count);
 }
 
