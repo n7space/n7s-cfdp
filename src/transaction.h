@@ -25,10 +25,10 @@ struct transaction {
 	uint32_t file_position;
 };
 
-void transaction_store_data_to_file(struct transaction *transaction,
+bool transaction_store_data_to_file(struct transaction *transaction,
 				    const cfdpFileDataPDU *file_data_pdu);
 uint32_t transaction_get_stored_file_checksum(struct transaction *transaction);
-void transaction_delete_stored_file(struct transaction *transaction);
+bool transaction_delete_stored_file(struct transaction *transaction);
 
 uint32_t transaction_get_file_size(struct transaction *transaction);
 uint32_t transaction_get_file_checksum(struct transaction *transaction);
@@ -43,6 +43,6 @@ struct message_to_user
 transaction_get_message_to_user(struct transaction *transaction,
 				uint32_t index);
 
-void transaction_process_messages_to_user(struct transaction *transaction);
+bool transaction_process_messages_to_user(struct transaction *transaction);
 
 #endif

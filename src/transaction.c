@@ -68,14 +68,20 @@ static uint32_t calucate_file_checksum(struct filestore_cfg *filestore,
 	return checksum;
 }
 
-void transaction_store_data_to_file(struct transaction *transaction,
+bool transaction_store_data_to_file(struct transaction *transaction,
 				    const cfdpFileDataPDU *file_data_pdu)
 {
-	transaction->filestore->filestore_write(
-	    transaction->filestore->filestore_data,
-	    transaction->destination_filename, file_data_pdu->segment_offset,
-	    (const uint8_t *)file_data_pdu->file_data.arr,
-	    file_data_pdu->file_data.nCount);
+	if (!transaction->filestore->filestore_write(
+		transaction->filestore->filestore_data, transaction->destination_filename,
+		file_data_pdu->segment_offset,
+		(const uint8_t *)file_data_pdu->file_data.arr,
+		file_data_pdu->file_data.nCount)) {
+		transaction->core->cfdp_core_error_callback(transaction->core,
+							    FILESTORE_ERROR, 0);
+		return false;
+	}
+
+	return true;
 }
 
 uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
@@ -85,11 +91,17 @@ uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
 				      transaction->core->checksum_type);
 }
 
-void transaction_delete_stored_file(struct transaction *transaction)
+bool transaction_delete_stored_file(struct transaction *transaction)
 {
-	transaction->filestore->filestore_delete_file(
-	    transaction->filestore->filestore_data,
-	    transaction->destination_filename);
+	if (!transaction->filestore->filestore_delete_file(
+		transaction->filestore->filestore_data,
+		transaction->destination_filename)) {
+		transaction->core->cfdp_core_error_callback(transaction->core,
+							    FILESTORE_ERROR, 0);
+		return false;
+	}
+
+	return true;
 }
 
 bool transaction_is_file_transfer_in_progress(struct transaction *transaction)
@@ -164,10 +176,14 @@ bool transaction_get_file_segment(struct transaction *transaction,
 		return true;
 	}
 
-	transaction->filestore->filestore_read(
-	    transaction->filestore->filestore_data,
-	    transaction->source_filename, transaction->file_position, out_data,
-	    *out_length);
+	if (!transaction->filestore->filestore_read(
+		transaction->filestore->filestore_data, transaction->source_filename,
+		transaction->file_position, out_data, *out_length)) {
+		transaction->core->cfdp_core_error_callback(transaction->core,
+							    FILESTORE_ERROR, 0);
+
+		return false;
+	}
 
 	transaction->file_position += *out_length;
 
@@ -185,7 +201,7 @@ transaction_get_message_to_user(struct transaction *transaction, uint32_t index)
 	return transaction->messages_to_user[index];
 }
 
-void transaction_process_messages_to_user(struct transaction *transaction)
+bool transaction_process_messages_to_user(struct transaction *transaction)
 {
 	for (uint32_t i = 0; i < transaction->messages_to_user_count; i++) {
 
@@ -201,6 +217,12 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 					.directory_name,
 				    transaction->core->virtual_source_file_data,
 				    VIRTUAL_SOURCE_FILE_BUFFER_SIZE);
+			if (!result) {
+				transaction->core->cfdp_core_error_callback(
+				    transaction->core, FILESTORE_ERROR, 0);
+				return false;
+			}
+
 			transaction->core->virtual_source_file_size = strlen(
 			    (char *)
 				transaction->core->virtual_source_file_data);
@@ -298,4 +320,6 @@ void transaction_process_messages_to_user(struct transaction *transaction)
 		}
 		}
 	}
+
+	return true;
 }

@@ -57,8 +57,11 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			cfdp_core_metadata_received_indication(
 			    receiver_machine->core,
 			    receiver_machine->transaction_id);
-			transaction_process_messages_to_user(
-			    &receiver_machine->transaction);
+			if (!transaction_process_messages_to_user(
+				&receiver_machine->transaction)) {
+				receiver_machine_close(receiver_machine);
+				return;
+			}
 			receiver_machine->state = WAIT_FOR_EOF;
 			break;
 		}
@@ -141,9 +144,13 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 				&receiver_machine->transaction)) {
 				const cfdpFileDataPDU *file_data_pdu =
 				    &(pdu->payload.u.file_data.file_data_pdu);
-				transaction_store_data_to_file(
-				    &receiver_machine->transaction,
-				    file_data_pdu);
+				if (!transaction_store_data_to_file(
+					&receiver_machine->transaction,
+					file_data_pdu)) {
+					receiver_machine_close(
+					    receiver_machine);
+					return;
+				}
 				if (receiver_machine->received_file_size <
 				    file_data_pdu->segment_offset +
 					file_data_pdu->file_data.nCount) {
@@ -184,8 +191,13 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 					    receiver_machine->transaction_id,
 					    DEFAULT_FAULT_HANDLER_ACTIONS
 						[cfdpConditionCode_file_checksum_failure]);
-					transaction_delete_stored_file(
-					    &receiver_machine->transaction);
+					if (!transaction_delete_stored_file(
+						&receiver_machine
+						     ->transaction)) {
+						receiver_machine_close(
+						    receiver_machine);
+						return;
+					}
 					break;
 				}
 			}

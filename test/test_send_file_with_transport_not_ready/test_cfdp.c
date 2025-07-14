@@ -79,12 +79,13 @@ bool transport_is_ready()
 	return true;
 }
 
-void test_timer_restart(void *user_data, const uint32_t timeout,
+bool test_timer_restart(void *user_data, const uint32_t timeout,
 			void expired(struct receiver_timer *))
 {
+	return true;
 }
 
-void test_timer_stop(void *user_data) {}
+bool test_timer_stop(void *user_data) { return true; }
 
 int main(int argc, char *argv[])
 {

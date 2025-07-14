@@ -13,9 +13,9 @@ struct receiver_timer {
 
 	void *timer_data;
 
-	void (*timer_restart)(void *timer_data, const uint32_t timeout,
+	bool (*timer_restart)(void *timer_data, const uint32_t timeout,
 			      void expired(struct receiver_timer *));
-	void (*timer_stop)(void *timer_data);
+	bool (*timer_stop)(void *timer_data);
 };
 
 void receiver_timer_restart(struct receiver_timer *timer);

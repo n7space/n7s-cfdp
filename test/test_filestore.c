@@ -14,49 +14,53 @@ uint64_t test_filestore_get_file_size(void *user_data, const char *filepath)
 	return size;
 }
 
-void test_filestore_read_file(void *user_data, const char *filepath, uint32_t offset, char *data,
+bool test_filestore_read_file(void *user_data, const char *filepath, uint32_t offset, char *data,
 			      const uint32_t length)
 {
 	FILE *file = fopen(filepath, "rb");
 	if (file == NULL) {
 		printf("Error: Could not open file %s\n", filepath);
-		return;
+		return false;
 	}
 
 	fseek(file, offset, SEEK_SET);
 	if (fread(data, sizeof(byte), length, file) != length) {
 		printf("Error: Bad read\n");
 		fclose(file);
-		return;
+		return false;
 	}
 
 	fclose(file);
+	return true;
 }
 
-void test_filestore_write_to_file(void *user_data, const char *filepath, uint32_t offset,
+bool test_filestore_write_to_file(void *user_data, const char *filepath, uint32_t offset,
 				  const uint8_t *data, const uint32_t length)
 {
 	FILE *file = fopen(filepath, "a");
 	if (file == NULL) {
 		printf("Error: Could not open file %s\n", filepath);
-		return;
+		return false;
 	}
 
 	fseek(file, offset, SEEK_SET);
 	if (fwrite(data, sizeof(byte), length, file) != length) {
 		printf("Error: Bad write\n");
 		fclose(file);
-		return;
+		return false;
 	}
 
 	fclose(file);
+	return true;
 }
 
-void test_delete_file(void *user_data, const char *filepath)
+bool test_delete_file(void *user_data, const char *filepath)
 {
 	if (remove(filepath) != 0) {
 		printf("Error: Delete file error\n");
+		return false;
 	}
+	return true;
 }
 
 bool test_filestore_dump_directory_listing(

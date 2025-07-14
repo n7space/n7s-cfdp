@@ -8,7 +8,7 @@ struct transport {
 
 	void *transport_data;
 
-	void (*transport_send_pdu)(void *transport_data, const byte pdu[],
+	bool (*transport_send_pdu)(void *transport_data, const byte pdu[],
 				   const int size);
 	bool (*transport_is_ready)(void *transport_data);
 };

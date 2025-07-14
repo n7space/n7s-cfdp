@@ -208,7 +208,7 @@ void sender_machine_close(struct sender_machine *sender_machine)
 	sender_machine->state = COMPLETED;
 }
 
-void sender_machine_send_metadata(struct sender_machine *sender_machine)
+static bool sender_machine_send_metadata(struct sender_machine *sender_machine)
 {
 	cfdpCfdpPDU pdu;
 	cfdpPDUHeader header = create_pdu_header(sender_machine);
@@ -251,18 +251,25 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 			sender_machine->core->cfdp_core_error_callback(
 			    sender_machine->core, ASN1SCC_ERROR, error_code);
 		}
-		return;
+		sender_machine_close(sender_machine);
+		return false;
 	}
 
 	append_messages_to_user_to_bit_stream_with_metada_pdu(sender_machine,
 							      &bit_stream);
 
-	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->core->transport->transport_data, bit_stream.buf,
-	    bit_stream.currentByte);
+	if (!sender_machine->core->transport->transport_send_pdu(
+		sender_machine->core->transport->transport_data, bit_stream.buf,
+		bit_stream.currentByte)) {
+		sender_machine->core->cfdp_core_error_callback(
+		    sender_machine->core, TRANSPORT_ERROR, 0);
+		return false;
+	}
+
+	return true;
 }
 
-void sender_machine_send_file_data(struct sender_machine *sender_machine)
+static bool sender_machine_send_file_data(struct sender_machine *sender_machine)
 {
 	cfdpCfdpPDU pdu;
 	cfdpPDUHeader header = create_pdu_header(sender_machine);
@@ -279,7 +286,7 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 			sender_machine->core->cfdp_core_error_callback(
 			    sender_machine->core, SEGMENTATION_ERROR, 0);
 		}
-		return;
+		return false;
 	}
 	file_data_pdu.file_data.nCount = length;
 	strncpy((char *)file_data_pdu.file_data.arr,
@@ -302,7 +309,7 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 			sender_machine->core->cfdp_core_error_callback(
 			    sender_machine->core, ASN1SCC_ERROR, error_code);
 		}
-		return;
+		return false;
 	}
 
 	// asn1scc cannot accept one determinant determining two seperate octet
@@ -325,13 +332,19 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 		}
 	}
 
-	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->core->transport->transport_data,
-	    sender_machine->core->modified_pdu_buffer,
-	    bit_stream.currentByte - determinant_size);
+	if (!sender_machine->core->transport->transport_send_pdu(
+		sender_machine->core->transport->transport_data,
+		sender_machine->core->modified_pdu_buffer,
+		bit_stream.currentByte - determinant_size)) {
+		sender_machine->core->cfdp_core_error_callback(
+		    sender_machine->core, TRANSPORT_ERROR, 0);
+		return false;
+	}
+
+	return true;
 }
 
-void sender_machine_send_eof(struct sender_machine *sender_machine)
+static bool sender_machine_send_eof(struct sender_machine *sender_machine)
 {
 	cfdpCfdpPDU pdu;
 	cfdpPDUHeader header = create_pdu_header(sender_machine);
@@ -361,12 +374,18 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 			sender_machine->core->cfdp_core_error_callback(
 			    sender_machine->core, ASN1SCC_ERROR, error_code);
 		}
-		return;
+		return false;
 	}
 
-	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->core->transport->transport_data, bit_stream.buf,
-	    bit_stream.currentByte);
+	if (!sender_machine->core->transport->transport_send_pdu(
+		sender_machine->core->transport->transport_data, bit_stream.buf,
+		bit_stream.currentByte)) {
+		sender_machine->core->cfdp_core_error_callback(
+		    sender_machine->core, TRANSPORT_ERROR, 0);
+		return false;
+	}
+
+	return true;
 }
 
 void sender_machine_update_state(struct sender_machine *sender_machine,
@@ -382,7 +401,10 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			cfdp_core_transaction_indication(
 			    sender_machine->core,
 			    sender_machine->transaction_id);
-			sender_machine_send_metadata(sender_machine);
+			if (!sender_machine_send_metadata(sender_machine)) {
+				sender_machine_close(sender_machine);
+				return;
+			}
 			if (transaction_is_file_transfer_in_progress(
 				&sender_machine->transaction)) {
 				sender_machine->state = SEND_FILE;
@@ -391,7 +413,10 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 				    sender_machine->transaction_id,
 				    E0_ENTERED_STATE);
 			} else {
-				sender_machine_send_eof(sender_machine);
+				if (!sender_machine_send_eof(sender_machine)) {
+					sender_machine_close(sender_machine);
+					return;
+				}
 				sender_machine_close(sender_machine);
 				cfdp_core_eof_sent_indication(
 				    sender_machine->core,
@@ -433,7 +458,10 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 
 			if (transaction_is_file_send_complete(
 				&sender_machine->transaction)) {
-				sender_machine_send_eof(sender_machine);
+				if (!sender_machine_send_eof(sender_machine)) {
+					sender_machine_close(sender_machine);
+					return;
+				}
 				cfdp_core_eof_sent_indication(
 				    sender_machine->core,
 				    sender_machine->transaction_id);
@@ -443,7 +471,11 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 				sender_machine_close(sender_machine);
 				return;
 			} else {
-				sender_machine_send_file_data(sender_machine);
+				if (!sender_machine_send_file_data(
+					sender_machine)) {
+					sender_machine_close(sender_machine);
+					return;
+				}
 			}
 
 			cfdp_core_issue_request(sender_machine->core,
