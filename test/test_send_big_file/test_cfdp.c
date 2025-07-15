@@ -67,7 +67,7 @@ void error_callback(struct cfdp_core *core, const enum ErrorType error_type,
 	printf("cfdp error type=%d error_code = %d\n", error_type, error_code);
 }
 
-void test_timer_restart(void *user_data, const uint8_t timeout,
+void test_timer_restart(void *user_data, const uint32_t timeout,
 			void expired(struct receiver_timer *))
 {
 }
@@ -98,8 +98,9 @@ int main(int argc, char *argv[])
 	struct cfdp_core cfd_entity_sender;
 
 	cfdp_core_init(&cfd_entity_sender, &filestore, &transport, 6,
-		       CHECKSUM_TYPE_MODULAR, &timer, 30, indication_callback,
-		       error_callback, cfdp_data_buffer);
+		       CHECKSUM_TYPE_MODULAR, &timer, 30, cfdp_data_buffer);
+	cfdp_core_register_indication_callback(&cfd_entity_sender, indication_callback);
+	cfdp_core_register_error_callback(&cfd_entity_sender, error_callback);
 
 	test_transport_init_and_bind(&cfd_entity_sender);
 

@@ -32,7 +32,7 @@ static uint32_t calucate_data_checksum(const uint8_t *data, uint32_t length,
 	return checksum;
 }
 
-static uint32_t calucate_file_checksum(struct transaction *transaction,
+static uint32_t calucate_file_checksum(struct filestore_cfg *filestore,
 				       const char *filepath,
 				       enum ChecksumType checksum_type)
 {
@@ -40,8 +40,8 @@ static uint32_t calucate_file_checksum(struct transaction *transaction,
 		return 0;
 	}
 
-	uint32_t file_size = transaction->filestore->filestore_get_file_size(
-	    transaction->filestore->filestore_data, filepath);
+	uint32_t file_size = filestore->filestore_get_file_size(
+	    filestore->filestore_data, filepath);
 
 	uint32_t offset = 0;
 	uint32_t checksum = 0;
@@ -53,9 +53,8 @@ static uint32_t calucate_file_checksum(struct transaction *transaction,
 			bytes_to_read = file_size % 4;
 		}
 
-		transaction->filestore->filestore_read(
-		    transaction->filestore->filestore_data, filepath, offset,
-		    buffer, bytes_to_read);
+		filestore->filestore_read(filestore->filestore_data, filepath,
+					  offset, buffer, bytes_to_read);
 		offset += bytes_to_read;
 		uint32_t value = 0;
 
@@ -81,7 +80,7 @@ void transaction_store_data_to_file(struct transaction *transaction,
 
 uint32_t transaction_get_stored_file_checksum(struct transaction *transaction)
 {
-	return calucate_file_checksum(transaction,
+	return calucate_file_checksum(transaction->filestore,
 				      transaction->destination_filename,
 				      transaction->core->checksum_type);
 }
@@ -137,7 +136,7 @@ uint32_t transaction_get_file_checksum(struct transaction *transaction)
 		    transaction->virtual_source_file_size,
 		    transaction->core->checksum_type);
 	} else {
-		return calucate_file_checksum(transaction,
+		return calucate_file_checksum(transaction->filestore,
 					      transaction->source_filename,
 					      transaction->core->checksum_type);
 	}
