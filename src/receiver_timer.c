@@ -4,11 +4,11 @@
 void receiver_timer_restart(struct receiver_timer *timer)
 {
 	if (timer->timer_stop != NULL) {
-		timer->timer_stop(timer->core->user_data);
+		timer->timer_stop(timer->timer_data);
 	}
 
 	if (timer->timer_restart != NULL) {
-		timer->timer_restart(timer->core->user_data, timer->timeout,
+		timer->timer_restart(timer->timer_data, timer->timeout,
 				     receiver_timer_expired);
 	}
 }
@@ -16,7 +16,7 @@ void receiver_timer_restart(struct receiver_timer *timer)
 void receiver_timer_stop(struct receiver_timer *timer)
 {
 	if (timer->timer_stop != NULL) {
-		timer->timer_stop(timer->core->user_data);
+		timer->timer_stop(timer->timer_data);
 	}
 }
 

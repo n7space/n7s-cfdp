@@ -17,17 +17,30 @@ static uint64_t bytes_to_ulong(const byte *data, uint32_t size)
 	return result;
 }
 
-void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
-		    struct transport *transport, const uint32_t entity_id,
-		    const enum ChecksumType checksum_type,
-		    const uint32_t inactivity_timeout, uint8_t *data_buffer,
-		    void *user_data)
+void cfdp_core_init(
+    struct cfdp_core *core, struct filestore_cfg *filestore,
+    struct transport *transport, const uint32_t entity_id,
+    const enum ChecksumType checksum_type,
+    struct receiver_timer *receiver_timer, const uint32_t inactivity_timeout,
+    void (*cfdp_core_indication_callback)(
+	struct cfdp_core *core, const enum IndicationType indication_type,
+	const struct transaction_id transaction_id),
+    void (*cfdp_core_error_callback)(struct cfdp_core *core,
+				     const enum ErrorType error_type,
+				     const uint32_t error_code),
+    uint8_t *data_buffer)
 {
 	core->sender[0].core = core;
 	core->sender[0].state = COMPLETED;
 	core->receiver[0].core = core;
 	core->receiver[0].state = COMPLETED;
 	core->receiver[0].timer.timeout = inactivity_timeout;
+	core->receiver[0].timer = *receiver_timer;
+	core->receiver[0].timer.core = core;
+
+	core->cfdp_core_indication_callback = cfdp_core_indication_callback;
+	core->cfdp_core_error_callback = cfdp_core_error_callback;
+
 	core->entity_id = entity_id;
 	core->checksum_type = checksum_type;
 	core->filestore = filestore;
@@ -44,8 +57,6 @@ void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
 	core->pdu_buffer = core->data_buffer + PDU_BUFFER_OFFSET;
 	core->modified_pdu_buffer =
 	    core->data_buffer + MODIFIED_PDU_BUFFER_OFFSET;
-
-	core->user_data = user_data;
 }
 
 static bool cfdp_core_is_request_to_sender(struct cfdp_core *core,

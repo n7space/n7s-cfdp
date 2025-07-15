@@ -5,16 +5,19 @@
 
 struct filestore_cfg {
 
-	void (*filestore_delete_file)(void *user_data, const char *filepath);
-	uint64_t (*filestore_get_file_size)(void *user_data,
+	void *filestore_data;
+
+	void (*filestore_delete_file)(void *filestore_data,
+				      const char *filepath);
+	uint64_t (*filestore_get_file_size)(void *filestore_data,
 					    const char *filepath);
-	void (*filestore_read)(void *user_data, const char *filepath,
+	void (*filestore_read)(void *filestore_data, const char *filepath,
 			       uint32_t offset, char *data,
 			       const uint32_t length);
-	void (*filestore_write)(void *user_data, const char *filepath,
+	void (*filestore_write)(void *filestore_data, const char *filepath,
 				uint32_t offset, const uint8_t *data,
 				const uint32_t length);
-	bool (*filestore_dump_directory_listing)(void *user_data,
+	bool (*filestore_dump_directory_listing)(void *filestore_data,
 						 const char *dirpath,
 						 uint8_t *listing_data,
 						 uint32_t length);

@@ -5,9 +5,12 @@
 #include "stdint.h"
 
 struct transport {
-	void (*transport_send_pdu)(void *user_data, const byte pdu[],
+
+	void *transport_data;
+
+	void (*transport_send_pdu)(void *transport_data, const byte pdu[],
 				   const int size);
-	bool (*transport_is_ready)(void *user_data);
+	bool (*transport_is_ready)(void *transport_data);
 };
 
 #endif

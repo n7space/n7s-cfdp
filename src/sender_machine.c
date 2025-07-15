@@ -258,7 +258,7 @@ void sender_machine_send_metadata(struct sender_machine *sender_machine)
 							      &bit_stream);
 
 	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->core->user_data, bit_stream.buf,
+	    sender_machine->core->transport->transport_data, bit_stream.buf,
 	    bit_stream.currentByte);
 }
 
@@ -326,7 +326,7 @@ void sender_machine_send_file_data(struct sender_machine *sender_machine)
 	}
 
 	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->core->user_data,
+	    sender_machine->core->transport->transport_data,
 	    sender_machine->core->modified_pdu_buffer,
 	    bit_stream.currentByte - determinant_size);
 }
@@ -365,7 +365,7 @@ void sender_machine_send_eof(struct sender_machine *sender_machine)
 	}
 
 	sender_machine->core->transport->transport_send_pdu(
-	    sender_machine->core->user_data, bit_stream.buf,
+	    sender_machine->core->transport->transport_data, bit_stream.buf,
 	    bit_stream.currentByte);
 }
 
@@ -426,7 +426,8 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 
 			if (!sender_machine->core->transport
 				 ->transport_is_ready(
-				     sender_machine->core->user_data)) {
+				     sender_machine->core->transport
+					 ->transport_data)) {
 				break;
 			}
 
