@@ -60,7 +60,7 @@ void test_transport_init_and_bind(struct cfdp_core *core)
 
 void test_transport_close() { close(sockfd); }
 
-void test_transport_send_pdu(const byte pdu[], const int size)
+void test_transport_send_pdu(void *user_data, const byte pdu[], const int size)
 {
 	struct sockaddr_in receiver_addr;
 	memset(&receiver_addr, 0, sizeof(receiver_addr));
@@ -78,4 +78,4 @@ void test_transport_send_pdu(const byte pdu[], const int size)
 	printf("socket bytes sent %d\n", bytes_sent);
 }
 
-bool test_transport_is_ready() { return true; }
+bool test_transport_is_ready(void *user_data) { return true; }

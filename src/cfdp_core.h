@@ -13,6 +13,14 @@
 #include "transaction_id.h"
 #include "transport.h"
 
+typedef void (*cfdp_core_indication_callback)(
+    struct cfdp_core *core, const enum IndicationType indication_type,
+    const struct transaction_id transaction_id);
+
+typedef void (*cfdp_core_error_callback)(struct cfdp_core *core,
+					 const enum ErrorType error_type,
+					 const uint32_t error_code);
+
 struct cfdp_core {
 	uint32_t entity_id;
 	struct filestore_cfg *filestore;
@@ -32,19 +40,22 @@ struct cfdp_core {
 	uint8_t *pdu_buffer;
 	uint8_t *modified_pdu_buffer;
 
-	void (*cfdp_core_indication_callback)(
-	    struct cfdp_core *core, const enum IndicationType indication_type,
-	    const struct transaction_id transaction_id);
-	void (*cfdp_core_error_callback)(struct cfdp_core *core,
-					 const enum ErrorType error_type,
-					 const uint32_t error_code);
+	cfdp_core_indication_callback cfdp_core_indication_callback;
+	cfdp_core_error_callback cfdp_core_error_callback;
 };
 
-void cfdp_core_init(struct cfdp_core *core, struct filestore_cfg *filestore,
-		    struct transport *transport, const uint32_t entity_id,
-		    const enum ChecksumType checksum_type,
-		    const uint32_t inactivity_timeout,
-			uint8_t *data_buffer);
+void cfdp_core_init(
+    struct cfdp_core *core, struct filestore_cfg *filestore,
+    struct transport *transport, const uint32_t entity_id,
+    const enum ChecksumType checksum_type,
+    struct receiver_timer *receiver_timer, const uint32_t inactivity_timeout,
+    uint8_t *data_buffer);
+
+void cfdp_core_register_indication_callback(
+    struct cfdp_core *core, cfdp_core_indication_callback callback);
+
+void cfdp_core_register_error_callback(struct cfdp_core *core,
+				       cfdp_core_error_callback callback);
 
 void cfdp_core_issue_request(struct cfdp_core *core,
 			     struct transaction_id transaction_id,
