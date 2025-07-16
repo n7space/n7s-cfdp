@@ -64,6 +64,15 @@ void cfdp_core_register_error_callback(struct cfdp_core *core,
 	core->cfdp_core_error_callback = callback;
 }
 
+void cfdp_core_issue_error(struct cfdp_core *core,
+			   const enum ErrorType error_type,
+			   const uint32_t error_code)
+{
+	if (core->cfdp_core_error_callback != NULL) {
+		core->cfdp_core_error_callback(core, error_type, error_code);
+	}
+}
+
 static bool cfdp_core_is_request_to_sender(struct cfdp_core *core,
 					   struct transaction_id transaction_id)
 {
@@ -277,10 +286,7 @@ static void add_message_to_user_to_transaction(struct cfdp_core *core,
 		break;
 	}
 	default: {
-		if (core->cfdp_core_error_callback != NULL) {
-			core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION,
-						       0);
-		}
+		cfdp_core_issue_error(core, UNSUPPORTED_ACTION, 0);
 	}
 	}
 }
@@ -314,10 +320,8 @@ static void decode_tlv_from_metadata_pdu(
 			if (!cfdpTLV_ACN_Decode(
 				&tlv, bit_stream_with_raw_data_messages_to_user,
 				&error_code)) {
-				if (core->cfdp_core_error_callback != NULL) {
-					core->cfdp_core_error_callback(
-				    	core, ASN1SCC_ERROR, error_code);
-				}
+				cfdp_core_issue_error(core, ASN1SCC_ERROR,
+						      error_code);
 				return;
 			}
 
@@ -595,8 +599,7 @@ static struct event create_event_for_delivery(struct cfdp_core *core,
 		default:
 			// Unsupported pdus in Class 1
 			// See CCSDS 720.2-G-3, Chapter 5.4, Table 5-5
-			core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION,
-						       0);
+			cfdp_core_issue_error(core, UNSUPPORTED_ACTION, 0);
 			break;
 		}
 	}
@@ -631,7 +634,7 @@ static void handle_pdu_to_new_receiver_machine(
 	if (pdu->pdu_header.direction == cfdpDirection_toward_sender) {
 		// Class 2 specific PDU unsupported
 		// See CCSDS 720.2-G-3, Chapter 5.4, Table 5-5
-		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
+		cfdp_core_issue_error(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}
 
@@ -644,7 +647,7 @@ static void handle_pdu_to_new_receiver_machine(
 	    !(pdu->payload.kind == PayloadData_file_data_PRESENT)) {
 		// Unsupported pdus in Class 1
 		// See CCSDS 720.2-G-3, Chapter 5.4, Table 5-5
-		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
+		cfdp_core_issue_error(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}
 
@@ -720,12 +723,12 @@ void cfdp_core_received_pdu(struct cfdp_core *core, unsigned char *buf,
 	cfdpCfdpPDU pdu;
 	int32_t error_code = 0;
 	if (!cfdpCfdpPDU_ACN_Decode(&pdu, &bit_stream, &error_code)) {
-		core->cfdp_core_error_callback(core, ASN1SCC_ERROR, error_code);
+		cfdp_core_issue_error(core, ASN1SCC_ERROR, error_code);
 		return;
 	}
 
 	if (pdu.pdu_header.transmission_mode == TransmissionMode_acknowledged) {
-		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
+		cfdp_core_issue_error(core, UNSUPPORTED_ACTION, 0);
 		return;
 	}
 
@@ -788,7 +791,7 @@ void cfdp_core_run_fault_handler(struct cfdp_core *core,
 		break;
 	}
 	default: {
-		core->cfdp_core_error_callback(core, UNSUPPORTED_ACTION, 0);
+		cfdp_core_issue_error(core, UNSUPPORTED_ACTION, 0);
 	}
 	}
 }

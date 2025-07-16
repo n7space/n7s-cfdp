@@ -4,19 +4,29 @@
 void receiver_timer_restart(struct receiver_timer *timer)
 {
 	if (timer->timer_stop != NULL) {
-		timer->timer_stop(timer->timer_data);
+		if (!timer->timer_stop(timer->timer_data)) {
+			cfdp_core_issue_error(timer->core,
+							      TIMER_ERROR, 0);
+		}
 	}
 
 	if (timer->timer_restart != NULL) {
-		timer->timer_restart(timer->timer_data, timer->timeout,
-				     receiver_timer_expired);
+		if (!timer->timer_restart(timer->timer_data,
+					  timer->timeout,
+					  receiver_timer_expired)) {
+			cfdp_core_issue_error(timer->core,
+							      TIMER_ERROR, 0);
+		}
 	}
 }
 
 void receiver_timer_stop(struct receiver_timer *timer)
 {
 	if (timer->timer_stop != NULL) {
-		timer->timer_stop(timer->timer_data);
+		if (!timer->timer_stop(timer->timer_data)) {
+			cfdp_core_issue_error(timer->core,
+							      TIMER_ERROR, 0);
+		}
 	}
 }
 

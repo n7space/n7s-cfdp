@@ -11,15 +11,13 @@
 
 uint64_t test_filestore_get_file_size(void *user_data, const char *filepath);
 
-void test_filestore_read_file(void *user_data, const char *filepath, uint32_t offset, char *data,
+bool test_filestore_read_file(void *user_data, const char *filepath, uint32_t offset, char *data,
 			      const uint32_t length);
 
-void test_filestore_write_to_file(void *user_data, const char *filepath, uint32_t offset,
+bool test_filestore_write_to_file(void *user_data, const char *filepath, uint32_t offset,
 				  const uint8_t *data, const uint32_t length);
 
-void test_filestore_copy_file(void *user_data, const char *src_path, const char *dest_path);
-
-void test_delete_file(void *user_data, const char *filepath);
+bool test_delete_file(void *user_data, const char *filepath);
 
 bool test_filestore_dump_directory_listing(
 	    void *user_data, const char *dirpath, uint8_t *listing_data, uint32_t length);

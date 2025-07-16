@@ -22,7 +22,7 @@ void test_transport_init_and_bind(struct cfdp_core *core);
 
 void test_transport_close();
 
-void test_transport_send_pdu(void *user_data, const byte pdu[], const int size);
+bool test_transport_send_pdu(void *user_data, const byte pdu[], const int size);
 
 bool test_transport_is_ready(void *user_data);
 
