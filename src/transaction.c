@@ -72,14 +72,15 @@ bool transaction_store_data_to_file(struct transaction *transaction,
 				    const cfdpFileDataPDU *file_data_pdu)
 {
 	if (!transaction->filestore->filestore_write(
-		transaction->filestore->filestore_data, transaction->destination_filename,
+		transaction->filestore->filestore_data,
+		transaction->destination_filename,
 		file_data_pdu->segment_offset,
 		(const uint8_t *)file_data_pdu->file_data.arr,
 		file_data_pdu->file_data.nCount)) {
-		transaction->core->cfdp_core_error_callback(transaction->core,
+			cfdp_core_issue_error(transaction->core,
 							    FILESTORE_ERROR, 0);
-		return false;
-	}
+			return false;
+		}
 
 	return true;
 }
@@ -96,8 +97,9 @@ bool transaction_delete_stored_file(struct transaction *transaction)
 	if (!transaction->filestore->filestore_delete_file(
 		transaction->filestore->filestore_data,
 		transaction->destination_filename)) {
-		transaction->core->cfdp_core_error_callback(transaction->core,
+			cfdp_core_issue_error(transaction->core,
 							    FILESTORE_ERROR, 0);
+
 		return false;
 	}
 
@@ -177,9 +179,10 @@ bool transaction_get_file_segment(struct transaction *transaction,
 	}
 
 	if (!transaction->filestore->filestore_read(
-		transaction->filestore->filestore_data, transaction->source_filename,
-		transaction->file_position, out_data, *out_length)) {
-		transaction->core->cfdp_core_error_callback(transaction->core,
+		transaction->filestore->filestore_data,
+		transaction->source_filename, transaction->file_position,
+		out_data, *out_length)) {
+			cfdp_core_issue_error(transaction->core,
 							    FILESTORE_ERROR, 0);
 
 		return false;
@@ -218,7 +221,7 @@ bool transaction_process_messages_to_user(struct transaction *transaction)
 				    transaction->core->virtual_source_file_data,
 				    VIRTUAL_SOURCE_FILE_BUFFER_SIZE);
 			if (!result) {
-				transaction->core->cfdp_core_error_callback(
+				cfdp_core_issue_error(
 				    transaction->core, FILESTORE_ERROR, 0);
 				return false;
 			}
@@ -312,11 +315,8 @@ bool transaction_process_messages_to_user(struct transaction *transaction)
 			break;
 		}
 		default: {
-			if (transaction->core->cfdp_core_error_callback !=
-			    NULL) {
-				transaction->core->cfdp_core_error_callback(
+			cfdp_core_issue_error(
 				    transaction->core, UNSUPPORTED_ACTION, 0);
-			}
 		}
 		}
 	}

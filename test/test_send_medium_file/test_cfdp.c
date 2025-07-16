@@ -100,7 +100,8 @@ int main(int argc, char *argv[])
 
 	cfdp_core_init(&cfd_entity_sender, &filestore, &transport, 6,
 		       CHECKSUM_TYPE_MODULAR, &timer, 30, cfdp_data_buffer);
-	cfdp_core_register_indication_callback(&cfd_entity_sender, indication_callback);
+	cfdp_core_register_indication_callback(&cfd_entity_sender,
+					       indication_callback);
 	cfdp_core_register_error_callback(&cfd_entity_sender, error_callback);
 
 	test_transport_init_and_bind(&cfd_entity_sender);

@@ -5,7 +5,7 @@ void receiver_timer_restart(struct receiver_timer *timer)
 {
 	if (timer->timer_stop != NULL) {
 		if (!timer->timer_stop(timer->timer_data)) {
-			timer->core->cfdp_core_error_callback(timer->core,
+			cfdp_core_issue_error(timer->core,
 							      TIMER_ERROR, 0);
 		}
 	}
@@ -14,7 +14,7 @@ void receiver_timer_restart(struct receiver_timer *timer)
 		if (!timer->timer_restart(timer->timer_data,
 					  timer->timeout,
 					  receiver_timer_expired)) {
-			timer->core->cfdp_core_error_callback(timer->core,
+			cfdp_core_issue_error(timer->core,
 							      TIMER_ERROR, 0);
 		}
 	}
@@ -24,7 +24,7 @@ void receiver_timer_stop(struct receiver_timer *timer)
 {
 	if (timer->timer_stop != NULL) {
 		if (!timer->timer_stop(timer->timer_data)) {
-			timer->core->cfdp_core_error_callback(timer->core,
+			cfdp_core_issue_error(timer->core,
 							      TIMER_ERROR, 0);
 		}
 	}

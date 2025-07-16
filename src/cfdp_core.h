@@ -57,6 +57,10 @@ void cfdp_core_register_indication_callback(
 void cfdp_core_register_error_callback(struct cfdp_core *core,
 				       cfdp_core_error_callback callback);
 
+void cfdp_core_issue_error(struct cfdp_core *core,
+					 const enum ErrorType error_type,
+					 const uint32_t error_code);
+
 void cfdp_core_issue_request(struct cfdp_core *core,
 			     struct transaction_id transaction_id,
 			     enum EventType event_type);
