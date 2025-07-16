@@ -77,10 +77,9 @@ bool transaction_store_data_to_file(struct transaction *transaction,
 		file_data_pdu->segment_offset,
 		(const uint8_t *)file_data_pdu->file_data.arr,
 		file_data_pdu->file_data.nCount)) {
-			cfdp_core_issue_error(transaction->core,
-							    FILESTORE_ERROR, 0);
-			return false;
-		}
+		cfdp_core_issue_error(transaction->core, FILESTORE_ERROR, 0);
+		return false;
+	}
 
 	return true;
 }
@@ -97,8 +96,7 @@ bool transaction_delete_stored_file(struct transaction *transaction)
 	if (!transaction->filestore->filestore_delete_file(
 		transaction->filestore->filestore_data,
 		transaction->destination_filename)) {
-			cfdp_core_issue_error(transaction->core,
-							    FILESTORE_ERROR, 0);
+		cfdp_core_issue_error(transaction->core, FILESTORE_ERROR, 0);
 
 		return false;
 	}
@@ -182,8 +180,7 @@ bool transaction_get_file_segment(struct transaction *transaction,
 		transaction->filestore->filestore_data,
 		transaction->source_filename, transaction->file_position,
 		out_data, *out_length)) {
-			cfdp_core_issue_error(transaction->core,
-							    FILESTORE_ERROR, 0);
+		cfdp_core_issue_error(transaction->core, FILESTORE_ERROR, 0);
 
 		return false;
 	}
@@ -221,8 +218,8 @@ bool transaction_process_messages_to_user(struct transaction *transaction)
 				    transaction->core->virtual_source_file_data,
 				    VIRTUAL_SOURCE_FILE_BUFFER_SIZE);
 			if (!result) {
-				cfdp_core_issue_error(
-				    transaction->core, FILESTORE_ERROR, 0);
+				cfdp_core_issue_error(transaction->core,
+						      FILESTORE_ERROR, 0);
 				return false;
 			}
 
@@ -315,8 +312,8 @@ bool transaction_process_messages_to_user(struct transaction *transaction)
 			break;
 		}
 		default: {
-			cfdp_core_issue_error(
-				    transaction->core, UNSUPPORTED_ACTION, 0);
+			cfdp_core_issue_error(transaction->core,
+					      UNSUPPORTED_ACTION, 0);
 		}
 		}
 	}

@@ -109,9 +109,8 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		default: {
-			cfdp_core_issue_error(
-					receiver_machine->core,
-					UNSUPPORTED_ACTION, 0);
+			cfdp_core_issue_error(receiver_machine->core,
+					      UNSUPPORTED_ACTION, 0);
 		}
 		}
 	} else if (receiver_machine->state == WAIT_FOR_EOF) {
@@ -241,9 +240,8 @@ void receiver_machine_update_state(struct receiver_machine *receiver_machine,
 			break;
 		}
 		default: {
-			cfdp_core_issue_error(
-					receiver_machine->core,
-					UNSUPPORTED_ACTION, 0);
+			cfdp_core_issue_error(receiver_machine->core,
+					      UNSUPPORTED_ACTION, 0);
 		}
 		}
 	}

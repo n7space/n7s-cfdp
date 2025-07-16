@@ -167,18 +167,16 @@ static void append_messages_to_user_to_bit_stream_with_metada_pdu(
 		}
 		default: {
 
-				cfdp_core_issue_error(
-				    sender_machine->core, UNSUPPORTED_ACTION,
-				    0);
+			cfdp_core_issue_error(sender_machine->core,
+					      UNSUPPORTED_ACTION, 0);
 			return;
 		}
 		}
 
 		int error_code;
 		if (!cfdpTLV_ACN_Encode(&tlv, bit_stream, &error_code, true)) {
-			cfdp_core_issue_error(
-				    sender_machine->core, ASN1SCC_ERROR,
-				    error_code);
+			cfdp_core_issue_error(sender_machine->core,
+					      ASN1SCC_ERROR, error_code);
 			return;
 		}
 	}
@@ -242,8 +240,8 @@ static bool sender_machine_send_metadata(struct sender_machine *sender_machine)
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
-		cfdp_core_issue_error(
-			    sender_machine->core, ASN1SCC_ERROR, error_code);
+		cfdp_core_issue_error(sender_machine->core, ASN1SCC_ERROR,
+				      error_code);
 		sender_machine_close(sender_machine);
 		return false;
 	}
@@ -254,8 +252,7 @@ static bool sender_machine_send_metadata(struct sender_machine *sender_machine)
 	if (!sender_machine->core->transport->transport_send_pdu(
 		sender_machine->core->transport->transport_data, bit_stream.buf,
 		bit_stream.currentByte)) {
-		cfdp_core_issue_error(
-		    sender_machine->core, TRANSPORT_ERROR, 0);
+		cfdp_core_issue_error(sender_machine->core, TRANSPORT_ERROR, 0);
 		return false;
 	}
 
@@ -294,8 +291,8 @@ static bool sender_machine_send_file_data(struct sender_machine *sender_machine)
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
-		cfdp_core_issue_error(
-			    sender_machine->core, ASN1SCC_ERROR, error_code);
+		cfdp_core_issue_error(sender_machine->core, ASN1SCC_ERROR,
+				      error_code);
 		return false;
 	}
 
@@ -323,8 +320,7 @@ static bool sender_machine_send_file_data(struct sender_machine *sender_machine)
 		sender_machine->core->transport->transport_data,
 		sender_machine->core->modified_pdu_buffer,
 		bit_stream.currentByte - determinant_size)) {
-		cfdp_core_issue_error(
-		    sender_machine->core, TRANSPORT_ERROR, 0);
+		cfdp_core_issue_error(sender_machine->core, TRANSPORT_ERROR, 0);
 		return false;
 	}
 
@@ -357,16 +353,15 @@ static bool sender_machine_send_eof(struct sender_machine *sender_machine)
 	int error_code;
 
 	if (!cfdpCfdpPDU_ACN_Encode(&pdu, &bit_stream, &error_code, true)) {
-			cfdp_core_issue_error(
-			    sender_machine->core, ASN1SCC_ERROR, error_code);
+		cfdp_core_issue_error(sender_machine->core, ASN1SCC_ERROR,
+				      error_code);
 		return false;
 	}
 
 	if (!sender_machine->core->transport->transport_send_pdu(
 		sender_machine->core->transport->transport_data, bit_stream.buf,
 		bit_stream.currentByte)) {
-		cfdp_core_issue_error(
-		    sender_machine->core, TRANSPORT_ERROR, 0);
+		cfdp_core_issue_error(sender_machine->core, TRANSPORT_ERROR, 0);
 		return false;
 	}
 
@@ -413,9 +408,8 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			break;
 		}
 		default: {
-			cfdp_core_issue_error(
-				    sender_machine->core, UNSUPPORTED_ACTION,
-				    0);
+			cfdp_core_issue_error(sender_machine->core,
+					      UNSUPPORTED_ACTION, 0);
 		}
 		}
 	} else if (sender_machine->state == SEND_FILE) {
@@ -537,9 +531,8 @@ void sender_machine_update_state(struct sender_machine *sender_machine,
 			break;
 		}
 		default: {
-			cfdp_core_issue_error(
-				    sender_machine->core, UNSUPPORTED_ACTION,
-				    0);
+			cfdp_core_issue_error(sender_machine->core,
+					      UNSUPPORTED_ACTION, 0);
 		}
 		}
 	}
