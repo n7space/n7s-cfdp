@@ -1,0 +1,182 @@
+\hypertarget{event_8h}{}\doxysection{/home/taste/\+Repo/n7s-\/cfdp/src/event.h File Reference}
+\label{event_8h}\index{/home/taste/Repo/n7s-\/cfdp/src/event.h@{/home/taste/Repo/n7s-\/cfdp/src/event.h}}
+{\ttfamily \#include \char`\"{}transaction.\+h\char`\"{}}\newline
+Include dependency graph for event.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=203pt]{event_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{event_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structevent}{event}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6fa}{Event\+Type}} \{ \newline
+\mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa3b4bdcc497ae053793c3eebd4045a416}{E0\+\_\+\+ENTERED\+\_\+\+STATE}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faae3a025918f0905ac879234f59480c429}{E1\+\_\+\+SEND\+\_\+\+FILE\+\_\+\+DATA}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa3d7d36ee777383a374ee7e4c47a7c9ba}{E2\+\_\+\+ABANDON\+\_\+\+TRANSACTION}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa4afbf64c04f5a97f7b4e549b627b6b1d}{E3\+\_\+\+NOTICE\+\_\+\+OF\+\_\+\+CANCELLATION}}
+, \newline
+\mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faab120ee46ad89d537397d91d34754c647}{E4\+\_\+\+NOTICE\+\_\+\+OF\+\_\+\+SUSPENSION}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faaab4733d7e67fd712743ed27c8a273216}{E5\+\_\+\+SUSPEND\+\_\+\+TIMERS}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa93158e042a8a347830d5626cff59e64e}{E6\+\_\+\+RESUME\+\_\+\+TIMERS}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa4bf10367082951120b121758fd7332ed}{E10\+\_\+\+RECEIVED\+\_\+\+METADATA}}
+, \newline
+\mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa3ad39a2c9629cf758454c6aa8a9dca10}{E11\+\_\+\+RECEIVED\+\_\+\+FILEDATA}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa0749597fdae83ac69a02b447e3f664d6}{E12\+\_\+\+RECEIVED\+\_\+\+EOF\+\_\+\+NO\+\_\+\+ERROR}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faaa31790078703a4d8071668e5e8cd0f9c}{E13\+\_\+\+RECEIVED\+\_\+\+EOF\+\_\+\+CANCEL}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa64c487e219cf7d255028b9fae5df98fe}{E14\+\_\+\+RECEIVED\+\_\+\+ACK\+\_\+\+EOF}}
+, \newline
+\mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faac2b65eb61220571479c06c08f2325ad2}{E15\+\_\+\+RECEIVED\+\_\+\+NAK}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa132faa43ea57c99fe06dfe0224f043d1}{E16\+\_\+\+RECEIVED\+\_\+\+FINISHED\+\_\+\+NO\+\_\+\+ERROR}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa29d2833dae4a93e4df717f6190b9f098}{E17\+\_\+\+RECEIVED\+\_\+\+FINISHED\+\_\+\+CANCEL}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa776a3ec23ccd45d85bb28b33227c4223}{E18\+\_\+\+RECEIVED\+\_\+\+ACK\+\_\+\+FINISHED}}
+, \newline
+\mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa357b57b330c84cbf93ff542fd55ce7d4}{E25\+\_\+\+ACK\+\_\+\+TIMEOUT}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faabe5ee32c21b4f7aba95cf7ba0de38042}{E26\+\_\+\+NAK\+\_\+\+TIMEOUT}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa88be6b3a0cf76574f40d1aa7abd9342f}{E27\+\_\+\+INACTIVITY\+\_\+\+TIMEOUT}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faac66fce1a53a05a2e788c2386d754b38d}{E30\+\_\+\+RECEIVED\+\_\+\+PUT\+\_\+\+REQUEST}}
+, \newline
+\mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa303b29beea05b72eb68cbfbf647b2459}{E31\+\_\+\+RECEIVED\+\_\+\+SUSPEND\+\_\+\+REQUEST}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa0c71cc368b2cc3bc4876501487934668}{E32\+\_\+\+RECEIVED\+\_\+\+RESUME\+\_\+\+REQUEST}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faaa1138692915a1dec7d8160be1a832f2f}{E33\+\_\+\+RECEIVED\+\_\+\+CANCEL\+\_\+\+REQUEST}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa9a90c44e92dcc5e98d5107bb87f3fae3}{E34\+\_\+\+RECEIVED\+\_\+\+REPORT\+\_\+\+REQUEST}}
+, \newline
+\mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa6ba8deba55a844cb511401ca8ecaf86b}{E40\+\_\+\+RECEIVED\+\_\+\+FREEZE}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa71570a50db849fd6ef2f4201a3e007fe}{E41\+\_\+\+RECEIVED\+\_\+\+THAW}}
+, \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faac3229f5e53cc9c1572108a13037b62cd}{E50\+\_\+\+NOOP}}
+ \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6fa}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6fa}} 
+\index{event.h@{event.h}!EventType@{EventType}}
+\index{EventType@{EventType}!event.h@{event.h}}
+\doxysubsubsection{\texorpdfstring{EventType}{EventType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{event_8h_a2628ea8d12e8b2563c32f05dc7fff6fa}{Event\+Type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E0\_ENTERED\_STATE@{E0\_ENTERED\_STATE}!event.h@{event.h}}\index{event.h@{event.h}!E0\_ENTERED\_STATE@{E0\_ENTERED\_STATE}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa3b4bdcc497ae053793c3eebd4045a416}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa3b4bdcc497ae053793c3eebd4045a416}} 
+E0\+\_\+\+ENTERED\+\_\+\+STATE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E1\_SEND\_FILE\_DATA@{E1\_SEND\_FILE\_DATA}!event.h@{event.h}}\index{event.h@{event.h}!E1\_SEND\_FILE\_DATA@{E1\_SEND\_FILE\_DATA}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faae3a025918f0905ac879234f59480c429}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faae3a025918f0905ac879234f59480c429}} 
+E1\+\_\+\+SEND\+\_\+\+FILE\+\_\+\+DATA&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E2\_ABANDON\_TRANSACTION@{E2\_ABANDON\_TRANSACTION}!event.h@{event.h}}\index{event.h@{event.h}!E2\_ABANDON\_TRANSACTION@{E2\_ABANDON\_TRANSACTION}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa3d7d36ee777383a374ee7e4c47a7c9ba}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa3d7d36ee777383a374ee7e4c47a7c9ba}} 
+E2\+\_\+\+ABANDON\+\_\+\+TRANSACTION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E3\_NOTICE\_OF\_CANCELLATION@{E3\_NOTICE\_OF\_CANCELLATION}!event.h@{event.h}}\index{event.h@{event.h}!E3\_NOTICE\_OF\_CANCELLATION@{E3\_NOTICE\_OF\_CANCELLATION}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa4afbf64c04f5a97f7b4e549b627b6b1d}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa4afbf64c04f5a97f7b4e549b627b6b1d}} 
+E3\+\_\+\+NOTICE\+\_\+\+OF\+\_\+\+CANCELLATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E4\_NOTICE\_OF\_SUSPENSION@{E4\_NOTICE\_OF\_SUSPENSION}!event.h@{event.h}}\index{event.h@{event.h}!E4\_NOTICE\_OF\_SUSPENSION@{E4\_NOTICE\_OF\_SUSPENSION}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faab120ee46ad89d537397d91d34754c647}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faab120ee46ad89d537397d91d34754c647}} 
+E4\+\_\+\+NOTICE\+\_\+\+OF\+\_\+\+SUSPENSION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E5\_SUSPEND\_TIMERS@{E5\_SUSPEND\_TIMERS}!event.h@{event.h}}\index{event.h@{event.h}!E5\_SUSPEND\_TIMERS@{E5\_SUSPEND\_TIMERS}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faaab4733d7e67fd712743ed27c8a273216}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faaab4733d7e67fd712743ed27c8a273216}} 
+E5\+\_\+\+SUSPEND\+\_\+\+TIMERS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E6\_RESUME\_TIMERS@{E6\_RESUME\_TIMERS}!event.h@{event.h}}\index{event.h@{event.h}!E6\_RESUME\_TIMERS@{E6\_RESUME\_TIMERS}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa93158e042a8a347830d5626cff59e64e}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa93158e042a8a347830d5626cff59e64e}} 
+E6\+\_\+\+RESUME\+\_\+\+TIMERS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E10\_RECEIVED\_METADATA@{E10\_RECEIVED\_METADATA}!event.h@{event.h}}\index{event.h@{event.h}!E10\_RECEIVED\_METADATA@{E10\_RECEIVED\_METADATA}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa4bf10367082951120b121758fd7332ed}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa4bf10367082951120b121758fd7332ed}} 
+E10\+\_\+\+RECEIVED\+\_\+\+METADATA&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E11\_RECEIVED\_FILEDATA@{E11\_RECEIVED\_FILEDATA}!event.h@{event.h}}\index{event.h@{event.h}!E11\_RECEIVED\_FILEDATA@{E11\_RECEIVED\_FILEDATA}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa3ad39a2c9629cf758454c6aa8a9dca10}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa3ad39a2c9629cf758454c6aa8a9dca10}} 
+E11\+\_\+\+RECEIVED\+\_\+\+FILEDATA&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E12\_RECEIVED\_EOF\_NO\_ERROR@{E12\_RECEIVED\_EOF\_NO\_ERROR}!event.h@{event.h}}\index{event.h@{event.h}!E12\_RECEIVED\_EOF\_NO\_ERROR@{E12\_RECEIVED\_EOF\_NO\_ERROR}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa0749597fdae83ac69a02b447e3f664d6}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa0749597fdae83ac69a02b447e3f664d6}} 
+E12\+\_\+\+RECEIVED\+\_\+\+EOF\+\_\+\+NO\+\_\+\+ERROR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E13\_RECEIVED\_EOF\_CANCEL@{E13\_RECEIVED\_EOF\_CANCEL}!event.h@{event.h}}\index{event.h@{event.h}!E13\_RECEIVED\_EOF\_CANCEL@{E13\_RECEIVED\_EOF\_CANCEL}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faaa31790078703a4d8071668e5e8cd0f9c}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faaa31790078703a4d8071668e5e8cd0f9c}} 
+E13\+\_\+\+RECEIVED\+\_\+\+EOF\+\_\+\+CANCEL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E14\_RECEIVED\_ACK\_EOF@{E14\_RECEIVED\_ACK\_EOF}!event.h@{event.h}}\index{event.h@{event.h}!E14\_RECEIVED\_ACK\_EOF@{E14\_RECEIVED\_ACK\_EOF}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa64c487e219cf7d255028b9fae5df98fe}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa64c487e219cf7d255028b9fae5df98fe}} 
+E14\+\_\+\+RECEIVED\+\_\+\+ACK\+\_\+\+EOF&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E15\_RECEIVED\_NAK@{E15\_RECEIVED\_NAK}!event.h@{event.h}}\index{event.h@{event.h}!E15\_RECEIVED\_NAK@{E15\_RECEIVED\_NAK}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faac2b65eb61220571479c06c08f2325ad2}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faac2b65eb61220571479c06c08f2325ad2}} 
+E15\+\_\+\+RECEIVED\+\_\+\+NAK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E16\_RECEIVED\_FINISHED\_NO\_ERROR@{E16\_RECEIVED\_FINISHED\_NO\_ERROR}!event.h@{event.h}}\index{event.h@{event.h}!E16\_RECEIVED\_FINISHED\_NO\_ERROR@{E16\_RECEIVED\_FINISHED\_NO\_ERROR}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa132faa43ea57c99fe06dfe0224f043d1}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa132faa43ea57c99fe06dfe0224f043d1}} 
+E16\+\_\+\+RECEIVED\+\_\+\+FINISHED\+\_\+\+NO\+\_\+\+ERROR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E17\_RECEIVED\_FINISHED\_CANCEL@{E17\_RECEIVED\_FINISHED\_CANCEL}!event.h@{event.h}}\index{event.h@{event.h}!E17\_RECEIVED\_FINISHED\_CANCEL@{E17\_RECEIVED\_FINISHED\_CANCEL}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa29d2833dae4a93e4df717f6190b9f098}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa29d2833dae4a93e4df717f6190b9f098}} 
+E17\+\_\+\+RECEIVED\+\_\+\+FINISHED\+\_\+\+CANCEL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E18\_RECEIVED\_ACK\_FINISHED@{E18\_RECEIVED\_ACK\_FINISHED}!event.h@{event.h}}\index{event.h@{event.h}!E18\_RECEIVED\_ACK\_FINISHED@{E18\_RECEIVED\_ACK\_FINISHED}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa776a3ec23ccd45d85bb28b33227c4223}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa776a3ec23ccd45d85bb28b33227c4223}} 
+E18\+\_\+\+RECEIVED\+\_\+\+ACK\+\_\+\+FINISHED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E25\_ACK\_TIMEOUT@{E25\_ACK\_TIMEOUT}!event.h@{event.h}}\index{event.h@{event.h}!E25\_ACK\_TIMEOUT@{E25\_ACK\_TIMEOUT}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa357b57b330c84cbf93ff542fd55ce7d4}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa357b57b330c84cbf93ff542fd55ce7d4}} 
+E25\+\_\+\+ACK\+\_\+\+TIMEOUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E26\_NAK\_TIMEOUT@{E26\_NAK\_TIMEOUT}!event.h@{event.h}}\index{event.h@{event.h}!E26\_NAK\_TIMEOUT@{E26\_NAK\_TIMEOUT}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faabe5ee32c21b4f7aba95cf7ba0de38042}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faabe5ee32c21b4f7aba95cf7ba0de38042}} 
+E26\+\_\+\+NAK\+\_\+\+TIMEOUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E27\_INACTIVITY\_TIMEOUT@{E27\_INACTIVITY\_TIMEOUT}!event.h@{event.h}}\index{event.h@{event.h}!E27\_INACTIVITY\_TIMEOUT@{E27\_INACTIVITY\_TIMEOUT}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa88be6b3a0cf76574f40d1aa7abd9342f}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa88be6b3a0cf76574f40d1aa7abd9342f}} 
+E27\+\_\+\+INACTIVITY\+\_\+\+TIMEOUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E30\_RECEIVED\_PUT\_REQUEST@{E30\_RECEIVED\_PUT\_REQUEST}!event.h@{event.h}}\index{event.h@{event.h}!E30\_RECEIVED\_PUT\_REQUEST@{E30\_RECEIVED\_PUT\_REQUEST}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faac66fce1a53a05a2e788c2386d754b38d}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faac66fce1a53a05a2e788c2386d754b38d}} 
+E30\+\_\+\+RECEIVED\+\_\+\+PUT\+\_\+\+REQUEST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E31\_RECEIVED\_SUSPEND\_REQUEST@{E31\_RECEIVED\_SUSPEND\_REQUEST}!event.h@{event.h}}\index{event.h@{event.h}!E31\_RECEIVED\_SUSPEND\_REQUEST@{E31\_RECEIVED\_SUSPEND\_REQUEST}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa303b29beea05b72eb68cbfbf647b2459}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa303b29beea05b72eb68cbfbf647b2459}} 
+E31\+\_\+\+RECEIVED\+\_\+\+SUSPEND\+\_\+\+REQUEST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E32\_RECEIVED\_RESUME\_REQUEST@{E32\_RECEIVED\_RESUME\_REQUEST}!event.h@{event.h}}\index{event.h@{event.h}!E32\_RECEIVED\_RESUME\_REQUEST@{E32\_RECEIVED\_RESUME\_REQUEST}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa0c71cc368b2cc3bc4876501487934668}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa0c71cc368b2cc3bc4876501487934668}} 
+E32\+\_\+\+RECEIVED\+\_\+\+RESUME\+\_\+\+REQUEST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E33\_RECEIVED\_CANCEL\_REQUEST@{E33\_RECEIVED\_CANCEL\_REQUEST}!event.h@{event.h}}\index{event.h@{event.h}!E33\_RECEIVED\_CANCEL\_REQUEST@{E33\_RECEIVED\_CANCEL\_REQUEST}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faaa1138692915a1dec7d8160be1a832f2f}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faaa1138692915a1dec7d8160be1a832f2f}} 
+E33\+\_\+\+RECEIVED\+\_\+\+CANCEL\+\_\+\+REQUEST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E34\_RECEIVED\_REPORT\_REQUEST@{E34\_RECEIVED\_REPORT\_REQUEST}!event.h@{event.h}}\index{event.h@{event.h}!E34\_RECEIVED\_REPORT\_REQUEST@{E34\_RECEIVED\_REPORT\_REQUEST}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa9a90c44e92dcc5e98d5107bb87f3fae3}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa9a90c44e92dcc5e98d5107bb87f3fae3}} 
+E34\+\_\+\+RECEIVED\+\_\+\+REPORT\+\_\+\+REQUEST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E40\_RECEIVED\_FREEZE@{E40\_RECEIVED\_FREEZE}!event.h@{event.h}}\index{event.h@{event.h}!E40\_RECEIVED\_FREEZE@{E40\_RECEIVED\_FREEZE}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa6ba8deba55a844cb511401ca8ecaf86b}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa6ba8deba55a844cb511401ca8ecaf86b}} 
+E40\+\_\+\+RECEIVED\+\_\+\+FREEZE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E41\_RECEIVED\_THAW@{E41\_RECEIVED\_THAW}!event.h@{event.h}}\index{event.h@{event.h}!E41\_RECEIVED\_THAW@{E41\_RECEIVED\_THAW}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa71570a50db849fd6ef2f4201a3e007fe}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faa71570a50db849fd6ef2f4201a3e007fe}} 
+E41\+\_\+\+RECEIVED\+\_\+\+THAW&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{E50\_NOOP@{E50\_NOOP}!event.h@{event.h}}\index{event.h@{event.h}!E50\_NOOP@{E50\_NOOP}}}\mbox{\Hypertarget{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faac3229f5e53cc9c1572108a13037b62cd}\label{event_8h_a2628ea8d12e8b2563c32f05dc7fff6faac3229f5e53cc9c1572108a13037b62cd}} 
+E50\+\_\+\+NOOP&\\
+\hline
+
+\end{DoxyEnumFields}

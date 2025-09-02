@@ -1,0 +1,65 @@
+\hypertarget{structfilestore__cfg}{}\doxysection{filestore\+\_\+cfg Struct Reference}
+\label{structfilestore__cfg}\index{filestore\_cfg@{filestore\_cfg}}
+
+
+{\ttfamily \#include $<$filestore.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+void $\ast$ \mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}
+\item 
+bool($\ast$ \mbox{\hyperlink{structfilestore__cfg_adbaee9b7dda8342ab469f8df6fd807cf}{filestore\+\_\+delete\+\_\+file}} )(void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$filepath)
+\item 
+uint64\+\_\+t($\ast$ \mbox{\hyperlink{structfilestore__cfg_a25ead3a02077a556276934e867d6814e}{filestore\+\_\+get\+\_\+file\+\_\+size}} )(void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$filepath)
+\item 
+bool($\ast$ \mbox{\hyperlink{structfilestore__cfg_a931851f3eb37afa6f0e5bab73f4d54be}{filestore\+\_\+read}} )(void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$filepath, uint32\+\_\+t offset, char $\ast$data, const uint32\+\_\+t length)
+\item 
+bool($\ast$ \mbox{\hyperlink{structfilestore__cfg_a4e511aa3ea1858729a39da2251ea449d}{filestore\+\_\+write}} )(void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$filepath, uint32\+\_\+t offset, const uint8\+\_\+t $\ast$data, const uint32\+\_\+t length)
+\item 
+bool($\ast$ \mbox{\hyperlink{structfilestore__cfg_add06ba6d2c6ece375b00866cc2e297b7}{filestore\+\_\+dump\+\_\+directory\+\_\+listing}} )(void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$dirpath, uint8\+\_\+t $\ast$listing\+\_\+data, uint32\+\_\+t length)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}\label{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}} 
+\index{filestore\_cfg@{filestore\_cfg}!filestore\_data@{filestore\_data}}
+\index{filestore\_data@{filestore\_data}!filestore\_cfg@{filestore\_cfg}}
+\doxysubsubsection{\texorpdfstring{filestore\_data}{filestore\_data}}
+{\footnotesize\ttfamily void$\ast$ filestore\+\_\+cfg\+::filestore\+\_\+data}
+
+\mbox{\Hypertarget{structfilestore__cfg_adbaee9b7dda8342ab469f8df6fd807cf}\label{structfilestore__cfg_adbaee9b7dda8342ab469f8df6fd807cf}} 
+\index{filestore\_cfg@{filestore\_cfg}!filestore\_delete\_file@{filestore\_delete\_file}}
+\index{filestore\_delete\_file@{filestore\_delete\_file}!filestore\_cfg@{filestore\_cfg}}
+\doxysubsubsection{\texorpdfstring{filestore\_delete\_file}{filestore\_delete\_file}}
+{\footnotesize\ttfamily bool($\ast$ filestore\+\_\+cfg\+::filestore\+\_\+delete\+\_\+file) (void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$filepath)}
+
+\mbox{\Hypertarget{structfilestore__cfg_add06ba6d2c6ece375b00866cc2e297b7}\label{structfilestore__cfg_add06ba6d2c6ece375b00866cc2e297b7}} 
+\index{filestore\_cfg@{filestore\_cfg}!filestore\_dump\_directory\_listing@{filestore\_dump\_directory\_listing}}
+\index{filestore\_dump\_directory\_listing@{filestore\_dump\_directory\_listing}!filestore\_cfg@{filestore\_cfg}}
+\doxysubsubsection{\texorpdfstring{filestore\_dump\_directory\_listing}{filestore\_dump\_directory\_listing}}
+{\footnotesize\ttfamily bool($\ast$ filestore\+\_\+cfg\+::filestore\+\_\+dump\+\_\+directory\+\_\+listing) (void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$dirpath, uint8\+\_\+t $\ast$listing\+\_\+data, uint32\+\_\+t length)}
+
+\mbox{\Hypertarget{structfilestore__cfg_a25ead3a02077a556276934e867d6814e}\label{structfilestore__cfg_a25ead3a02077a556276934e867d6814e}} 
+\index{filestore\_cfg@{filestore\_cfg}!filestore\_get\_file\_size@{filestore\_get\_file\_size}}
+\index{filestore\_get\_file\_size@{filestore\_get\_file\_size}!filestore\_cfg@{filestore\_cfg}}
+\doxysubsubsection{\texorpdfstring{filestore\_get\_file\_size}{filestore\_get\_file\_size}}
+{\footnotesize\ttfamily uint64\+\_\+t($\ast$ filestore\+\_\+cfg\+::filestore\+\_\+get\+\_\+file\+\_\+size) (void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$filepath)}
+
+\mbox{\Hypertarget{structfilestore__cfg_a931851f3eb37afa6f0e5bab73f4d54be}\label{structfilestore__cfg_a931851f3eb37afa6f0e5bab73f4d54be}} 
+\index{filestore\_cfg@{filestore\_cfg}!filestore\_read@{filestore\_read}}
+\index{filestore\_read@{filestore\_read}!filestore\_cfg@{filestore\_cfg}}
+\doxysubsubsection{\texorpdfstring{filestore\_read}{filestore\_read}}
+{\footnotesize\ttfamily bool($\ast$ filestore\+\_\+cfg\+::filestore\+\_\+read) (void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$filepath, uint32\+\_\+t offset, char $\ast$data, const uint32\+\_\+t length)}
+
+\mbox{\Hypertarget{structfilestore__cfg_a4e511aa3ea1858729a39da2251ea449d}\label{structfilestore__cfg_a4e511aa3ea1858729a39da2251ea449d}} 
+\index{filestore\_cfg@{filestore\_cfg}!filestore\_write@{filestore\_write}}
+\index{filestore\_write@{filestore\_write}!filestore\_cfg@{filestore\_cfg}}
+\doxysubsubsection{\texorpdfstring{filestore\_write}{filestore\_write}}
+{\footnotesize\ttfamily bool($\ast$ filestore\+\_\+cfg\+::filestore\+\_\+write) (void $\ast$\mbox{\hyperlink{structfilestore__cfg_a1715c244a55a01cf48559e02c6054574}{filestore\+\_\+data}}, const char $\ast$filepath, uint32\+\_\+t offset, const uint8\+\_\+t $\ast$data, const uint32\+\_\+t length)}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/taste/\+Repo/n7s-\/cfdp/src/\mbox{\hyperlink{filestore_8h}{filestore.\+h}}\end{DoxyCompactItemize}

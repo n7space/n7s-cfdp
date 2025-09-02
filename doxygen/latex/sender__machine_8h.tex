@@ -1,0 +1,58 @@
+\hypertarget{sender__machine_8h}{}\doxysection{/home/taste/\+Repo/n7s-\/cfdp/src/sender\+\_\+machine.h File Reference}
+\label{sender__machine_8h}\index{/home/taste/Repo/n7s-\/cfdp/src/sender\_machine.h@{/home/taste/Repo/n7s-\/cfdp/src/sender\_machine.h}}
+{\ttfamily \#include \char`\"{}stdbool.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}stdint.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}constants.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}transaction.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}transaction\+\_\+id.\+h\char`\"{}}\newline
+Include dependency graph for sender\+\_\+machine.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{sender__machine_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{sender__machine_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{sender__machine_8h_af7cc99166090457981982cbbf9ba1539}{sender\+\_\+machine\+\_\+init}} (struct \mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}} $\ast$\mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}}, struct \mbox{\hyperlink{structtransaction}{transaction}} \mbox{\hyperlink{structtransaction}{transaction}})
+\item 
+void \mbox{\hyperlink{sender__machine_8h_a99c919e83632f15717453b376791f621}{sender\+\_\+machine\+\_\+close}} (struct \mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}} $\ast$\mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}})
+\item 
+void \mbox{\hyperlink{sender__machine_8h_a1371074268904f2e21b226b6ede40b92}{sender\+\_\+machine\+\_\+update\+\_\+state}} (struct \mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}} $\ast$\mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}}, struct \mbox{\hyperlink{structevent}{event}} $\ast$\mbox{\hyperlink{structevent}{event}})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{sender__machine_8h_a99c919e83632f15717453b376791f621}\label{sender__machine_8h_a99c919e83632f15717453b376791f621}} 
+\index{sender\_machine.h@{sender\_machine.h}!sender\_machine\_close@{sender\_machine\_close}}
+\index{sender\_machine\_close@{sender\_machine\_close}!sender\_machine.h@{sender\_machine.h}}
+\doxysubsubsection{\texorpdfstring{sender\_machine\_close()}{sender\_machine\_close()}}
+{\footnotesize\ttfamily void sender\+\_\+machine\+\_\+close (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}} $\ast$}]{sender\+\_\+machine }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{sender__machine_8h_af7cc99166090457981982cbbf9ba1539}\label{sender__machine_8h_af7cc99166090457981982cbbf9ba1539}} 
+\index{sender\_machine.h@{sender\_machine.h}!sender\_machine\_init@{sender\_machine\_init}}
+\index{sender\_machine\_init@{sender\_machine\_init}!sender\_machine.h@{sender\_machine.h}}
+\doxysubsubsection{\texorpdfstring{sender\_machine\_init()}{sender\_machine\_init()}}
+{\footnotesize\ttfamily void sender\+\_\+machine\+\_\+init (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}} $\ast$}]{sender\+\_\+machine,  }\item[{struct \mbox{\hyperlink{structtransaction}{transaction}}}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{sender__machine_8h_a1371074268904f2e21b226b6ede40b92}\label{sender__machine_8h_a1371074268904f2e21b226b6ede40b92}} 
+\index{sender\_machine.h@{sender\_machine.h}!sender\_machine\_update\_state@{sender\_machine\_update\_state}}
+\index{sender\_machine\_update\_state@{sender\_machine\_update\_state}!sender\_machine.h@{sender\_machine.h}}
+\doxysubsubsection{\texorpdfstring{sender\_machine\_update\_state()}{sender\_machine\_update\_state()}}
+{\footnotesize\ttfamily void sender\+\_\+machine\+\_\+update\+\_\+state (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}} $\ast$}]{sender\+\_\+machine,  }\item[{struct \mbox{\hyperlink{structevent}{event}} $\ast$}]{event }\end{DoxyParamCaption})}
+

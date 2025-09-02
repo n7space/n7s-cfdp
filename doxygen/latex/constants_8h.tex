@@ -1,0 +1,461 @@
+\hypertarget{constants_8h}{}\doxysection{/home/taste/\+Repo/n7s-\/cfdp/src/constants.h File Reference}
+\label{constants_8h}\index{/home/taste/Repo/n7s-\/cfdp/src/constants.h@{/home/taste/Repo/n7s-\/cfdp/src/constants.h}}
+{\ttfamily \#include \char`\"{}dataview.\+h\char`\"{}}\newline
+Include dependency graph for constants.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=203pt]{constants_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{constants_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{constants_8h_a4dc01d7175a888476bd75b87b203f9a2}{DIRECTIVE\+\_\+\+CODE\+\_\+\+EOF}}~0x04
+\item 
+\#define \mbox{\hyperlink{constants_8h_a00dc7392deebc82f3e6abb24b28255e7}{DIRECTIVE\+\_\+\+CODE\+\_\+\+FINISHED}}~0x05
+\item 
+\#define \mbox{\hyperlink{constants_8h_a0887cab1acf8e238e6777ab604ed7044}{MAX\+\_\+\+FILE\+\_\+\+NAME\+\_\+\+SIZE}}~(cfdp\+File\+Name\+\_\+\+REQUIRED\+\_\+\+BYTES\+\_\+\+FOR\+\_\+\+ACN\+\_\+\+ENCODING -\/ 1)
+\item 
+\#define \mbox{\hyperlink{constants_8h_af6b7788a22a673e070c0a9b11b13e1a7}{MAX\+\_\+\+LISTING\+\_\+\+FILE\+\_\+\+NAME\+\_\+\+SIZE}}~ (cfdp\+Listing\+File\+Name\+\_\+\+REQUIRED\+\_\+\+BYTES\+\_\+\+FOR\+\_\+\+ACN\+\_\+\+ENCODING -\/ 1)
+\item 
+\#define \mbox{\hyperlink{constants_8h_a272bebd58e8eb7f477c61d9ede5053fa}{MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+SENDER\+\_\+\+MACHINES}}~1
+\item 
+\#define \mbox{\hyperlink{constants_8h_a01679c94b2750d8d91d4b90150ae5e66}{MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+RECEIVER\+\_\+\+MACHINES}}~1
+\item 
+\#define \mbox{\hyperlink{constants_8h_a7fd699a19b349c55c9ae8912ee17b3c3}{MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+MESSAGES\+\_\+\+TO\+\_\+\+USER}}~2
+\item 
+\#define \mbox{\hyperlink{constants_8h_af0b48ba050d8bd92336bf6acfeddf909}{CFDP\+\_\+\+ALIGNMENT\+\_\+\+SIZE}}~4
+\item 
+\#define \mbox{\hyperlink{constants_8h_a02bcc3c67c46c974209f794db38799f7}{CFDP\+\_\+\+ALIGNED}}~\+\_\+\+\_\+attribute\+\_\+\+\_\+((aligned(\mbox{\hyperlink{constants_8h_af0b48ba050d8bd92336bf6acfeddf909}{CFDP\+\_\+\+ALIGNMENT\+\_\+\+SIZE}})))
+\item 
+\#define \mbox{\hyperlink{constants_8h_aad95fc3022e3e146a1b582401e376880}{CFDP\+\_\+\+ALIGN}}(size)
+\item 
+\#define \mbox{\hyperlink{constants_8h_a54446fc4c74095a32c98fc4dd9ac4c86}{CFDP\+\_\+\+BUFFER\+\_\+\+SIZE}}(item\+\_\+size)~(\mbox{\hyperlink{constants_8h_aad95fc3022e3e146a1b582401e376880}{CFDP\+\_\+\+ALIGN}}(item\+\_\+size))
+\item 
+\#define \mbox{\hyperlink{constants_8h_a4e936cb51bd759ab7ae77365bd61d773}{VIRTUAL\+\_\+\+SOURCE\+\_\+\+FILE\+\_\+\+BUFFER\+\_\+\+SIZE}}~\mbox{\hyperlink{constants_8h_a54446fc4c74095a32c98fc4dd9ac4c86}{CFDP\+\_\+\+BUFFER\+\_\+\+SIZE}}(1024)
+\item 
+\#define \mbox{\hyperlink{constants_8h_aed2164ed31b018e4d909bcdc5c4e5736}{FILE\+\_\+\+SEGMENT\+\_\+\+BUFFER\+\_\+\+SIZE}}~ \mbox{\hyperlink{constants_8h_a54446fc4c74095a32c98fc4dd9ac4c86}{CFDP\+\_\+\+BUFFER\+\_\+\+SIZE}}(cfdp\+File\+Data\+\_\+\+REQUIRED\+\_\+\+BYTES\+\_\+\+FOR\+\_\+\+ACN\+\_\+\+ENCODING -\/ 2)
+\item 
+\#define \mbox{\hyperlink{constants_8h_a62924c518358b02694d9560a7ef66932}{PDU\+\_\+\+BUFFER\+\_\+\+SIZE}}
+\item 
+\#define \mbox{\hyperlink{constants_8h_a4b77da85bdace42a18c8c9f08b8d9710}{VIRTUAL\+\_\+\+SOURCE\+\_\+\+FILE\+\_\+\+BUFFER\+\_\+\+OFFSET}}~0
+\item 
+\#define \mbox{\hyperlink{constants_8h_abc86916202863365dc530dd38463f2fe}{FILE\+\_\+\+SEGMENT\+\_\+\+BUFFER\+\_\+\+OFFSET}}~(\mbox{\hyperlink{constants_8h_a4e936cb51bd759ab7ae77365bd61d773}{VIRTUAL\+\_\+\+SOURCE\+\_\+\+FILE\+\_\+\+BUFFER\+\_\+\+SIZE}})
+\item 
+\#define \mbox{\hyperlink{constants_8h_a651e10c815fcdd92317078f9df9d914d}{PDU\+\_\+\+BUFFER\+\_\+\+OFFSET}}~ (\mbox{\hyperlink{constants_8h_abc86916202863365dc530dd38463f2fe}{FILE\+\_\+\+SEGMENT\+\_\+\+BUFFER\+\_\+\+OFFSET}} + \mbox{\hyperlink{constants_8h_aed2164ed31b018e4d909bcdc5c4e5736}{FILE\+\_\+\+SEGMENT\+\_\+\+BUFFER\+\_\+\+SIZE}})
+\item 
+\#define \mbox{\hyperlink{constants_8h_aa37fd6d75624b42c5d906f858d962029}{MODIFIED\+\_\+\+PDU\+\_\+\+BUFFER\+\_\+\+OFFSET}}~(\mbox{\hyperlink{constants_8h_a651e10c815fcdd92317078f9df9d914d}{PDU\+\_\+\+BUFFER\+\_\+\+OFFSET}} + \mbox{\hyperlink{constants_8h_a62924c518358b02694d9560a7ef66932}{PDU\+\_\+\+BUFFER\+\_\+\+SIZE}})
+\item 
+\#define \mbox{\hyperlink{constants_8h_a3b93f0dc9c04feef1a9b16a66f6bf15b}{CFDP\+\_\+\+DATA\+\_\+\+BUFFER\+\_\+\+SIZE}}
+\item 
+\#define \mbox{\hyperlink{constants_8h_a950235c5d42e02215fa1e35e7e362a60}{CFDP\+\_\+\+DATA\+\_\+\+BUFFER}}(name)~uint8\+\_\+t name\mbox{[}\mbox{\hyperlink{constants_8h_a3b93f0dc9c04feef1a9b16a66f6bf15b}{CFDP\+\_\+\+DATA\+\_\+\+BUFFER\+\_\+\+SIZE}}\mbox{]} \mbox{\hyperlink{constants_8h_a02bcc3c67c46c974209f794db38799f7}{CFDP\+\_\+\+ALIGNED}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9eb}{Machine\+State}} \{ \newline
+\mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9ebad0711302c58a01db721d605453aea1ac}{SEND\+\_\+\+METADATA}}
+, \mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9eba6c32c7efce447898ccfe3903819ab302}{SEND\+\_\+\+FILE}}
+, \mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9eba82c2106a09f21bc0d6f0c20876286bc3}{SEND\+\_\+\+EOF}}
+, \mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9eba6e1275541caf0b84fb48b6b54ba3c803}{TRANSACTION\+\_\+\+CANCELLED}}
+, \newline
+\mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9ebae0994552538eb16b71f119ae47d82f65}{WAIT\+\_\+\+FOR\+\_\+\+MD}}
+, \mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9ebad11ea31f4bef19d29a2c6531035cf0b0}{WAIT\+\_\+\+FOR\+\_\+\+EOF}}
+, \mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9ebac2ea60d0cf57436cf061c9d31fef557f}{GET\+\_\+\+MISSING\+\_\+\+DATA}}
+, \mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9eba9251e0ef2d5520f0b5b43c1c5f70da2a}{SEND\+\_\+\+FINISHED}}
+, \newline
+\mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9eba3549811efddf16048f4b8f6a3b960b41}{COMPLETED}}
+ \}
+\item 
+enum \mbox{\hyperlink{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7}{Fault\+Handler\+Action}} \{ \mbox{\hyperlink{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7a1cbd132a087d13a9618ee75c7ed1bcdf}{FAULT\+\_\+\+HANDLER\+\_\+\+CANCEL}}
+, \mbox{\hyperlink{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7ad5ccda090b1717026b61a14fae4fe923}{FAULT\+\_\+\+HANDLER\+\_\+\+SUSPEND}}
+, \mbox{\hyperlink{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7aa3df9e472341f2264c845c45146ac9a1}{FAULT\+\_\+\+HANDLER\+\_\+\+IGNORE}}
+, \mbox{\hyperlink{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7af17e0316c24434e2a0701595c75b55a5}{FAULT\+\_\+\+HANDLER\+\_\+\+ABANDON}}
+ \}
+\item 
+enum \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8a}{Indication\+Type}} \{ \newline
+\mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aabd415629364ce2c7ae5bfb88cbc01694}{TRANSACTION\+\_\+\+INDICATION}}
+, \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aae19c9d3ad5d5453ff984994e28836aab}{EOF\+\_\+\+SENT\+\_\+\+INDICATION}}
+, \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa1e52a4c7e47cd9720945670c9ac477b4}{FINISHED\+\_\+\+INDICATION}}
+, \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aafb0dffe3911cf79659621f617248cf9b}{REPORT\+\_\+\+INDICATION}}
+, \newline
+\mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aaaf5fbe3db1aa91ba79c8d7b905052c3d}{EOF\+\_\+\+RECEIVED\+\_\+\+INDICATION}}
+, \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aaeb4535053b1ef67d151ae89e8963df64}{METADATA\+\_\+\+RECEIVED\+\_\+\+INDICATION}}
+, \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aae8666583cc2e2f6c8e378313761611bf}{FILESEGMENT\+\_\+\+RECEIVED\+\_\+\+INDICATION}}
+, \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa21c2418e682a93bedf6d608ebde8ca89}{ABANDONED\+\_\+\+INDICATION}}
+, \newline
+\mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa11dd957e9decaac6ce0613349ca766ec}{SUSPENDED\+\_\+\+INDICATION}}
+, \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa5c8aa81b8c34b99a9799f4533e88c454}{RESUMED\+\_\+\+INDICATION}}
+, \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa87bd22aa6228bf984c99b2fe769f5b09}{FAULT\+\_\+\+INDICATION}}
+, \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aac479d6a3b1ea687681dabba386cce6ce}{SUCCESSFUL\+\_\+\+LISTING\+\_\+\+INDICATION}}
+, \newline
+\mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aae4e61915d4be08a22cf76d0333ab6d5e}{UNSUCCESSFUL\+\_\+\+LISTING\+\_\+\+INDICATION}}
+ \}
+\item 
+enum \mbox{\hyperlink{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5}{Checksum\+Type}} \{ \mbox{\hyperlink{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5a3c5b51311c264da257791b9cf065ed2a}{CHECKSUM\+\_\+\+TYPE\+\_\+\+MODULAR}} = 0
+, \mbox{\hyperlink{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5aca8de4e8e071b3ef90dfa963210232bc}{CHECKSUM\+\_\+\+TYPE\+\_\+\+NONE}} = 15
+ \}
+\item 
+enum \mbox{\hyperlink{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45a}{Error\+Type}} \{ \newline
+\mbox{\hyperlink{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aaa6c2b51be60f8ba794dc596d698b3262}{ASN1\+SCC\+\_\+\+ERROR}}
+, \mbox{\hyperlink{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aa5d79cb8c8efc5bc3d3ab2cdf3a17cdc7}{UNSUPPORTED\+\_\+\+ACTION}}
+, \mbox{\hyperlink{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aada96c2921191ac4927ea910cdab17e55}{SEGMENTATION\+\_\+\+ERROR}}
+, \mbox{\hyperlink{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aa1fe47c433d2adfbe9eb52339c0956290}{FILESTORE\+\_\+\+ERROR}}
+, \newline
+\mbox{\hyperlink{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aa6d8ee8a3659b22bb737b2c89da960b08}{TRANSPORT\+\_\+\+ERROR}}
+, \mbox{\hyperlink{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aad69147718fd4c15414bd0f6f9b7a4e26}{TIMER\+\_\+\+ERROR}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const char \mbox{\hyperlink{constants_8h_af516ae9339c05d2c16b3acde01c94dce}{VIRTUAL\+\_\+\+LISTING\+\_\+\+FILENAME}} \mbox{[}9\mbox{]}
+\item 
+enum \mbox{\hyperlink{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7}{Fault\+Handler\+Action}} \mbox{\hyperlink{constants_8h_a7560d0aa34994e705f51cc3e1c81d111}{DEFAULT\+\_\+\+FAULT\+\_\+\+HANDLER\+\_\+\+ACTIONS}} \mbox{[}16\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{constants_8h_aad95fc3022e3e146a1b582401e376880}\label{constants_8h_aad95fc3022e3e146a1b582401e376880}} 
+\index{constants.h@{constants.h}!CFDP\_ALIGN@{CFDP\_ALIGN}}
+\index{CFDP\_ALIGN@{CFDP\_ALIGN}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{CFDP\_ALIGN}{CFDP\_ALIGN}}
+{\footnotesize\ttfamily \#define CFDP\+\_\+\+ALIGN(\begin{DoxyParamCaption}\item[{}]{size }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{    (((size + (\mbox{\hyperlink{constants_8h_af0b48ba050d8bd92336bf6acfeddf909}{CFDP\_ALIGNMENT\_SIZE}} -\/ 1)) / \mbox{\hyperlink{constants_8h_af0b48ba050d8bd92336bf6acfeddf909}{CFDP\_ALIGNMENT\_SIZE}}) *          \(\backslash\)}
+\DoxyCodeLine{     \mbox{\hyperlink{constants_8h_af0b48ba050d8bd92336bf6acfeddf909}{CFDP\_ALIGNMENT\_SIZE}})}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{constants_8h_a02bcc3c67c46c974209f794db38799f7}\label{constants_8h_a02bcc3c67c46c974209f794db38799f7}} 
+\index{constants.h@{constants.h}!CFDP\_ALIGNED@{CFDP\_ALIGNED}}
+\index{CFDP\_ALIGNED@{CFDP\_ALIGNED}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{CFDP\_ALIGNED}{CFDP\_ALIGNED}}
+{\footnotesize\ttfamily \#define CFDP\+\_\+\+ALIGNED~\+\_\+\+\_\+attribute\+\_\+\+\_\+((aligned(\mbox{\hyperlink{constants_8h_af0b48ba050d8bd92336bf6acfeddf909}{CFDP\+\_\+\+ALIGNMENT\+\_\+\+SIZE}})))}
+
+\mbox{\Hypertarget{constants_8h_af0b48ba050d8bd92336bf6acfeddf909}\label{constants_8h_af0b48ba050d8bd92336bf6acfeddf909}} 
+\index{constants.h@{constants.h}!CFDP\_ALIGNMENT\_SIZE@{CFDP\_ALIGNMENT\_SIZE}}
+\index{CFDP\_ALIGNMENT\_SIZE@{CFDP\_ALIGNMENT\_SIZE}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{CFDP\_ALIGNMENT\_SIZE}{CFDP\_ALIGNMENT\_SIZE}}
+{\footnotesize\ttfamily \#define CFDP\+\_\+\+ALIGNMENT\+\_\+\+SIZE~4}
+
+\mbox{\Hypertarget{constants_8h_a54446fc4c74095a32c98fc4dd9ac4c86}\label{constants_8h_a54446fc4c74095a32c98fc4dd9ac4c86}} 
+\index{constants.h@{constants.h}!CFDP\_BUFFER\_SIZE@{CFDP\_BUFFER\_SIZE}}
+\index{CFDP\_BUFFER\_SIZE@{CFDP\_BUFFER\_SIZE}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{CFDP\_BUFFER\_SIZE}{CFDP\_BUFFER\_SIZE}}
+{\footnotesize\ttfamily \#define CFDP\+\_\+\+BUFFER\+\_\+\+SIZE(\begin{DoxyParamCaption}\item[{}]{item\+\_\+size }\end{DoxyParamCaption})~(\mbox{\hyperlink{constants_8h_aad95fc3022e3e146a1b582401e376880}{CFDP\+\_\+\+ALIGN}}(item\+\_\+size))}
+
+\mbox{\Hypertarget{constants_8h_a950235c5d42e02215fa1e35e7e362a60}\label{constants_8h_a950235c5d42e02215fa1e35e7e362a60}} 
+\index{constants.h@{constants.h}!CFDP\_DATA\_BUFFER@{CFDP\_DATA\_BUFFER}}
+\index{CFDP\_DATA\_BUFFER@{CFDP\_DATA\_BUFFER}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{CFDP\_DATA\_BUFFER}{CFDP\_DATA\_BUFFER}}
+{\footnotesize\ttfamily \#define CFDP\+\_\+\+DATA\+\_\+\+BUFFER(\begin{DoxyParamCaption}\item[{}]{name }\end{DoxyParamCaption})~uint8\+\_\+t name\mbox{[}\mbox{\hyperlink{constants_8h_a3b93f0dc9c04feef1a9b16a66f6bf15b}{CFDP\+\_\+\+DATA\+\_\+\+BUFFER\+\_\+\+SIZE}}\mbox{]} \mbox{\hyperlink{constants_8h_a02bcc3c67c46c974209f794db38799f7}{CFDP\+\_\+\+ALIGNED}}}
+
+\mbox{\Hypertarget{constants_8h_a3b93f0dc9c04feef1a9b16a66f6bf15b}\label{constants_8h_a3b93f0dc9c04feef1a9b16a66f6bf15b}} 
+\index{constants.h@{constants.h}!CFDP\_DATA\_BUFFER\_SIZE@{CFDP\_DATA\_BUFFER\_SIZE}}
+\index{CFDP\_DATA\_BUFFER\_SIZE@{CFDP\_DATA\_BUFFER\_SIZE}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{CFDP\_DATA\_BUFFER\_SIZE}{CFDP\_DATA\_BUFFER\_SIZE}}
+{\footnotesize\ttfamily \#define CFDP\+\_\+\+DATA\+\_\+\+BUFFER\+\_\+\+SIZE}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{    (\mbox{\hyperlink{constants_8h_a4e936cb51bd759ab7ae77365bd61d773}{VIRTUAL\_SOURCE\_FILE\_BUFFER\_SIZE}} + \mbox{\hyperlink{constants_8h_aed2164ed31b018e4d909bcdc5c4e5736}{FILE\_SEGMENT\_BUFFER\_SIZE}} +          \(\backslash\)}
+\DoxyCodeLine{     2 * \mbox{\hyperlink{constants_8h_a62924c518358b02694d9560a7ef66932}{PDU\_BUFFER\_SIZE}})}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{constants_8h_a4dc01d7175a888476bd75b87b203f9a2}\label{constants_8h_a4dc01d7175a888476bd75b87b203f9a2}} 
+\index{constants.h@{constants.h}!DIRECTIVE\_CODE\_EOF@{DIRECTIVE\_CODE\_EOF}}
+\index{DIRECTIVE\_CODE\_EOF@{DIRECTIVE\_CODE\_EOF}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{DIRECTIVE\_CODE\_EOF}{DIRECTIVE\_CODE\_EOF}}
+{\footnotesize\ttfamily \#define DIRECTIVE\+\_\+\+CODE\+\_\+\+EOF~0x04}
+
+\mbox{\Hypertarget{constants_8h_a00dc7392deebc82f3e6abb24b28255e7}\label{constants_8h_a00dc7392deebc82f3e6abb24b28255e7}} 
+\index{constants.h@{constants.h}!DIRECTIVE\_CODE\_FINISHED@{DIRECTIVE\_CODE\_FINISHED}}
+\index{DIRECTIVE\_CODE\_FINISHED@{DIRECTIVE\_CODE\_FINISHED}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{DIRECTIVE\_CODE\_FINISHED}{DIRECTIVE\_CODE\_FINISHED}}
+{\footnotesize\ttfamily \#define DIRECTIVE\+\_\+\+CODE\+\_\+\+FINISHED~0x05}
+
+\mbox{\Hypertarget{constants_8h_abc86916202863365dc530dd38463f2fe}\label{constants_8h_abc86916202863365dc530dd38463f2fe}} 
+\index{constants.h@{constants.h}!FILE\_SEGMENT\_BUFFER\_OFFSET@{FILE\_SEGMENT\_BUFFER\_OFFSET}}
+\index{FILE\_SEGMENT\_BUFFER\_OFFSET@{FILE\_SEGMENT\_BUFFER\_OFFSET}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{FILE\_SEGMENT\_BUFFER\_OFFSET}{FILE\_SEGMENT\_BUFFER\_OFFSET}}
+{\footnotesize\ttfamily \#define FILE\+\_\+\+SEGMENT\+\_\+\+BUFFER\+\_\+\+OFFSET~(\mbox{\hyperlink{constants_8h_a4e936cb51bd759ab7ae77365bd61d773}{VIRTUAL\+\_\+\+SOURCE\+\_\+\+FILE\+\_\+\+BUFFER\+\_\+\+SIZE}})}
+
+\mbox{\Hypertarget{constants_8h_aed2164ed31b018e4d909bcdc5c4e5736}\label{constants_8h_aed2164ed31b018e4d909bcdc5c4e5736}} 
+\index{constants.h@{constants.h}!FILE\_SEGMENT\_BUFFER\_SIZE@{FILE\_SEGMENT\_BUFFER\_SIZE}}
+\index{FILE\_SEGMENT\_BUFFER\_SIZE@{FILE\_SEGMENT\_BUFFER\_SIZE}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{FILE\_SEGMENT\_BUFFER\_SIZE}{FILE\_SEGMENT\_BUFFER\_SIZE}}
+{\footnotesize\ttfamily \#define FILE\+\_\+\+SEGMENT\+\_\+\+BUFFER\+\_\+\+SIZE~ \mbox{\hyperlink{constants_8h_a54446fc4c74095a32c98fc4dd9ac4c86}{CFDP\+\_\+\+BUFFER\+\_\+\+SIZE}}(cfdp\+File\+Data\+\_\+\+REQUIRED\+\_\+\+BYTES\+\_\+\+FOR\+\_\+\+ACN\+\_\+\+ENCODING -\/ 2)}
+
+\mbox{\Hypertarget{constants_8h_a0887cab1acf8e238e6777ab604ed7044}\label{constants_8h_a0887cab1acf8e238e6777ab604ed7044}} 
+\index{constants.h@{constants.h}!MAX\_FILE\_NAME\_SIZE@{MAX\_FILE\_NAME\_SIZE}}
+\index{MAX\_FILE\_NAME\_SIZE@{MAX\_FILE\_NAME\_SIZE}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_FILE\_NAME\_SIZE}{MAX\_FILE\_NAME\_SIZE}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+FILE\+\_\+\+NAME\+\_\+\+SIZE~(cfdp\+File\+Name\+\_\+\+REQUIRED\+\_\+\+BYTES\+\_\+\+FOR\+\_\+\+ACN\+\_\+\+ENCODING -\/ 1)}
+
+\mbox{\Hypertarget{constants_8h_af6b7788a22a673e070c0a9b11b13e1a7}\label{constants_8h_af6b7788a22a673e070c0a9b11b13e1a7}} 
+\index{constants.h@{constants.h}!MAX\_LISTING\_FILE\_NAME\_SIZE@{MAX\_LISTING\_FILE\_NAME\_SIZE}}
+\index{MAX\_LISTING\_FILE\_NAME\_SIZE@{MAX\_LISTING\_FILE\_NAME\_SIZE}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_LISTING\_FILE\_NAME\_SIZE}{MAX\_LISTING\_FILE\_NAME\_SIZE}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+LISTING\+\_\+\+FILE\+\_\+\+NAME\+\_\+\+SIZE~ (cfdp\+Listing\+File\+Name\+\_\+\+REQUIRED\+\_\+\+BYTES\+\_\+\+FOR\+\_\+\+ACN\+\_\+\+ENCODING -\/ 1)}
+
+\mbox{\Hypertarget{constants_8h_a7fd699a19b349c55c9ae8912ee17b3c3}\label{constants_8h_a7fd699a19b349c55c9ae8912ee17b3c3}} 
+\index{constants.h@{constants.h}!MAX\_NUMBER\_OF\_MESSAGES\_TO\_USER@{MAX\_NUMBER\_OF\_MESSAGES\_TO\_USER}}
+\index{MAX\_NUMBER\_OF\_MESSAGES\_TO\_USER@{MAX\_NUMBER\_OF\_MESSAGES\_TO\_USER}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_NUMBER\_OF\_MESSAGES\_TO\_USER}{MAX\_NUMBER\_OF\_MESSAGES\_TO\_USER}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+MESSAGES\+\_\+\+TO\+\_\+\+USER~2}
+
+\mbox{\Hypertarget{constants_8h_a01679c94b2750d8d91d4b90150ae5e66}\label{constants_8h_a01679c94b2750d8d91d4b90150ae5e66}} 
+\index{constants.h@{constants.h}!MAX\_NUMBER\_OF\_RECEIVER\_MACHINES@{MAX\_NUMBER\_OF\_RECEIVER\_MACHINES}}
+\index{MAX\_NUMBER\_OF\_RECEIVER\_MACHINES@{MAX\_NUMBER\_OF\_RECEIVER\_MACHINES}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_NUMBER\_OF\_RECEIVER\_MACHINES}{MAX\_NUMBER\_OF\_RECEIVER\_MACHINES}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+RECEIVER\+\_\+\+MACHINES~1}
+
+\mbox{\Hypertarget{constants_8h_a272bebd58e8eb7f477c61d9ede5053fa}\label{constants_8h_a272bebd58e8eb7f477c61d9ede5053fa}} 
+\index{constants.h@{constants.h}!MAX\_NUMBER\_OF\_SENDER\_MACHINES@{MAX\_NUMBER\_OF\_SENDER\_MACHINES}}
+\index{MAX\_NUMBER\_OF\_SENDER\_MACHINES@{MAX\_NUMBER\_OF\_SENDER\_MACHINES}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_NUMBER\_OF\_SENDER\_MACHINES}{MAX\_NUMBER\_OF\_SENDER\_MACHINES}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+SENDER\+\_\+\+MACHINES~1}
+
+\mbox{\Hypertarget{constants_8h_aa37fd6d75624b42c5d906f858d962029}\label{constants_8h_aa37fd6d75624b42c5d906f858d962029}} 
+\index{constants.h@{constants.h}!MODIFIED\_PDU\_BUFFER\_OFFSET@{MODIFIED\_PDU\_BUFFER\_OFFSET}}
+\index{MODIFIED\_PDU\_BUFFER\_OFFSET@{MODIFIED\_PDU\_BUFFER\_OFFSET}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{MODIFIED\_PDU\_BUFFER\_OFFSET}{MODIFIED\_PDU\_BUFFER\_OFFSET}}
+{\footnotesize\ttfamily \#define MODIFIED\+\_\+\+PDU\+\_\+\+BUFFER\+\_\+\+OFFSET~(\mbox{\hyperlink{constants_8h_a651e10c815fcdd92317078f9df9d914d}{PDU\+\_\+\+BUFFER\+\_\+\+OFFSET}} + \mbox{\hyperlink{constants_8h_a62924c518358b02694d9560a7ef66932}{PDU\+\_\+\+BUFFER\+\_\+\+SIZE}})}
+
+\mbox{\Hypertarget{constants_8h_a651e10c815fcdd92317078f9df9d914d}\label{constants_8h_a651e10c815fcdd92317078f9df9d914d}} 
+\index{constants.h@{constants.h}!PDU\_BUFFER\_OFFSET@{PDU\_BUFFER\_OFFSET}}
+\index{PDU\_BUFFER\_OFFSET@{PDU\_BUFFER\_OFFSET}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{PDU\_BUFFER\_OFFSET}{PDU\_BUFFER\_OFFSET}}
+{\footnotesize\ttfamily \#define PDU\+\_\+\+BUFFER\+\_\+\+OFFSET~ (\mbox{\hyperlink{constants_8h_abc86916202863365dc530dd38463f2fe}{FILE\+\_\+\+SEGMENT\+\_\+\+BUFFER\+\_\+\+OFFSET}} + \mbox{\hyperlink{constants_8h_aed2164ed31b018e4d909bcdc5c4e5736}{FILE\+\_\+\+SEGMENT\+\_\+\+BUFFER\+\_\+\+SIZE}})}
+
+\mbox{\Hypertarget{constants_8h_a62924c518358b02694d9560a7ef66932}\label{constants_8h_a62924c518358b02694d9560a7ef66932}} 
+\index{constants.h@{constants.h}!PDU\_BUFFER\_SIZE@{PDU\_BUFFER\_SIZE}}
+\index{PDU\_BUFFER\_SIZE@{PDU\_BUFFER\_SIZE}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{PDU\_BUFFER\_SIZE}{PDU\_BUFFER\_SIZE}}
+{\footnotesize\ttfamily \#define PDU\+\_\+\+BUFFER\+\_\+\+SIZE}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{    \mbox{\hyperlink{constants_8h_a54446fc4c74095a32c98fc4dd9ac4c86}{CFDP\_BUFFER\_SIZE}}(cfdpCfdpPDU\_REQUIRED\_BYTES\_FOR\_ACN\_ENCODING +         \(\backslash\)}
+\DoxyCodeLine{             (\mbox{\hyperlink{constants_8h_a7fd699a19b349c55c9ae8912ee17b3c3}{MAX\_NUMBER\_OF\_MESSAGES\_TO\_USER}} *                     \(\backslash\)}
+\DoxyCodeLine{              cfdpTLV\_REQUIRED\_BYTES\_FOR\_ACN\_ENCODING))}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{constants_8h_a4b77da85bdace42a18c8c9f08b8d9710}\label{constants_8h_a4b77da85bdace42a18c8c9f08b8d9710}} 
+\index{constants.h@{constants.h}!VIRTUAL\_SOURCE\_FILE\_BUFFER\_OFFSET@{VIRTUAL\_SOURCE\_FILE\_BUFFER\_OFFSET}}
+\index{VIRTUAL\_SOURCE\_FILE\_BUFFER\_OFFSET@{VIRTUAL\_SOURCE\_FILE\_BUFFER\_OFFSET}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{VIRTUAL\_SOURCE\_FILE\_BUFFER\_OFFSET}{VIRTUAL\_SOURCE\_FILE\_BUFFER\_OFFSET}}
+{\footnotesize\ttfamily \#define VIRTUAL\+\_\+\+SOURCE\+\_\+\+FILE\+\_\+\+BUFFER\+\_\+\+OFFSET~0}
+
+\mbox{\Hypertarget{constants_8h_a4e936cb51bd759ab7ae77365bd61d773}\label{constants_8h_a4e936cb51bd759ab7ae77365bd61d773}} 
+\index{constants.h@{constants.h}!VIRTUAL\_SOURCE\_FILE\_BUFFER\_SIZE@{VIRTUAL\_SOURCE\_FILE\_BUFFER\_SIZE}}
+\index{VIRTUAL\_SOURCE\_FILE\_BUFFER\_SIZE@{VIRTUAL\_SOURCE\_FILE\_BUFFER\_SIZE}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{VIRTUAL\_SOURCE\_FILE\_BUFFER\_SIZE}{VIRTUAL\_SOURCE\_FILE\_BUFFER\_SIZE}}
+{\footnotesize\ttfamily \#define VIRTUAL\+\_\+\+SOURCE\+\_\+\+FILE\+\_\+\+BUFFER\+\_\+\+SIZE~\mbox{\hyperlink{constants_8h_a54446fc4c74095a32c98fc4dd9ac4c86}{CFDP\+\_\+\+BUFFER\+\_\+\+SIZE}}(1024)}
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5}\label{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5}} 
+\index{constants.h@{constants.h}!ChecksumType@{ChecksumType}}
+\index{ChecksumType@{ChecksumType}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{ChecksumType}{ChecksumType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5}{Checksum\+Type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CHECKSUM\_TYPE\_MODULAR@{CHECKSUM\_TYPE\_MODULAR}!constants.h@{constants.h}}\index{constants.h@{constants.h}!CHECKSUM\_TYPE\_MODULAR@{CHECKSUM\_TYPE\_MODULAR}}}\mbox{\Hypertarget{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5a3c5b51311c264da257791b9cf065ed2a}\label{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5a3c5b51311c264da257791b9cf065ed2a}} 
+CHECKSUM\+\_\+\+TYPE\+\_\+\+MODULAR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CHECKSUM\_TYPE\_NONE@{CHECKSUM\_TYPE\_NONE}!constants.h@{constants.h}}\index{constants.h@{constants.h}!CHECKSUM\_TYPE\_NONE@{CHECKSUM\_TYPE\_NONE}}}\mbox{\Hypertarget{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5aca8de4e8e071b3ef90dfa963210232bc}\label{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5aca8de4e8e071b3ef90dfa963210232bc}} 
+CHECKSUM\+\_\+\+TYPE\+\_\+\+NONE&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45a}\label{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45a}} 
+\index{constants.h@{constants.h}!ErrorType@{ErrorType}}
+\index{ErrorType@{ErrorType}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{ErrorType}{ErrorType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45a}{Error\+Type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ASN1SCC\_ERROR@{ASN1SCC\_ERROR}!constants.h@{constants.h}}\index{constants.h@{constants.h}!ASN1SCC\_ERROR@{ASN1SCC\_ERROR}}}\mbox{\Hypertarget{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aaa6c2b51be60f8ba794dc596d698b3262}\label{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aaa6c2b51be60f8ba794dc596d698b3262}} 
+ASN1\+SCC\+\_\+\+ERROR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNSUPPORTED\_ACTION@{UNSUPPORTED\_ACTION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!UNSUPPORTED\_ACTION@{UNSUPPORTED\_ACTION}}}\mbox{\Hypertarget{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aa5d79cb8c8efc5bc3d3ab2cdf3a17cdc7}\label{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aa5d79cb8c8efc5bc3d3ab2cdf3a17cdc7}} 
+UNSUPPORTED\+\_\+\+ACTION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SEGMENTATION\_ERROR@{SEGMENTATION\_ERROR}!constants.h@{constants.h}}\index{constants.h@{constants.h}!SEGMENTATION\_ERROR@{SEGMENTATION\_ERROR}}}\mbox{\Hypertarget{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aada96c2921191ac4927ea910cdab17e55}\label{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aada96c2921191ac4927ea910cdab17e55}} 
+SEGMENTATION\+\_\+\+ERROR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILESTORE\_ERROR@{FILESTORE\_ERROR}!constants.h@{constants.h}}\index{constants.h@{constants.h}!FILESTORE\_ERROR@{FILESTORE\_ERROR}}}\mbox{\Hypertarget{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aa1fe47c433d2adfbe9eb52339c0956290}\label{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aa1fe47c433d2adfbe9eb52339c0956290}} 
+FILESTORE\+\_\+\+ERROR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TRANSPORT\_ERROR@{TRANSPORT\_ERROR}!constants.h@{constants.h}}\index{constants.h@{constants.h}!TRANSPORT\_ERROR@{TRANSPORT\_ERROR}}}\mbox{\Hypertarget{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aa6d8ee8a3659b22bb737b2c89da960b08}\label{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aa6d8ee8a3659b22bb737b2c89da960b08}} 
+TRANSPORT\+\_\+\+ERROR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TIMER\_ERROR@{TIMER\_ERROR}!constants.h@{constants.h}}\index{constants.h@{constants.h}!TIMER\_ERROR@{TIMER\_ERROR}}}\mbox{\Hypertarget{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aad69147718fd4c15414bd0f6f9b7a4e26}\label{constants_8h_ab0df38968e4f03a3f1f6d6df0f31f45aad69147718fd4c15414bd0f6f9b7a4e26}} 
+TIMER\+\_\+\+ERROR&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7}\label{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7}} 
+\index{constants.h@{constants.h}!FaultHandlerAction@{FaultHandlerAction}}
+\index{FaultHandlerAction@{FaultHandlerAction}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{FaultHandlerAction}{FaultHandlerAction}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7}{Fault\+Handler\+Action}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FAULT\_HANDLER\_CANCEL@{FAULT\_HANDLER\_CANCEL}!constants.h@{constants.h}}\index{constants.h@{constants.h}!FAULT\_HANDLER\_CANCEL@{FAULT\_HANDLER\_CANCEL}}}\mbox{\Hypertarget{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7a1cbd132a087d13a9618ee75c7ed1bcdf}\label{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7a1cbd132a087d13a9618ee75c7ed1bcdf}} 
+FAULT\+\_\+\+HANDLER\+\_\+\+CANCEL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FAULT\_HANDLER\_SUSPEND@{FAULT\_HANDLER\_SUSPEND}!constants.h@{constants.h}}\index{constants.h@{constants.h}!FAULT\_HANDLER\_SUSPEND@{FAULT\_HANDLER\_SUSPEND}}}\mbox{\Hypertarget{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7ad5ccda090b1717026b61a14fae4fe923}\label{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7ad5ccda090b1717026b61a14fae4fe923}} 
+FAULT\+\_\+\+HANDLER\+\_\+\+SUSPEND&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FAULT\_HANDLER\_IGNORE@{FAULT\_HANDLER\_IGNORE}!constants.h@{constants.h}}\index{constants.h@{constants.h}!FAULT\_HANDLER\_IGNORE@{FAULT\_HANDLER\_IGNORE}}}\mbox{\Hypertarget{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7aa3df9e472341f2264c845c45146ac9a1}\label{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7aa3df9e472341f2264c845c45146ac9a1}} 
+FAULT\+\_\+\+HANDLER\+\_\+\+IGNORE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FAULT\_HANDLER\_ABANDON@{FAULT\_HANDLER\_ABANDON}!constants.h@{constants.h}}\index{constants.h@{constants.h}!FAULT\_HANDLER\_ABANDON@{FAULT\_HANDLER\_ABANDON}}}\mbox{\Hypertarget{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7af17e0316c24434e2a0701595c75b55a5}\label{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7af17e0316c24434e2a0701595c75b55a5}} 
+FAULT\+\_\+\+HANDLER\+\_\+\+ABANDON&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8a}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8a}} 
+\index{constants.h@{constants.h}!IndicationType@{IndicationType}}
+\index{IndicationType@{IndicationType}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{IndicationType}{IndicationType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8a}{Indication\+Type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TRANSACTION\_INDICATION@{TRANSACTION\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!TRANSACTION\_INDICATION@{TRANSACTION\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aabd415629364ce2c7ae5bfb88cbc01694}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aabd415629364ce2c7ae5bfb88cbc01694}} 
+TRANSACTION\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{EOF\_SENT\_INDICATION@{EOF\_SENT\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!EOF\_SENT\_INDICATION@{EOF\_SENT\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aae19c9d3ad5d5453ff984994e28836aab}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aae19c9d3ad5d5453ff984994e28836aab}} 
+EOF\+\_\+\+SENT\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FINISHED\_INDICATION@{FINISHED\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!FINISHED\_INDICATION@{FINISHED\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa1e52a4c7e47cd9720945670c9ac477b4}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa1e52a4c7e47cd9720945670c9ac477b4}} 
+FINISHED\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{REPORT\_INDICATION@{REPORT\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!REPORT\_INDICATION@{REPORT\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aafb0dffe3911cf79659621f617248cf9b}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aafb0dffe3911cf79659621f617248cf9b}} 
+REPORT\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{EOF\_RECEIVED\_INDICATION@{EOF\_RECEIVED\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!EOF\_RECEIVED\_INDICATION@{EOF\_RECEIVED\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aaaf5fbe3db1aa91ba79c8d7b905052c3d}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aaaf5fbe3db1aa91ba79c8d7b905052c3d}} 
+EOF\+\_\+\+RECEIVED\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{METADATA\_RECEIVED\_INDICATION@{METADATA\_RECEIVED\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!METADATA\_RECEIVED\_INDICATION@{METADATA\_RECEIVED\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aaeb4535053b1ef67d151ae89e8963df64}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aaeb4535053b1ef67d151ae89e8963df64}} 
+METADATA\+\_\+\+RECEIVED\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILESEGMENT\_RECEIVED\_INDICATION@{FILESEGMENT\_RECEIVED\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!FILESEGMENT\_RECEIVED\_INDICATION@{FILESEGMENT\_RECEIVED\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aae8666583cc2e2f6c8e378313761611bf}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aae8666583cc2e2f6c8e378313761611bf}} 
+FILESEGMENT\+\_\+\+RECEIVED\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ABANDONED\_INDICATION@{ABANDONED\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!ABANDONED\_INDICATION@{ABANDONED\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa21c2418e682a93bedf6d608ebde8ca89}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa21c2418e682a93bedf6d608ebde8ca89}} 
+ABANDONED\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SUSPENDED\_INDICATION@{SUSPENDED\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!SUSPENDED\_INDICATION@{SUSPENDED\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa11dd957e9decaac6ce0613349ca766ec}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa11dd957e9decaac6ce0613349ca766ec}} 
+SUSPENDED\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RESUMED\_INDICATION@{RESUMED\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!RESUMED\_INDICATION@{RESUMED\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa5c8aa81b8c34b99a9799f4533e88c454}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa5c8aa81b8c34b99a9799f4533e88c454}} 
+RESUMED\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FAULT\_INDICATION@{FAULT\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!FAULT\_INDICATION@{FAULT\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa87bd22aa6228bf984c99b2fe769f5b09}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aa87bd22aa6228bf984c99b2fe769f5b09}} 
+FAULT\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SUCCESSFUL\_LISTING\_INDICATION@{SUCCESSFUL\_LISTING\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!SUCCESSFUL\_LISTING\_INDICATION@{SUCCESSFUL\_LISTING\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aac479d6a3b1ea687681dabba386cce6ce}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aac479d6a3b1ea687681dabba386cce6ce}} 
+SUCCESSFUL\+\_\+\+LISTING\+\_\+\+INDICATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNSUCCESSFUL\_LISTING\_INDICATION@{UNSUCCESSFUL\_LISTING\_INDICATION}!constants.h@{constants.h}}\index{constants.h@{constants.h}!UNSUCCESSFUL\_LISTING\_INDICATION@{UNSUCCESSFUL\_LISTING\_INDICATION}}}\mbox{\Hypertarget{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aae4e61915d4be08a22cf76d0333ab6d5e}\label{constants_8h_a5d5caa4e5c74ad3812f819e762dc4b8aae4e61915d4be08a22cf76d0333ab6d5e}} 
+UNSUCCESSFUL\+\_\+\+LISTING\+\_\+\+INDICATION&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9eb}\label{constants_8h_a80b08f71210afe16038e904a656ed9eb}} 
+\index{constants.h@{constants.h}!MachineState@{MachineState}}
+\index{MachineState@{MachineState}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{MachineState}{MachineState}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{constants_8h_a80b08f71210afe16038e904a656ed9eb}{Machine\+State}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SEND\_METADATA@{SEND\_METADATA}!constants.h@{constants.h}}\index{constants.h@{constants.h}!SEND\_METADATA@{SEND\_METADATA}}}\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9ebad0711302c58a01db721d605453aea1ac}\label{constants_8h_a80b08f71210afe16038e904a656ed9ebad0711302c58a01db721d605453aea1ac}} 
+SEND\+\_\+\+METADATA&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SEND\_FILE@{SEND\_FILE}!constants.h@{constants.h}}\index{constants.h@{constants.h}!SEND\_FILE@{SEND\_FILE}}}\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9eba6c32c7efce447898ccfe3903819ab302}\label{constants_8h_a80b08f71210afe16038e904a656ed9eba6c32c7efce447898ccfe3903819ab302}} 
+SEND\+\_\+\+FILE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SEND\_EOF@{SEND\_EOF}!constants.h@{constants.h}}\index{constants.h@{constants.h}!SEND\_EOF@{SEND\_EOF}}}\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9eba82c2106a09f21bc0d6f0c20876286bc3}\label{constants_8h_a80b08f71210afe16038e904a656ed9eba82c2106a09f21bc0d6f0c20876286bc3}} 
+SEND\+\_\+\+EOF&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TRANSACTION\_CANCELLED@{TRANSACTION\_CANCELLED}!constants.h@{constants.h}}\index{constants.h@{constants.h}!TRANSACTION\_CANCELLED@{TRANSACTION\_CANCELLED}}}\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9eba6e1275541caf0b84fb48b6b54ba3c803}\label{constants_8h_a80b08f71210afe16038e904a656ed9eba6e1275541caf0b84fb48b6b54ba3c803}} 
+TRANSACTION\+\_\+\+CANCELLED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{WAIT\_FOR\_MD@{WAIT\_FOR\_MD}!constants.h@{constants.h}}\index{constants.h@{constants.h}!WAIT\_FOR\_MD@{WAIT\_FOR\_MD}}}\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9ebae0994552538eb16b71f119ae47d82f65}\label{constants_8h_a80b08f71210afe16038e904a656ed9ebae0994552538eb16b71f119ae47d82f65}} 
+WAIT\+\_\+\+FOR\+\_\+\+MD&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{WAIT\_FOR\_EOF@{WAIT\_FOR\_EOF}!constants.h@{constants.h}}\index{constants.h@{constants.h}!WAIT\_FOR\_EOF@{WAIT\_FOR\_EOF}}}\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9ebad11ea31f4bef19d29a2c6531035cf0b0}\label{constants_8h_a80b08f71210afe16038e904a656ed9ebad11ea31f4bef19d29a2c6531035cf0b0}} 
+WAIT\+\_\+\+FOR\+\_\+\+EOF&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{GET\_MISSING\_DATA@{GET\_MISSING\_DATA}!constants.h@{constants.h}}\index{constants.h@{constants.h}!GET\_MISSING\_DATA@{GET\_MISSING\_DATA}}}\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9ebac2ea60d0cf57436cf061c9d31fef557f}\label{constants_8h_a80b08f71210afe16038e904a656ed9ebac2ea60d0cf57436cf061c9d31fef557f}} 
+GET\+\_\+\+MISSING\+\_\+\+DATA&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SEND\_FINISHED@{SEND\_FINISHED}!constants.h@{constants.h}}\index{constants.h@{constants.h}!SEND\_FINISHED@{SEND\_FINISHED}}}\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9eba9251e0ef2d5520f0b5b43c1c5f70da2a}\label{constants_8h_a80b08f71210afe16038e904a656ed9eba9251e0ef2d5520f0b5b43c1c5f70da2a}} 
+SEND\+\_\+\+FINISHED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPLETED@{COMPLETED}!constants.h@{constants.h}}\index{constants.h@{constants.h}!COMPLETED@{COMPLETED}}}\mbox{\Hypertarget{constants_8h_a80b08f71210afe16038e904a656ed9eba3549811efddf16048f4b8f6a3b960b41}\label{constants_8h_a80b08f71210afe16038e904a656ed9eba3549811efddf16048f4b8f6a3b960b41}} 
+COMPLETED&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{constants_8h_a7560d0aa34994e705f51cc3e1c81d111}\label{constants_8h_a7560d0aa34994e705f51cc3e1c81d111}} 
+\index{constants.h@{constants.h}!DEFAULT\_FAULT\_HANDLER\_ACTIONS@{DEFAULT\_FAULT\_HANDLER\_ACTIONS}}
+\index{DEFAULT\_FAULT\_HANDLER\_ACTIONS@{DEFAULT\_FAULT\_HANDLER\_ACTIONS}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{DEFAULT\_FAULT\_HANDLER\_ACTIONS}{DEFAULT\_FAULT\_HANDLER\_ACTIONS}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{constants_8h_a6af50dda5db0e3dfa7329d79c9f5d7a7}{Fault\+Handler\+Action}} DEFAULT\+\_\+\+FAULT\+\_\+\+HANDLER\+\_\+\+ACTIONS\mbox{[}16\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{constants_8h_af516ae9339c05d2c16b3acde01c94dce}\label{constants_8h_af516ae9339c05d2c16b3acde01c94dce}} 
+\index{constants.h@{constants.h}!VIRTUAL\_LISTING\_FILENAME@{VIRTUAL\_LISTING\_FILENAME}}
+\index{VIRTUAL\_LISTING\_FILENAME@{VIRTUAL\_LISTING\_FILENAME}!constants.h@{constants.h}}
+\doxysubsubsection{\texorpdfstring{VIRTUAL\_LISTING\_FILENAME}{VIRTUAL\_LISTING\_FILENAME}}
+{\footnotesize\ttfamily const char VIRTUAL\+\_\+\+LISTING\+\_\+\+FILENAME\mbox{[}9\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
+

@@ -1,0 +1,75 @@
+\hypertarget{structreceiver__timer}{}\doxysection{receiver\+\_\+timer Struct Reference}
+\label{structreceiver__timer}\index{receiver\_timer@{receiver\_timer}}
+
+
+{\ttfamily \#include $<$receiver\+\_\+timer.\+h$>$}
+
+
+
+Collaboration diagram for receiver\+\_\+timer\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structreceiver__timer__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcfdp__core}{cfdp\+\_\+core}} $\ast$ \mbox{\hyperlink{structreceiver__timer_a779f0e8065a2df4078be5b73c39ff925}{core}}
+\item 
+struct \mbox{\hyperlink{structtransaction__id}{transaction\+\_\+id}} \mbox{\hyperlink{structreceiver__timer_ad7ac7589341e1c008d737452caf26870}{transaction\+\_\+id}}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{structreceiver__timer_ab155047d9d9f649c43d97c5bc11d0fb8}{timeout}}
+\item 
+void $\ast$ \mbox{\hyperlink{structreceiver__timer_af1d8e256b8a8a9e60e98e9772df81d2f}{timer\+\_\+data}}
+\item 
+bool($\ast$ \mbox{\hyperlink{structreceiver__timer_a82fc986e5cb8f5d5f8e8d75d4a599650}{timer\+\_\+restart}} )(void $\ast$\mbox{\hyperlink{structreceiver__timer_af1d8e256b8a8a9e60e98e9772df81d2f}{timer\+\_\+data}}, const uint32\+\_\+t \mbox{\hyperlink{structreceiver__timer_ab155047d9d9f649c43d97c5bc11d0fb8}{timeout}}, void expired(struct \mbox{\hyperlink{structreceiver__timer}{receiver\+\_\+timer}} $\ast$))
+\item 
+bool($\ast$ \mbox{\hyperlink{structreceiver__timer_a1beb567683a497e6fe767777f336acd2}{timer\+\_\+stop}} )(void $\ast$\mbox{\hyperlink{structreceiver__timer_af1d8e256b8a8a9e60e98e9772df81d2f}{timer\+\_\+data}})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structreceiver__timer_a779f0e8065a2df4078be5b73c39ff925}\label{structreceiver__timer_a779f0e8065a2df4078be5b73c39ff925}} 
+\index{receiver\_timer@{receiver\_timer}!core@{core}}
+\index{core@{core}!receiver\_timer@{receiver\_timer}}
+\doxysubsubsection{\texorpdfstring{core}{core}}
+{\footnotesize\ttfamily struct \mbox{\hyperlink{structcfdp__core}{cfdp\+\_\+core}}$\ast$ receiver\+\_\+timer\+::core}
+
+\mbox{\Hypertarget{structreceiver__timer_ab155047d9d9f649c43d97c5bc11d0fb8}\label{structreceiver__timer_ab155047d9d9f649c43d97c5bc11d0fb8}} 
+\index{receiver\_timer@{receiver\_timer}!timeout@{timeout}}
+\index{timeout@{timeout}!receiver\_timer@{receiver\_timer}}
+\doxysubsubsection{\texorpdfstring{timeout}{timeout}}
+{\footnotesize\ttfamily uint32\+\_\+t receiver\+\_\+timer\+::timeout}
+
+\mbox{\Hypertarget{structreceiver__timer_af1d8e256b8a8a9e60e98e9772df81d2f}\label{structreceiver__timer_af1d8e256b8a8a9e60e98e9772df81d2f}} 
+\index{receiver\_timer@{receiver\_timer}!timer\_data@{timer\_data}}
+\index{timer\_data@{timer\_data}!receiver\_timer@{receiver\_timer}}
+\doxysubsubsection{\texorpdfstring{timer\_data}{timer\_data}}
+{\footnotesize\ttfamily void$\ast$ receiver\+\_\+timer\+::timer\+\_\+data}
+
+\mbox{\Hypertarget{structreceiver__timer_a82fc986e5cb8f5d5f8e8d75d4a599650}\label{structreceiver__timer_a82fc986e5cb8f5d5f8e8d75d4a599650}} 
+\index{receiver\_timer@{receiver\_timer}!timer\_restart@{timer\_restart}}
+\index{timer\_restart@{timer\_restart}!receiver\_timer@{receiver\_timer}}
+\doxysubsubsection{\texorpdfstring{timer\_restart}{timer\_restart}}
+{\footnotesize\ttfamily bool($\ast$ receiver\+\_\+timer\+::timer\+\_\+restart) (void $\ast$\mbox{\hyperlink{structreceiver__timer_af1d8e256b8a8a9e60e98e9772df81d2f}{timer\+\_\+data}}, const uint32\+\_\+t \mbox{\hyperlink{structreceiver__timer_ab155047d9d9f649c43d97c5bc11d0fb8}{timeout}}, void expired(struct \mbox{\hyperlink{structreceiver__timer}{receiver\+\_\+timer}} $\ast$))}
+
+\mbox{\Hypertarget{structreceiver__timer_a1beb567683a497e6fe767777f336acd2}\label{structreceiver__timer_a1beb567683a497e6fe767777f336acd2}} 
+\index{receiver\_timer@{receiver\_timer}!timer\_stop@{timer\_stop}}
+\index{timer\_stop@{timer\_stop}!receiver\_timer@{receiver\_timer}}
+\doxysubsubsection{\texorpdfstring{timer\_stop}{timer\_stop}}
+{\footnotesize\ttfamily bool($\ast$ receiver\+\_\+timer\+::timer\+\_\+stop) (void $\ast$\mbox{\hyperlink{structreceiver__timer_af1d8e256b8a8a9e60e98e9772df81d2f}{timer\+\_\+data}})}
+
+\mbox{\Hypertarget{structreceiver__timer_ad7ac7589341e1c008d737452caf26870}\label{structreceiver__timer_ad7ac7589341e1c008d737452caf26870}} 
+\index{receiver\_timer@{receiver\_timer}!transaction\_id@{transaction\_id}}
+\index{transaction\_id@{transaction\_id}!receiver\_timer@{receiver\_timer}}
+\doxysubsubsection{\texorpdfstring{transaction\_id}{transaction\_id}}
+{\footnotesize\ttfamily struct \mbox{\hyperlink{structtransaction__id}{transaction\+\_\+id}} receiver\+\_\+timer\+::transaction\+\_\+id}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/taste/\+Repo/n7s-\/cfdp/src/\mbox{\hyperlink{receiver__timer_8h}{receiver\+\_\+timer.\+h}}\end{DoxyCompactItemize}

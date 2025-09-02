@@ -1,0 +1,60 @@
+\hypertarget{receiver__machine_8h}{}\doxysection{/home/taste/\+Repo/n7s-\/cfdp/src/receiver\+\_\+machine.h File Reference}
+\label{receiver__machine_8h}\index{/home/taste/Repo/n7s-\/cfdp/src/receiver\_machine.h@{/home/taste/Repo/n7s-\/cfdp/src/receiver\_machine.h}}
+{\ttfamily \#include \char`\"{}stdbool.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}stdint.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}constants.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}dataview.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}receiver\+\_\+timer.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}transaction.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}transaction\+\_\+id.\+h\char`\"{}}\newline
+Include dependency graph for receiver\+\_\+machine.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{receiver__machine_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{receiver__machine_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{receiver__machine_8h_ae570f449c656dca8429be697da663a04}{receiver\+\_\+machine\+\_\+init}} (struct \mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}} $\ast$\mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}}, struct \mbox{\hyperlink{structtransaction}{transaction}} \mbox{\hyperlink{structtransaction}{transaction}})
+\item 
+void \mbox{\hyperlink{receiver__machine_8h_a40f7c78fb8c82076ed3b34b1e638d8ff}{receiver\+\_\+machine\+\_\+close}} (struct \mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}} $\ast$\mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}})
+\item 
+void \mbox{\hyperlink{receiver__machine_8h_ae70ce1a1ec91656af5eb01d05f3c9e09}{receiver\+\_\+machine\+\_\+update\+\_\+state}} (struct \mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}} $\ast$\mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}}, struct \mbox{\hyperlink{structevent}{event}} $\ast$\mbox{\hyperlink{structevent}{event}}, const cfdp\+Cfdp\+PDU $\ast$pdu)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{receiver__machine_8h_a40f7c78fb8c82076ed3b34b1e638d8ff}\label{receiver__machine_8h_a40f7c78fb8c82076ed3b34b1e638d8ff}} 
+\index{receiver\_machine.h@{receiver\_machine.h}!receiver\_machine\_close@{receiver\_machine\_close}}
+\index{receiver\_machine\_close@{receiver\_machine\_close}!receiver\_machine.h@{receiver\_machine.h}}
+\doxysubsubsection{\texorpdfstring{receiver\_machine\_close()}{receiver\_machine\_close()}}
+{\footnotesize\ttfamily void receiver\+\_\+machine\+\_\+close (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}} $\ast$}]{receiver\+\_\+machine }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{receiver__machine_8h_ae570f449c656dca8429be697da663a04}\label{receiver__machine_8h_ae570f449c656dca8429be697da663a04}} 
+\index{receiver\_machine.h@{receiver\_machine.h}!receiver\_machine\_init@{receiver\_machine\_init}}
+\index{receiver\_machine\_init@{receiver\_machine\_init}!receiver\_machine.h@{receiver\_machine.h}}
+\doxysubsubsection{\texorpdfstring{receiver\_machine\_init()}{receiver\_machine\_init()}}
+{\footnotesize\ttfamily void receiver\+\_\+machine\+\_\+init (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}} $\ast$}]{receiver\+\_\+machine,  }\item[{struct \mbox{\hyperlink{structtransaction}{transaction}}}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{receiver__machine_8h_ae70ce1a1ec91656af5eb01d05f3c9e09}\label{receiver__machine_8h_ae70ce1a1ec91656af5eb01d05f3c9e09}} 
+\index{receiver\_machine.h@{receiver\_machine.h}!receiver\_machine\_update\_state@{receiver\_machine\_update\_state}}
+\index{receiver\_machine\_update\_state@{receiver\_machine\_update\_state}!receiver\_machine.h@{receiver\_machine.h}}
+\doxysubsubsection{\texorpdfstring{receiver\_machine\_update\_state()}{receiver\_machine\_update\_state()}}
+{\footnotesize\ttfamily void receiver\+\_\+machine\+\_\+update\+\_\+state (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}} $\ast$}]{receiver\+\_\+machine,  }\item[{struct \mbox{\hyperlink{structevent}{event}} $\ast$}]{event,  }\item[{const cfdp\+Cfdp\+PDU $\ast$}]{pdu }\end{DoxyParamCaption})}
+

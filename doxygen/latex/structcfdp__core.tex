@@ -1,0 +1,155 @@
+\hypertarget{structcfdp__core}{}\doxysection{cfdp\+\_\+core Struct Reference}
+\label{structcfdp__core}\index{cfdp\_core@{cfdp\_core}}
+
+
+{\ttfamily \#include $<$cfdp\+\_\+core.\+h$>$}
+
+
+
+Collaboration diagram for cfdp\+\_\+core\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structcfdp__core__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{structcfdp__core_ac6df7f8c8d4c81248f6cb779425f0916}{entity\+\_\+id}}
+\item 
+struct \mbox{\hyperlink{structfilestore__cfg}{filestore\+\_\+cfg}} $\ast$ \mbox{\hyperlink{structcfdp__core_a82627d371723247222b5e0ff1ccbe7b9}{filestore}}
+\item 
+struct \mbox{\hyperlink{structtransport}{transport}} $\ast$ \mbox{\hyperlink{structcfdp__core_a233c9a2764a0c761bdfa5632c926f198}{transport}}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{structcfdp__core_af59f0f82fa13d72d2605c46fd86be917}{transaction\+\_\+sequence\+\_\+number}}
+\item 
+struct \mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}} \mbox{\hyperlink{structcfdp__core_a0d18991eaa266fcffdd68f8e6960e8a2}{sender}} \mbox{[}\mbox{\hyperlink{constants_8h_a272bebd58e8eb7f477c61d9ede5053fa}{MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+SENDER\+\_\+\+MACHINES}}\mbox{]}
+\item 
+struct \mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}} \mbox{\hyperlink{structcfdp__core_a4976e9186958a512b4c206df4ff4ad5c}{receiver}} \mbox{[}\mbox{\hyperlink{constants_8h_a01679c94b2750d8d91d4b90150ae5e66}{MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+RECEIVER\+\_\+\+MACHINES}}\mbox{]}
+\item 
+enum \mbox{\hyperlink{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5}{Checksum\+Type}} \mbox{\hyperlink{structcfdp__core_a91327bb0a8fbb4db2625e2a607019c42}{checksum\+\_\+type}}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{structcfdp__core_a1097f0c38a224e0e7ebdd5baa70aa092}{inactivity\+\_\+timeout}}
+\item 
+uint8\+\_\+t $\ast$ \mbox{\hyperlink{structcfdp__core_a78c11301be91e7ec9e13a9e5201bb338}{data\+\_\+buffer}}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{structcfdp__core_a3dd2e8964e294c284c2f80a51a1cc780}{virtual\+\_\+source\+\_\+file\+\_\+size}}
+\item 
+uint8\+\_\+t $\ast$ \mbox{\hyperlink{structcfdp__core_af654d19b56093af3614eecb8f562ee7e}{virtual\+\_\+source\+\_\+file\+\_\+data}}
+\item 
+uint8\+\_\+t $\ast$ \mbox{\hyperlink{structcfdp__core_aaf9a5bf6f35473b1c5163b872d0ea916}{file\+\_\+segment\+\_\+data\+\_\+buffer}}
+\item 
+uint8\+\_\+t $\ast$ \mbox{\hyperlink{structcfdp__core_a965040973288e22abd7a1c775770b8ea}{pdu\+\_\+buffer}}
+\item 
+uint8\+\_\+t $\ast$ \mbox{\hyperlink{structcfdp__core_ad9cd1faab49026ceb3af6f31a432f8bc}{modified\+\_\+pdu\+\_\+buffer}}
+\item 
+cfdp\+\_\+core\+\_\+indication\+\_\+callback \mbox{\hyperlink{structcfdp__core_a990743a766136a6cb63e87b8b93af779}{cfdp\+\_\+core\+\_\+indication\+\_\+callback}}
+\item 
+cfdp\+\_\+core\+\_\+error\+\_\+callback \mbox{\hyperlink{structcfdp__core_a968e038cd2f7e4f70aec65bd24a953f8}{cfdp\+\_\+core\+\_\+error\+\_\+callback}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structcfdp__core_a968e038cd2f7e4f70aec65bd24a953f8}\label{structcfdp__core_a968e038cd2f7e4f70aec65bd24a953f8}} 
+\index{cfdp\_core@{cfdp\_core}!cfdp\_core\_error\_callback@{cfdp\_core\_error\_callback}}
+\index{cfdp\_core\_error\_callback@{cfdp\_core\_error\_callback}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{cfdp\_core\_error\_callback}{cfdp\_core\_error\_callback}}
+{\footnotesize\ttfamily cfdp\+\_\+core\+\_\+error\+\_\+callback cfdp\+\_\+core\+::cfdp\+\_\+core\+\_\+error\+\_\+callback}
+
+\mbox{\Hypertarget{structcfdp__core_a990743a766136a6cb63e87b8b93af779}\label{structcfdp__core_a990743a766136a6cb63e87b8b93af779}} 
+\index{cfdp\_core@{cfdp\_core}!cfdp\_core\_indication\_callback@{cfdp\_core\_indication\_callback}}
+\index{cfdp\_core\_indication\_callback@{cfdp\_core\_indication\_callback}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{cfdp\_core\_indication\_callback}{cfdp\_core\_indication\_callback}}
+{\footnotesize\ttfamily cfdp\+\_\+core\+\_\+indication\+\_\+callback cfdp\+\_\+core\+::cfdp\+\_\+core\+\_\+indication\+\_\+callback}
+
+\mbox{\Hypertarget{structcfdp__core_a91327bb0a8fbb4db2625e2a607019c42}\label{structcfdp__core_a91327bb0a8fbb4db2625e2a607019c42}} 
+\index{cfdp\_core@{cfdp\_core}!checksum\_type@{checksum\_type}}
+\index{checksum\_type@{checksum\_type}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{checksum\_type}{checksum\_type}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{constants_8h_a6440df7f4dbfc4c3370e2b6781bc74e5}{Checksum\+Type}} cfdp\+\_\+core\+::checksum\+\_\+type}
+
+\mbox{\Hypertarget{structcfdp__core_a78c11301be91e7ec9e13a9e5201bb338}\label{structcfdp__core_a78c11301be91e7ec9e13a9e5201bb338}} 
+\index{cfdp\_core@{cfdp\_core}!data\_buffer@{data\_buffer}}
+\index{data\_buffer@{data\_buffer}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{data\_buffer}{data\_buffer}}
+{\footnotesize\ttfamily uint8\+\_\+t$\ast$ cfdp\+\_\+core\+::data\+\_\+buffer}
+
+\mbox{\Hypertarget{structcfdp__core_ac6df7f8c8d4c81248f6cb779425f0916}\label{structcfdp__core_ac6df7f8c8d4c81248f6cb779425f0916}} 
+\index{cfdp\_core@{cfdp\_core}!entity\_id@{entity\_id}}
+\index{entity\_id@{entity\_id}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{entity\_id}{entity\_id}}
+{\footnotesize\ttfamily uint32\+\_\+t cfdp\+\_\+core\+::entity\+\_\+id}
+
+\mbox{\Hypertarget{structcfdp__core_aaf9a5bf6f35473b1c5163b872d0ea916}\label{structcfdp__core_aaf9a5bf6f35473b1c5163b872d0ea916}} 
+\index{cfdp\_core@{cfdp\_core}!file\_segment\_data\_buffer@{file\_segment\_data\_buffer}}
+\index{file\_segment\_data\_buffer@{file\_segment\_data\_buffer}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{file\_segment\_data\_buffer}{file\_segment\_data\_buffer}}
+{\footnotesize\ttfamily uint8\+\_\+t$\ast$ cfdp\+\_\+core\+::file\+\_\+segment\+\_\+data\+\_\+buffer}
+
+\mbox{\Hypertarget{structcfdp__core_a82627d371723247222b5e0ff1ccbe7b9}\label{structcfdp__core_a82627d371723247222b5e0ff1ccbe7b9}} 
+\index{cfdp\_core@{cfdp\_core}!filestore@{filestore}}
+\index{filestore@{filestore}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{filestore}{filestore}}
+{\footnotesize\ttfamily struct \mbox{\hyperlink{structfilestore__cfg}{filestore\+\_\+cfg}}$\ast$ cfdp\+\_\+core\+::filestore}
+
+\mbox{\Hypertarget{structcfdp__core_a1097f0c38a224e0e7ebdd5baa70aa092}\label{structcfdp__core_a1097f0c38a224e0e7ebdd5baa70aa092}} 
+\index{cfdp\_core@{cfdp\_core}!inactivity\_timeout@{inactivity\_timeout}}
+\index{inactivity\_timeout@{inactivity\_timeout}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{inactivity\_timeout}{inactivity\_timeout}}
+{\footnotesize\ttfamily uint32\+\_\+t cfdp\+\_\+core\+::inactivity\+\_\+timeout}
+
+\mbox{\Hypertarget{structcfdp__core_ad9cd1faab49026ceb3af6f31a432f8bc}\label{structcfdp__core_ad9cd1faab49026ceb3af6f31a432f8bc}} 
+\index{cfdp\_core@{cfdp\_core}!modified\_pdu\_buffer@{modified\_pdu\_buffer}}
+\index{modified\_pdu\_buffer@{modified\_pdu\_buffer}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{modified\_pdu\_buffer}{modified\_pdu\_buffer}}
+{\footnotesize\ttfamily uint8\+\_\+t$\ast$ cfdp\+\_\+core\+::modified\+\_\+pdu\+\_\+buffer}
+
+\mbox{\Hypertarget{structcfdp__core_a965040973288e22abd7a1c775770b8ea}\label{structcfdp__core_a965040973288e22abd7a1c775770b8ea}} 
+\index{cfdp\_core@{cfdp\_core}!pdu\_buffer@{pdu\_buffer}}
+\index{pdu\_buffer@{pdu\_buffer}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{pdu\_buffer}{pdu\_buffer}}
+{\footnotesize\ttfamily uint8\+\_\+t$\ast$ cfdp\+\_\+core\+::pdu\+\_\+buffer}
+
+\mbox{\Hypertarget{structcfdp__core_a4976e9186958a512b4c206df4ff4ad5c}\label{structcfdp__core_a4976e9186958a512b4c206df4ff4ad5c}} 
+\index{cfdp\_core@{cfdp\_core}!receiver@{receiver}}
+\index{receiver@{receiver}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{receiver}{receiver}}
+{\footnotesize\ttfamily struct \mbox{\hyperlink{structreceiver__machine}{receiver\+\_\+machine}} cfdp\+\_\+core\+::receiver\mbox{[}\mbox{\hyperlink{constants_8h_a01679c94b2750d8d91d4b90150ae5e66}{MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+RECEIVER\+\_\+\+MACHINES}}\mbox{]}}
+
+\mbox{\Hypertarget{structcfdp__core_a0d18991eaa266fcffdd68f8e6960e8a2}\label{structcfdp__core_a0d18991eaa266fcffdd68f8e6960e8a2}} 
+\index{cfdp\_core@{cfdp\_core}!sender@{sender}}
+\index{sender@{sender}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{sender}{sender}}
+{\footnotesize\ttfamily struct \mbox{\hyperlink{structsender__machine}{sender\+\_\+machine}} cfdp\+\_\+core\+::sender\mbox{[}\mbox{\hyperlink{constants_8h_a272bebd58e8eb7f477c61d9ede5053fa}{MAX\+\_\+\+NUMBER\+\_\+\+OF\+\_\+\+SENDER\+\_\+\+MACHINES}}\mbox{]}}
+
+\mbox{\Hypertarget{structcfdp__core_af59f0f82fa13d72d2605c46fd86be917}\label{structcfdp__core_af59f0f82fa13d72d2605c46fd86be917}} 
+\index{cfdp\_core@{cfdp\_core}!transaction\_sequence\_number@{transaction\_sequence\_number}}
+\index{transaction\_sequence\_number@{transaction\_sequence\_number}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{transaction\_sequence\_number}{transaction\_sequence\_number}}
+{\footnotesize\ttfamily uint32\+\_\+t cfdp\+\_\+core\+::transaction\+\_\+sequence\+\_\+number}
+
+\mbox{\Hypertarget{structcfdp__core_a233c9a2764a0c761bdfa5632c926f198}\label{structcfdp__core_a233c9a2764a0c761bdfa5632c926f198}} 
+\index{cfdp\_core@{cfdp\_core}!transport@{transport}}
+\index{transport@{transport}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{transport}{transport}}
+{\footnotesize\ttfamily struct \mbox{\hyperlink{structtransport}{transport}}$\ast$ cfdp\+\_\+core\+::transport}
+
+\mbox{\Hypertarget{structcfdp__core_af654d19b56093af3614eecb8f562ee7e}\label{structcfdp__core_af654d19b56093af3614eecb8f562ee7e}} 
+\index{cfdp\_core@{cfdp\_core}!virtual\_source\_file\_data@{virtual\_source\_file\_data}}
+\index{virtual\_source\_file\_data@{virtual\_source\_file\_data}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{virtual\_source\_file\_data}{virtual\_source\_file\_data}}
+{\footnotesize\ttfamily uint8\+\_\+t$\ast$ cfdp\+\_\+core\+::virtual\+\_\+source\+\_\+file\+\_\+data}
+
+\mbox{\Hypertarget{structcfdp__core_a3dd2e8964e294c284c2f80a51a1cc780}\label{structcfdp__core_a3dd2e8964e294c284c2f80a51a1cc780}} 
+\index{cfdp\_core@{cfdp\_core}!virtual\_source\_file\_size@{virtual\_source\_file\_size}}
+\index{virtual\_source\_file\_size@{virtual\_source\_file\_size}!cfdp\_core@{cfdp\_core}}
+\doxysubsubsection{\texorpdfstring{virtual\_source\_file\_size}{virtual\_source\_file\_size}}
+{\footnotesize\ttfamily uint32\+\_\+t cfdp\+\_\+core\+::virtual\+\_\+source\+\_\+file\+\_\+size}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/taste/\+Repo/n7s-\/cfdp/src/\mbox{\hyperlink{cfdp__core_8h}{cfdp\+\_\+core.\+h}}\end{DoxyCompactItemize}

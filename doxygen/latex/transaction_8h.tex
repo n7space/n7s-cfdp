@@ -1,0 +1,118 @@
+\hypertarget{transaction_8h}{}\doxysection{/home/taste/\+Repo/n7s-\/cfdp/src/transaction.h File Reference}
+\label{transaction_8h}\index{/home/taste/Repo/n7s-\/cfdp/src/transaction.h@{/home/taste/Repo/n7s-\/cfdp/src/transaction.h}}
+{\ttfamily \#include \char`\"{}messages\+\_\+to\+\_\+user.\+h\char`\"{}}\newline
+Include dependency graph for transaction.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=205pt]{transaction_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{transaction_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structtransaction}{transaction}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{transaction_8h_a55bfb2499961f86890857168e1925734}{transaction\+\_\+store\+\_\+data\+\_\+to\+\_\+file}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}}, const cfdp\+File\+Data\+PDU $\ast$file\+\_\+data\+\_\+pdu)
+\item 
+uint32\+\_\+t \mbox{\hyperlink{transaction_8h_ab6d68f580f46ef330226a1205c9b9f1e}{transaction\+\_\+get\+\_\+stored\+\_\+file\+\_\+checksum}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}})
+\item 
+bool \mbox{\hyperlink{transaction_8h_a89f6e010124f8ef4e709b79d541f9d3d}{transaction\+\_\+delete\+\_\+stored\+\_\+file}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}})
+\item 
+uint32\+\_\+t \mbox{\hyperlink{transaction_8h_a1724f9a8951813583c5ae437fd377037}{transaction\+\_\+get\+\_\+file\+\_\+size}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}})
+\item 
+uint32\+\_\+t \mbox{\hyperlink{transaction_8h_ad6a7e0056eaa41cf5fd4e617136775dd}{transaction\+\_\+get\+\_\+file\+\_\+checksum}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}})
+\item 
+bool \mbox{\hyperlink{transaction_8h_ad3af3d4c4799831564ddbce020f7cc2a}{transaction\+\_\+get\+\_\+file\+\_\+segment}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}}, char $\ast$out\+\_\+data, uint32\+\_\+t $\ast$out\+\_\+length)
+\item 
+bool \mbox{\hyperlink{transaction_8h_a80ffc68a7de72d01205efb103bba141c}{transaction\+\_\+is\+\_\+file\+\_\+transfer\+\_\+in\+\_\+progress}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}})
+\item 
+bool \mbox{\hyperlink{transaction_8h_a964a299569e6f48f86daaf48ca56ad05}{transaction\+\_\+is\+\_\+file\+\_\+send\+\_\+complete}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}})
+\item 
+uint32\+\_\+t \mbox{\hyperlink{transaction_8h_a95229f413a5add0498cc986769fdfec9}{transaction\+\_\+get\+\_\+messages\+\_\+to\+\_\+user\+\_\+count}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}})
+\item 
+struct \mbox{\hyperlink{structmessage__to__user}{message\+\_\+to\+\_\+user}} \mbox{\hyperlink{transaction_8h_a759f1a97e31e2acd56ed60bd820885c8}{transaction\+\_\+get\+\_\+message\+\_\+to\+\_\+user}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}}, uint32\+\_\+t index)
+\item 
+bool \mbox{\hyperlink{transaction_8h_a39d1545adf2fd4b1bee4e4454c33f932}{transaction\+\_\+process\+\_\+messages\+\_\+to\+\_\+user}} (struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$\mbox{\hyperlink{structtransaction}{transaction}})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{transaction_8h_a89f6e010124f8ef4e709b79d541f9d3d}\label{transaction_8h_a89f6e010124f8ef4e709b79d541f9d3d}} 
+\index{transaction.h@{transaction.h}!transaction\_delete\_stored\_file@{transaction\_delete\_stored\_file}}
+\index{transaction\_delete\_stored\_file@{transaction\_delete\_stored\_file}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_delete\_stored\_file()}{transaction\_delete\_stored\_file()}}
+{\footnotesize\ttfamily bool transaction\+\_\+delete\+\_\+stored\+\_\+file (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_ad6a7e0056eaa41cf5fd4e617136775dd}\label{transaction_8h_ad6a7e0056eaa41cf5fd4e617136775dd}} 
+\index{transaction.h@{transaction.h}!transaction\_get\_file\_checksum@{transaction\_get\_file\_checksum}}
+\index{transaction\_get\_file\_checksum@{transaction\_get\_file\_checksum}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_get\_file\_checksum()}{transaction\_get\_file\_checksum()}}
+{\footnotesize\ttfamily uint32\+\_\+t transaction\+\_\+get\+\_\+file\+\_\+checksum (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_ad3af3d4c4799831564ddbce020f7cc2a}\label{transaction_8h_ad3af3d4c4799831564ddbce020f7cc2a}} 
+\index{transaction.h@{transaction.h}!transaction\_get\_file\_segment@{transaction\_get\_file\_segment}}
+\index{transaction\_get\_file\_segment@{transaction\_get\_file\_segment}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_get\_file\_segment()}{transaction\_get\_file\_segment()}}
+{\footnotesize\ttfamily bool transaction\+\_\+get\+\_\+file\+\_\+segment (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction,  }\item[{char $\ast$}]{out\+\_\+data,  }\item[{uint32\+\_\+t $\ast$}]{out\+\_\+length }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_a1724f9a8951813583c5ae437fd377037}\label{transaction_8h_a1724f9a8951813583c5ae437fd377037}} 
+\index{transaction.h@{transaction.h}!transaction\_get\_file\_size@{transaction\_get\_file\_size}}
+\index{transaction\_get\_file\_size@{transaction\_get\_file\_size}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_get\_file\_size()}{transaction\_get\_file\_size()}}
+{\footnotesize\ttfamily uint32\+\_\+t transaction\+\_\+get\+\_\+file\+\_\+size (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_a759f1a97e31e2acd56ed60bd820885c8}\label{transaction_8h_a759f1a97e31e2acd56ed60bd820885c8}} 
+\index{transaction.h@{transaction.h}!transaction\_get\_message\_to\_user@{transaction\_get\_message\_to\_user}}
+\index{transaction\_get\_message\_to\_user@{transaction\_get\_message\_to\_user}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_get\_message\_to\_user()}{transaction\_get\_message\_to\_user()}}
+{\footnotesize\ttfamily struct \mbox{\hyperlink{structmessage__to__user}{message\+\_\+to\+\_\+user}} transaction\+\_\+get\+\_\+message\+\_\+to\+\_\+user (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction,  }\item[{uint32\+\_\+t}]{index }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_a95229f413a5add0498cc986769fdfec9}\label{transaction_8h_a95229f413a5add0498cc986769fdfec9}} 
+\index{transaction.h@{transaction.h}!transaction\_get\_messages\_to\_user\_count@{transaction\_get\_messages\_to\_user\_count}}
+\index{transaction\_get\_messages\_to\_user\_count@{transaction\_get\_messages\_to\_user\_count}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_get\_messages\_to\_user\_count()}{transaction\_get\_messages\_to\_user\_count()}}
+{\footnotesize\ttfamily uint32\+\_\+t transaction\+\_\+get\+\_\+messages\+\_\+to\+\_\+user\+\_\+count (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_ab6d68f580f46ef330226a1205c9b9f1e}\label{transaction_8h_ab6d68f580f46ef330226a1205c9b9f1e}} 
+\index{transaction.h@{transaction.h}!transaction\_get\_stored\_file\_checksum@{transaction\_get\_stored\_file\_checksum}}
+\index{transaction\_get\_stored\_file\_checksum@{transaction\_get\_stored\_file\_checksum}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_get\_stored\_file\_checksum()}{transaction\_get\_stored\_file\_checksum()}}
+{\footnotesize\ttfamily uint32\+\_\+t transaction\+\_\+get\+\_\+stored\+\_\+file\+\_\+checksum (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_a964a299569e6f48f86daaf48ca56ad05}\label{transaction_8h_a964a299569e6f48f86daaf48ca56ad05}} 
+\index{transaction.h@{transaction.h}!transaction\_is\_file\_send\_complete@{transaction\_is\_file\_send\_complete}}
+\index{transaction\_is\_file\_send\_complete@{transaction\_is\_file\_send\_complete}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_is\_file\_send\_complete()}{transaction\_is\_file\_send\_complete()}}
+{\footnotesize\ttfamily bool transaction\+\_\+is\+\_\+file\+\_\+send\+\_\+complete (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_a80ffc68a7de72d01205efb103bba141c}\label{transaction_8h_a80ffc68a7de72d01205efb103bba141c}} 
+\index{transaction.h@{transaction.h}!transaction\_is\_file\_transfer\_in\_progress@{transaction\_is\_file\_transfer\_in\_progress}}
+\index{transaction\_is\_file\_transfer\_in\_progress@{transaction\_is\_file\_transfer\_in\_progress}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_is\_file\_transfer\_in\_progress()}{transaction\_is\_file\_transfer\_in\_progress()}}
+{\footnotesize\ttfamily bool transaction\+\_\+is\+\_\+file\+\_\+transfer\+\_\+in\+\_\+progress (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_a39d1545adf2fd4b1bee4e4454c33f932}\label{transaction_8h_a39d1545adf2fd4b1bee4e4454c33f932}} 
+\index{transaction.h@{transaction.h}!transaction\_process\_messages\_to\_user@{transaction\_process\_messages\_to\_user}}
+\index{transaction\_process\_messages\_to\_user@{transaction\_process\_messages\_to\_user}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_process\_messages\_to\_user()}{transaction\_process\_messages\_to\_user()}}
+{\footnotesize\ttfamily bool transaction\+\_\+process\+\_\+messages\+\_\+to\+\_\+user (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{transaction_8h_a55bfb2499961f86890857168e1925734}\label{transaction_8h_a55bfb2499961f86890857168e1925734}} 
+\index{transaction.h@{transaction.h}!transaction\_store\_data\_to\_file@{transaction\_store\_data\_to\_file}}
+\index{transaction\_store\_data\_to\_file@{transaction\_store\_data\_to\_file}!transaction.h@{transaction.h}}
+\doxysubsubsection{\texorpdfstring{transaction\_store\_data\_to\_file()}{transaction\_store\_data\_to\_file()}}
+{\footnotesize\ttfamily bool transaction\+\_\+store\+\_\+data\+\_\+to\+\_\+file (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structtransaction}{transaction}} $\ast$}]{transaction,  }\item[{const cfdp\+File\+Data\+PDU $\ast$}]{file\+\_\+data\+\_\+pdu }\end{DoxyParamCaption})}
+

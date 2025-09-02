@@ -1,0 +1,83 @@
+\hypertarget{messages__to__user_8h}{}\doxysection{/home/taste/\+Repo/n7s-\/cfdp/src/messages\+\_\+to\+\_\+user.h File Reference}
+\label{messages__to__user_8h}\index{/home/taste/Repo/n7s-\/cfdp/src/messages\_to\_user.h@{/home/taste/Repo/n7s-\/cfdp/src/messages\_to\_user.h}}
+{\ttfamily \#include \char`\"{}constants.\+h\char`\"{}}\newline
+Include dependency graph for messages\+\_\+to\+\_\+user.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=206pt]{messages__to__user_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{messages__to__user_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structdirectory__listing__request}{directory\+\_\+listing\+\_\+request}}
+\item 
+struct \mbox{\hyperlink{structdirectory__listing__response}{directory\+\_\+listing\+\_\+response}}
+\item 
+struct \mbox{\hyperlink{structoriginating__transaction__id}{originating\+\_\+transaction\+\_\+id}}
+\item 
+union \mbox{\hyperlink{unionmessage__to__user__union}{message\+\_\+to\+\_\+user\+\_\+union}}
+\item 
+struct \mbox{\hyperlink{structmessage__to__user}{message\+\_\+to\+\_\+user}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61}{Listing\+Response\+Code}} \{ \mbox{\hyperlink{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61a7ec61a21d327e175f021ad3eb909a1df}{LISTING\+\_\+\+SUCCESSFUL}} = 0
+, \mbox{\hyperlink{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61a0cf5820c7dd90f4913705bef89060478}{LISTING\+\_\+\+UNSUCCESSFUL}} = 1
+ \}
+\item 
+enum \mbox{\hyperlink{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323}{Message\+To\+User\+Type}} \{ \mbox{\hyperlink{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323a73745d099a41c8653bfd3ec27138a3be}{DIRECTORY\+\_\+\+LISTING\+\_\+\+REQUEST}} = 0
+, \mbox{\hyperlink{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323a30d6c7ae059b5f4a55e3b2c2733b8ccb}{DIRECTORY\+\_\+\+LISTING\+\_\+\+RESPONSE}} = 1
+, \mbox{\hyperlink{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323ab870e6e05b3746182f56d23494fd6e3a}{ORIGINATING\+\_\+\+TRANSACTION\+\_\+\+ID}} = 2
+ \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61}\label{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61}} 
+\index{messages\_to\_user.h@{messages\_to\_user.h}!ListingResponseCode@{ListingResponseCode}}
+\index{ListingResponseCode@{ListingResponseCode}!messages\_to\_user.h@{messages\_to\_user.h}}
+\doxysubsubsection{\texorpdfstring{ListingResponseCode}{ListingResponseCode}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61}{Listing\+Response\+Code}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LISTING\_SUCCESSFUL@{LISTING\_SUCCESSFUL}!messages\_to\_user.h@{messages\_to\_user.h}}\index{messages\_to\_user.h@{messages\_to\_user.h}!LISTING\_SUCCESSFUL@{LISTING\_SUCCESSFUL}}}\mbox{\Hypertarget{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61a7ec61a21d327e175f021ad3eb909a1df}\label{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61a7ec61a21d327e175f021ad3eb909a1df}} 
+LISTING\+\_\+\+SUCCESSFUL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LISTING\_UNSUCCESSFUL@{LISTING\_UNSUCCESSFUL}!messages\_to\_user.h@{messages\_to\_user.h}}\index{messages\_to\_user.h@{messages\_to\_user.h}!LISTING\_UNSUCCESSFUL@{LISTING\_UNSUCCESSFUL}}}\mbox{\Hypertarget{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61a0cf5820c7dd90f4913705bef89060478}\label{messages__to__user_8h_ab7b5b01c33fb9d25d026888f09014b61a0cf5820c7dd90f4913705bef89060478}} 
+LISTING\+\_\+\+UNSUCCESSFUL&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323}\label{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323}} 
+\index{messages\_to\_user.h@{messages\_to\_user.h}!MessageToUserType@{MessageToUserType}}
+\index{MessageToUserType@{MessageToUserType}!messages\_to\_user.h@{messages\_to\_user.h}}
+\doxysubsubsection{\texorpdfstring{MessageToUserType}{MessageToUserType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323}{Message\+To\+User\+Type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DIRECTORY\_LISTING\_REQUEST@{DIRECTORY\_LISTING\_REQUEST}!messages\_to\_user.h@{messages\_to\_user.h}}\index{messages\_to\_user.h@{messages\_to\_user.h}!DIRECTORY\_LISTING\_REQUEST@{DIRECTORY\_LISTING\_REQUEST}}}\mbox{\Hypertarget{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323a73745d099a41c8653bfd3ec27138a3be}\label{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323a73745d099a41c8653bfd3ec27138a3be}} 
+DIRECTORY\+\_\+\+LISTING\+\_\+\+REQUEST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DIRECTORY\_LISTING\_RESPONSE@{DIRECTORY\_LISTING\_RESPONSE}!messages\_to\_user.h@{messages\_to\_user.h}}\index{messages\_to\_user.h@{messages\_to\_user.h}!DIRECTORY\_LISTING\_RESPONSE@{DIRECTORY\_LISTING\_RESPONSE}}}\mbox{\Hypertarget{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323a30d6c7ae059b5f4a55e3b2c2733b8ccb}\label{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323a30d6c7ae059b5f4a55e3b2c2733b8ccb}} 
+DIRECTORY\+\_\+\+LISTING\+\_\+\+RESPONSE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ORIGINATING\_TRANSACTION\_ID@{ORIGINATING\_TRANSACTION\_ID}!messages\_to\_user.h@{messages\_to\_user.h}}\index{messages\_to\_user.h@{messages\_to\_user.h}!ORIGINATING\_TRANSACTION\_ID@{ORIGINATING\_TRANSACTION\_ID}}}\mbox{\Hypertarget{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323ab870e6e05b3746182f56d23494fd6e3a}\label{messages__to__user_8h_a8c3ceb349556f0dafb718c73a0bdd323ab870e6e05b3746182f56d23494fd6e3a}} 
+ORIGINATING\+\_\+\+TRANSACTION\+\_\+\+ID&\\
+\hline
+
+\end{DoxyEnumFields}
