@@ -73,7 +73,7 @@ test-send-small-file:
 	sleep 1
 	./build/send_small_file_cfdp_test
 	sleep 1
-	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
+	-kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
 
 test-receive-small-file:
 	mkdir -p build
@@ -85,7 +85,7 @@ test-receive-small-file:
 	chmod +x $(CFDP_PYTHON_SENDER)
 	python3 $(CFDP_PYTHON_SENDER)
 	sleep 1
-	kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
+	-kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
 
 test-send-many-small-files:
 	mkdir -p build
@@ -97,7 +97,7 @@ test-send-many-small-files:
 	sleep 1
 	./build/send_many_small_files_cfdp_test
 	sleep 1
-	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
+	-kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
 
 test-receive-many-small-files:
 	mkdir -p build
@@ -109,7 +109,7 @@ test-receive-many-small-files:
 	chmod +x $(CFDP_PYTHON_MANY_FILES_SENDER)
 	python3 $(CFDP_PYTHON_MANY_FILES_SENDER)
 	sleep 1
-	kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
+	-kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
 
 test-send-medium-file:
 	mkdir -p build
@@ -121,7 +121,7 @@ test-send-medium-file:
 	sleep 1
 	./build/send_medium_file_cfdp_test
 	sleep 1
-	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
+	-kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
 
 test-receive-medium-file:
 	mkdir -p build
@@ -133,7 +133,7 @@ test-receive-medium-file:
 	chmod +x $(CFDP_PYTHON_MEDIUM_SENDER)
 	python3 $(CFDP_PYTHON_MEDIUM_SENDER)
 	sleep 1
-	kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
+	-kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
 
 test-send-big-file:
 	mkdir -p build
@@ -145,7 +145,7 @@ test-send-big-file:
 	sleep 1
 	./build/send_big_file_cfdp_test
 	sleep 1
-	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
+	-kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
 
 test-receive-big-file:
 	mkdir -p build
@@ -157,7 +157,7 @@ test-receive-big-file:
 	chmod +x $(CFDP_PYTHON_BIG_SENDER)
 	python3 $(CFDP_PYTHON_BIG_SENDER)
 	sleep 1
-	kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
+	-kill `cat $(CFDP_PID)` && rm -f $(CFDP_PID)
 
 test-send-file-with-transport-not-ready:
 	mkdir -p build
@@ -169,7 +169,7 @@ test-send-file-with-transport-not-ready:
 	sleep 1
 	./build/send_big_file_cfdp_test
 	sleep 1
-	kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
+	-kill `cat $(CFDP_PYTHON_RECEIVER_PID)` && rm -f $(CFDP_PYTHON_RECEIVER_PID)
 
 test-send-file-listing-request:
 	mkdir -p build
